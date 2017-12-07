@@ -1,0 +1,24 @@
+#!/bin/sh
+
+. lib/core
+
+_reign="${1}"
+if [ -z "${_reign}" ]; then
+    error "No arguments given, with reign names to invoke!"
+fi
+debug "Reign to be invoked: $(distd "${_reign}")"
+
+_hosts=$(${CAT_BIN} "${DEFAULT_INVENTORY}" | ${AWK_BIN} '{print $1;}' 2>/dev/null | ${GREP_BIN} -v '\[' 2>/dev/null | ${SORT_BIN} 2>/dev/null | ${UNIQ_BIN} 2>/dev/null)
+note "Calling reign: $(distn "${_reign}") on hosts: $(distd "$(echo "${_hosts}" | ${TR_BIN} '\n' ' ' 2>/dev/null)")"
+
+unset _process_logs
+for _host in ${_hosts}; do
+    _log="${DEFAULT_LOGDIR}/reign-${_reign}-on-${_host}.log"
+    _process_logs="${_log} ${_process_logs}"
+    echo > "${_log}" > "${_log}.error" # Clean previous log
+
+    note "Invoking reign: $(distn "${_reign}") for host: $(distn "${_host}")"
+    bin/reign "${DEFAULT_INVENTORY}" "${_reign}" "${_host}" >> "${_log}" 2>> "${_log}.error" &
+done
+
+await_async "${_process_logs}"
