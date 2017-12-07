@@ -35,5 +35,12 @@ POSIX compliant system with /bin/sh at least compatible with BSD-4x version from
 `bin/test` or `DEBUG=1 bin/test`
 
 
+# Doing private Sibling repo for Shable?
+
+`git clone --recursive https://github.com/VerKnowSys/Shable.Sibling Shable.YourCompany`
+
+Then just define your facts, tasks, templates and stuff.. and have fun :)
+
+
 # License:
 MIT/BSD license.
