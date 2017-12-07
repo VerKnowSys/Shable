@@ -1,0 +1,131 @@
+#!/bin/sh
+
+SHABLE_VERSION="0.6.5"
+
+# definitions
+PATH="/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
+DEFAULT_LANG="en_US.UTF-8"
+DEFAULT_SSH_PORT="60022"
+DEFAULT_CACHE_FACTS_DIR="facts/cached"
+DEFAULT_CACHE_FILE_LOCAL="facts/cached/local.facts"
+DEFAULT_LOGDIR="${HOME}/.shable/logs"
+DEFAULT_REMOTEDIR="${HOME}/.shable/remotes"
+
+# system specific
+HOST_NAME="$(hostname -s)"
+SYSTEM_NAME="$(uname)"
+
+# binaries
+ENV_BIN="/usr/bin/env"
+OPENSSL_BIN="/usr/bin/openssl"
+BASENAME_BIN="/usr/bin/basename"
+DATE_BIN="/bin/date"
+SED_BIN="/bin/sed"
+GREP_BIN="/bin/grep"
+PRINTF_BIN="/usr/bin/printf"
+TR_BIN="/usr/bin/tr"
+CAT_BIN="/bin/cat"
+AWK_BIN="/usr/bin/awk"
+HOSTNAME_BIN="/bin/hostname"
+SSH_BIN="/usr/bin/ssh"
+SCP_BIN="/usr/bin/scp"
+LN_BIN="/bin/ln"
+RM_BIN="/bin/rm"
+HEAD_BIN="/usr/bin/head"
+MYSQL_BIN="/usr/bin/mysql"
+CUT_BIN="/usr/bin/cut"
+MV_BIN="/bin/mv"
+INSTALL_BIN="/usr/bin/install"
+CURL_BIN="/usr/bin/curl"
+CHMOD_BIN="/bin/chmod"
+UNZIP_BIN="/usr/bin/unzip"
+CP_BIN="/bin/cp"
+SYSCTL_BIN="/sbin/sysctl"
+UUIDGEN_BIN="/usr/bin/uuidgen"
+CHOWN_BIN="/bin/chown"
+SORT_BIN="/usr/bin/sort"
+UNIQ_BIN="/usr/bin/uniq"
+GIT_BIN="/usr/bin/git"
+TOUCH_BIN="/usr/bin/touch"
+TAIL_BIN="/usr/bin/tail"
+SSHKEYGEN_BIN="/usr/bin/ssh-keygen"
+SSHKEYSCAN_BIN="/usr/bin/ssh-keyscan"
+DIG_BIN="/usr/bin/dig"
+WC_BIN="/usr/bin/wc"
+BC_BIN="/usr/bin/bc"
+RSYNC_BIN="/usr/bin/rsync"
+ID_BIN="/usr/bin/id"
+FIND_BIN="/usr/bin/find"
+
+# system specific paths
+case "${SYSTEM_NAME}" in
+    Darwin|FreeBSD)
+        GREP_BIN="/usr/bin/grep"
+        SED_BIN="/usr/bin/sed"
+        SYSCTL_BIN="/usr/sbin/sysctl"
+        CHOWN_BIN="/usr/sbin/chown"
+        if [ -x "/usr/local/bin/mysql" ]; then
+            # brew, Darwin:
+            MYSQL_BIN="/usr/local/bin/mysql"
+        elif [ -x "/Software/Mariadb/exports/mysql" ]; then
+            # sofin, FreeBSD|Darwin:
+            MYSQL_BIN="/Software/Mariadb/exports/mysql"
+        else
+            # no mysql client available, just unset it to avoid validate_env() failure:
+            unset MYSQL_BIN
+        fi
+        if [ -x "/usr/bin/pass" ]; then
+            # apt, Linux:
+            PASS_BIN="/usr/bin/pass"
+        elif [ -x "/usr/local/bin/pass" ]; then
+            # brew, Darwin:
+            PASS_BIN="/usr/local/bin/pass"
+        elif [ -x "/Software/Pass/exports/pass" ]; then
+            # sofin, FreeBSD|Darwin:
+            PASS_BIN="/Software/Pass/exports/pass"
+        else
+            # no mysql client available, just unset it to avoid validate_env() failure:
+            unset PASS_BIN
+        fi
+        ;;
+
+    Linux)
+        if [ -x "/usr/bin/pass" ]; then
+            # apt, Linux:
+            PASS_BIN="/usr/bin/pass"
+        elif [ -x "/usr/local/bin/pass" ]; then
+            # brew, Darwin:
+            PASS_BIN="/usr/local/bin/pass"
+        else
+            # no mysql client available, just unset it to avoid validate_env() failure:
+            unset PASS_BIN
+        fi
+        ;;
+
+esac
+
+
+# Special chars:
+NoteChar="»"
+
+# Use legacy ANSI definitions:
+ColorGray="\033[39m" # default color of terminal
+ColorReset="${ColorGray}"
+ColorDarkgray="\033[90m"
+ColorRed="\033[31m"
+ColorGreen="\033[32m"
+ColorYellow="\033[33m"
+ColorOrange="\033[38;5;172m"
+ColorBlue="\033[34m"
+ColorMagenta="\033[35m"
+ColorCyan="\033[36m"
+ColorDistinct="${ColorCyan}"
+ColorWhite="\033[97m"
+ColorParams="\033[38;5;12m"
+ColorViolet="\033[38;5;97m"
+ColorDebug="${ColorViolet}"
+ColorNote="${ColorGreen}"
+ColorWarning="${ColorYellow}"
+ColorError="${ColorRed}"
+ColorExample="${ColorOrange}"
+ColorFunction="\033[38;5;163m"

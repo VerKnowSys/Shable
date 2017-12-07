@@ -1,0 +1,161 @@
+#!/bin/sh
+
+# load core:
+. lib/core
+
+
+#
+# Includes facts and tasks based on group name or path to task
+#
+# If argument is a group name, group facts are loaded before loading tasks. All tasks of a group are loaded at once.
+# If first argument is a partial path to a task, no facts are loaded.
+#
+include () {
+    _partial_path="${1}"
+    shift
+    _args="${*}"
+    eval "export ${_args}" >/dev/null 2>/dev/null
+
+    # seek for particular task file:
+    if [ -f "tasks/${_partial_path}" ]; then
+        debug "+ only task from: $(distd "tasks/${_partial_path}") with args: '$(distd "${_args}")'"
+        . "tasks/${_partial_path}"
+        return
+    fi
+
+    # seek for facts:
+    if [ -f "facts/${_partial_path}.facts" ]; then
+        debug "+ all facts from: $(distd "facts/${_partial_path}.facts") with args: '$(distd "${_args}")'"
+        . "facts/${_partial_path}.facts"
+    fi
+
+    # seek for system speficic facts (override)
+    if [ -f "facts/${SYSTEM_NAME}.facts" ]; then
+        debug "+ OS specific facts from: $(distd "facts/${SYSTEM_NAME}.facts") with args: '$(distd "${_args}")'"
+        . "facts/${SYSTEM_NAME}.facts"
+    fi
+
+    # seek for task group:
+    if [ -d "tasks/${_partial_path}/" ]; then
+        for _taskfile in tasks/${_partial_path}/*; do
+            debug "+ tasks from: $(distd "${_taskfile}") with args: '$(distd "${_args}")'"
+            . "${_taskfile}"
+        done
+    fi
+    unset _args _taskfile _partial_path
+}
+
+
+#
+# Creates a file from given template
+#
+# src argument is a partial path to template file from some group.
+# dest argument is destination file.
+# any other arguments name=value are values of template element {{ name }}
+#
+template () {
+    _args="${*}"
+    eval "export ${_args}" >/dev/null 2>/dev/null
+
+    if [ -z "${src}" ]; then
+        error "Unspecified $(diste "src") for $(diste "template()")!"
+    fi
+    if [ -z "${dest}" ]; then
+        error "Unspecified $(diste "dest") for $(diste "template()")!"
+    fi
+
+    if [ ! -f "templates/${src}" ]; then
+        error "Source template $(diste "src=${src}") doesn't exist!"
+    fi
+
+    validate "${_args}"
+
+    if [ -f "${dest}" ]; then
+        _base="$(${BASENAME_BIN} "${dest}" 2>/dev/null)-$(${DATE_BIN} +%F-%s 2>/dev/null)"
+        debug "Destination file: $(distd "${dest}") already exists, moving old file to: $(distd "/tmp/${_base}")"
+        ${MV_BIN} -f "${dest}" "/tmp/${_base}"
+    fi
+
+    if [ -z "${mode}" ]; then
+        mode="0644"
+    fi
+
+    if [ -z "${owner}" ]; then
+        owner="${USER:-root}"
+    fi
+
+    ${INSTALL_BIN} -v \
+        -m "${mode}" \
+        -o "${owner}" \
+        "templates/${src}" \
+        "${dest}"
+
+    for _arg in ${_args}; do
+        _key="$(echo "${_arg}" | ${SED_BIN} 's/=.*//' 2>/dev/null)"
+        _val="$(echo "${_arg}" | ${SED_BIN} 's/.*=//' 2>/dev/null)"
+        case "${SYSTEM_NAME}" in
+            Darwin|FreeBSD)
+                ${SED_BIN} -i '' -e "s#{{ *${_key} *}}#${_val}#g;" "${dest}"
+                ;;
+
+            Linux)
+                ${SED_BIN} -i "s#{{ *${_key} *}}#${_val}#g;" "${dest}"
+                ;;
+        esac
+    done
+    unset mode owner src dest _arg _args _key _val _base
+}
+
+
+#
+# Validates that all arguments given with name=value format, are defined (not empty).
+# Throws an error if any value is not defined
+#
+validate () {
+    _validate_args="${*}"
+    for _val_arg in ${_validate_args}; do
+        _val_key="$(echo "${_val_arg}" | ${SED_BIN} 's/=.*//' 2>/dev/null)"
+        _val_value="$(echo "${_val_arg}" | ${SED_BIN} 's/.*=//' 2>/dev/null)"
+        if [ -z "${_val_value}" ]; then
+            error "validate($(diste "Fail" "${ColorRed}")): Expected $(diste "${_val_key}") to be defined! Task aborted!"
+        else
+            debug "validate($(distd "Ok" "${ColorGreen}")): $(distd "${_val_key}")=$(distd "${_val_value}")"
+        fi
+    done
+    unset _validate_args _val_arg _val_key _val_value
+}
+
+
+#
+# Helper to easily ensure given line is in file based on given line contents and/or pattern regexp
+#
+# Function performs plain-text checks for 'line'
+# Function performs regex checks for 'pattern'.
+#
+# Args:
+#   'src' - absolute path to file
+#   'line' - line contents text that has to be present in given file
+#   'pattern' - regexp pattern - considered as an additional match-conditional made on file contents
+#
+lineinfile () {
+    eval "export ${*}" >/dev/null 2>&1
+    if [ -z "${src}" ]; then
+        error "No $(diste "src") file given!"
+    fi
+    if [ -z "${line}" ]; then
+        error "No content $(diste "line") given!"
+    fi
+    write_line_if_not_already_present () {
+        debug "lineinfile: $(distd "${src}"): line: $(distd "${line}")"
+        ${GREP_BIN} -F "${line}" "${src}" >/dev/null 2>&1 || \
+            ${PRINTF_BIN} "\n%s\n" "${line}" >> "${src}"
+    }
+    if [ -n "${pattern}" ] && [ "${line}" != "${pattern}" ]; then
+        debug "lineinfile-pattern: $(distd "${pattern}") => $(distd "${src}"): line: $(distd "${line}")"
+        ${GREP_BIN} -E "${pattern}" "${src}" >/dev/null 2>&1 && \
+            write_line_if_not_already_present
+    else
+        write_line_if_not_already_present
+    fi
+    unset src pattern line
+}

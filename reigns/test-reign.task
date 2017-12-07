@@ -1,0 +1,15 @@
+include "base"
+include "test"
+
+
+main () {
+    validate \
+        some_remote="${_remote}" \
+        some_test_value="${test2value}" \
+        some_inventory_value="${test3value}"
+
+    only="${test3value}"
+
+    only_test
+    my_own_test_function_love
+}

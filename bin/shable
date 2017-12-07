@@ -1,0 +1,59 @@
+#!/bin/sh
+
+. lib/core
+. lib/shable
+
+_reign="${1}"
+# shift
+# _params="${*}"
+# debug "Shable params: $(distd "${_params}")"
+# eval "export ${_params}" >/dev/null 2>/dev/null
+
+export LANG="${DEFAULT_LANG}"
+export LANGUAGE="${DEFAULT_LANG}"
+export LC_ALL="${DEFAULT_LANG}"
+export LC_TIME="${DEFAULT_LANG}"
+export LC_MONETARY="${DEFAULT_LANG}"
+export LC_CTYPE="${DEFAULT_LANG}"
+export LC_COLLATE="${DEFAULT_LANG}"
+export LC_MESSAGES="${DEFAULT_LANG}"
+export LC_NUMERIC="${DEFAULT_LANG}"
+
+if [ -z "${_reign}" ]; then
+    error "Reign task required as first param!"
+else
+    note "Calling Shable v${SHABLE_VERSION}, Reign: $(distn "${_reign}"), on Host: $(distn "$(${HOSTNAME_BIN})"), System: $(distn "${SYSTEM_NAME}")"
+    if [ -f "reigns/${_reign}.task" ]; then
+        debug "+ task file: $(distd "reigns/${_reign}.task")"
+        . "reigns/${_reign}.task"
+    elif [ -f "reigns/${_reign}" ]; then
+        debug "+ task file: $(distd "reigns/${_reign}")"
+        . "reigns/${_reign}"
+    else
+        error "No such reign task: '$(diste "${_reign}")'"
+    fi
+
+    # load cached facts (if any)
+    if [ -d "facts/cached" ]; then
+        debug "+ common local facts cache file: $(distd "${DEFAULT_CACHE_FILE_LOCAL}")"
+        . "${DEFAULT_CACHE_FILE_LOCAL}"
+
+        for _facts in facts/cached/*.facts; do
+            if [ "${DEFAULT_CACHE_FILE_LOCAL}" != "${_facts}" ]; then
+                debug "+ additional facts from cache file: $(distd "${_facts}")"
+                . "${_facts}"
+            fi
+        done
+    fi
+
+    # call validation of required software defined in lib/vars (*_BIN):
+    if [ -z "${SKIP_ENV_VALIDATION}" ]; then
+        validate_env
+    fi
+
+    # call main() from reign:
+    main
+
+    # call cleanup of cached tasks:
+    cleanup_fragile_facts
+fi

@@ -1,0 +1,4 @@
+
+my_own_test_function_love () {
+    echo "yay ${my_test_param_value} ${test1value}"
+}

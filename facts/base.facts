@@ -1,0 +1,3 @@
+# core
+connection_timeout=5
+connection_attempts=1

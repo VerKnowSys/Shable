@@ -1,0 +1,329 @@
+#!/bin/sh
+
+. lib/shable
+
+
+# test helpers:
+
+_tmpfile="/tmp/$(${DATE_BIN} +%F-%s-%N 2>/dev/null).tmp"
+terror () {
+    debug "-----------------------------------------------------------------------------"
+    ${CAT_BIN} "${_tmpfile}"
+    debug "-----------------------------------------------------------------------------"
+    error "${*}"
+}
+
+val_expect () {
+    _value="${1}"
+    _expected="${2}"
+    if [ "${_expected}" != "${_value}" ]; then
+        terror "Expected value: '$(diste "${_value}")' to be: '$(diste "${_expected}")'"
+    fi
+    debug "val_expect($(distd "Ok" "${ColorGreen}")): value='$(distd "${_value}")', expected='$(distd "${_expected}")'"
+}
+
+sha_expect () {
+    _file="${1}"
+    _expected="${2}"
+    _input="$(${CAT_BIN} "${_file}" 2>/dev/null | ${OPENSSL_BIN} sha1 2>/dev/null | ${AWK_BIN} '{print $2;}' 2>/dev/null)"
+    if [ -z "${_input}" ]; then
+        # NOTE: libressl returns one thing, openssl other thing:
+        _input="$(${CAT_BIN} "${_file}" 2>/dev/null | ${OPENSSL_BIN} sha1 2>/dev/null)"
+    fi
+    if [ "${_expected}" != "${_input}" ]; then
+        if [ -n "${DEBUG}" ]; then
+            ${CAT_BIN} "${_file}"
+        fi
+        terror "Expected file: '$(diste "${_file}")' to have sha1: '$(diste "${_expected}")' but it has: '$(diste "${_input}")'"
+    fi
+    debug "sha_expect($(distd "Ok" "${ColorGreen}")): file='$(distd "${_file}")', expected='$(distd "${_expected}")'"
+}
+
+
+# test functions:
+template_test1 () {
+    template \
+        src="test/some_template.conf" \
+        dest="/tmp/1D9D22B9-E753-4F8A-B8D6-1A0814F84BED.conf" \
+        workers=4096 \
+        additional="\"\$http_x_forwarded_for\"" \
+        domain1="dom1.com" \
+        domain2="dom2.pl" \
+        domain3="*.dom3.se"
+    sha_expect \
+        "/tmp/1D9D22B9-E753-4F8A-B8D6-1A0814F84BED.conf" \
+        "193e550be33f231328085b50626adf6979c4f8f9"
+}
+
+
+include_test0 () {
+    include \
+        "test/onlythis.task" only='always*#$%'
+
+    val_expect \
+        "$(only_test)" \
+        'always*#$%!'
+
+    val_expect \
+        "${test1value}" \
+        ""
+
+    val_expect \
+        "${test2value}" \
+        ""
+
+    include \
+        "test/onlythis.task" only='of\ horse'
+
+    val_expect \
+        "$(only_test)" \
+        'of horse!'
+}
+
+
+include_test1 () {
+    include \
+        "test" my_test_param_value=666
+
+    val_expect \
+        "${test2value}" \
+        "aleniemakota"
+
+    val_expect \
+        "$(my_own_test_function_love)" \
+        "yay 666 123"
+}
+
+
+include_pass_cache_vault_test0 () {
+    _value="$(pass_cache "i/am/not/there")"
+    val_expect \
+        "${_value}" \
+        ""
+
+    _value="$(pass_cache "")"
+    val_expect \
+        "${_value}" \
+        ""
+
+    _value="$(pass_cache)"
+    val_expect \
+        "${_value}" \
+        ""
+}
+
+
+make_var_test0 () {
+    val_expect \
+        "$(make_var_name "")" \
+        ""
+
+    val_expect \
+        "$(make_var_name)" \
+        ""
+
+    val_expect \
+        "$(make_var_name "%")" \
+        "_"
+
+    val_expect \
+        "$(make_var_name "a1.2.3-a-b-c/bb/cc /d")" \
+        "a1_2_3_a_b_c_bb_cc__d"
+
+    val_expect \
+        "$(make_var_name "+=o;.:^-.%! ")" \
+        "+_o___^___!_"
+
+    a1_2_3_a_b_c_bb_cc__d="123"
+    val_expect \
+        "$(get_var_value "a1.2.3-a-b-c/bb/cc /d")" \
+        "123"
+    get_var_value "a1.2.3-a-b-c/bb/cc /d" > "${_tmpfile}"
+    sha_expect \
+        "${_tmpfile}" \
+        "a8fdc205a9f19cc1c7507a60c4f01b13d11d7fd0" # sha1 of "123"
+
+    val_expect \
+        "$(get_var_value "im/not/here")" \
+        ""
+}
+
+
+self_test () {
+    template_test1 && \
+    include_test0 && \
+    include_test1 && \
+    include_pass_cache_vault_test0 && \
+    make_var_test0
+
+    { echo "2593645942376593476592374653294765" ; echo "eriujtuitjiuerjtiuertiyjerotiuyjeruiyj"; echo "abc 123 666"; echo "flamenco classico"; } > "${_tmpfile}"
+    expected_sha1="248bece1356b0881aaf845703a09ee3375c260ff"
+    expected2_sha1="92987ae71dc2408fb11899380d28e1404a874d28"
+    sha_expect \
+        "${_tmpfile}" \
+        "${expected_sha1}"
+
+    # pass
+    lineinfile \
+        src="${_tmpfile}" \
+        line="'flamenco classico'"
+    sha_expect \
+        "${_tmpfile}" \
+        "${expected_sha1}"
+
+    # pass
+    lineinfile \
+        src="${_tmpfile}" \
+        line="'flamenco classico'"
+    sha_expect \
+        "${_tmpfile}" \
+        "${expected_sha1}"
+
+    # no-op
+    lineinfile \
+        src="${_tmpfile}" \
+        line="'abc 123 666'"
+    sha_expect \
+        "${_tmpfile}" \
+        "${expected_sha1}"
+
+    # add line to file cause pattern exists
+    lineinfile \
+        src="${_tmpfile}" \
+        line="zuz" \
+        pattern="2593645942376593476592374653294765"
+
+    # no-op - line already present in file
+    lineinfile \
+        src="${_tmpfile}" \
+        line="zuz" \
+        pattern="2593645942376593476592374653294765"
+
+    sha_expect \
+        "${_tmpfile}" \
+        "${expected2_sha1}"
+
+    # no-op
+    lineinfile \
+        src="${_tmpfile}" \
+        line="zuz" \
+        pattern="zuz"
+
+    # no-op
+    lineinfile \
+        src="${_tmpfile}" \
+        line="zuz"
+
+    sha_expect \
+        "${_tmpfile}" \
+        "${expected2_sha1}"
+
+    # no-op
+    lineinfile \
+        src="${_tmpfile}" \
+        line="zuz"
+
+    sha_expect \
+        "${_tmpfile}" \
+        "${expected2_sha1}"
+
+    # new line appended
+    lineinfile \
+        src="${_tmpfile}" \
+        line="#anabela1337" \
+        pattern="roti.*ruiyj"
+
+    # no new line appended
+    lineinfile \
+        src="${_tmpfile}" \
+        line="#anabela1337"
+
+    # no-new line appended
+    lineinfile \
+        src="${_tmpfile}" \
+        line="#anabela1337" \
+        pattern="roti.*ruiyj"
+
+    # add "escaped" line input test
+    lineinfile \
+        src="${_tmpfile}" \
+        line="'define(\"DEBUG\", true);'"
+    lineinfile \
+        src="${_tmpfile}" \
+        line="'define(\"DEBUG\", true);'"
+
+    # add one more "escaped" line input test
+    lineinfile \
+        src="${_tmpfile}" \
+        line="'\$dbg_conf[\"VMS_DEMO\"] = true;'"
+    lineinfile \
+        src="${_tmpfile}" \
+        line="'\$dbg_conf[\"VMS_DEMO\"] = true;'"
+
+    val_expect \
+        "$(${GREP_BIN} -c "anabela1337" "${_tmpfile}" 2>/dev/null)" \
+        "1"
+
+    val_expect \
+        "$(${GREP_BIN} -c "zuz" "${_tmpfile}" 2>/dev/null)" \
+        "1"
+
+    val_expect \
+        "$(${GREP_BIN} -c 'define("DEBUG", true);' "${_tmpfile}" 2>/dev/null)" \
+        "1"
+
+    val_expect \
+        "$(${GREP_BIN} -c '\"VMS_DEMO\"' "${_tmpfile}" 2>/dev/null)" \
+        "1"
+
+    _rem1="REM1993355"
+    lineinfile \
+        src="${_tmpfile}" \
+        line="'10 0 * * * cd /var/www/vms/${_rem1}/ && run-one php src/${_rem1}/index.php --path=system/crontab/stock --client=${_rem1} > /dev/null 2>&1'"
+    val_expect \
+        "$(${GREP_BIN} -c 'REM1993355' "${_tmpfile}" 2>/dev/null)" \
+        "1"
+
+    lineinfile \
+        src="${_tmpfile}" \
+        line="'5 0 * * Sun /backups/backupDATA.sh >> /var/log/cronDATA.log 2>> /var/log/cronDATA.log'"
+    val_expect \
+        "$(${GREP_BIN} -c '/backups/backupDATA.sh' "${_tmpfile}" 2>/dev/null)" \
+        "1"
+
+    if [ -n "${DEBUG}" ]; then
+        debug "Tmpfile contents:"
+        ${CAT_BIN} "${_tmpfile}"
+    fi
+}
+
+
+system_specific_test () {
+    case "${SYSTEM_NAME}" in
+        Linux)
+            # val_expect \
+            #     "$(lsb_release -c | ${AWK_BIN} '{print $2;}')" \
+            #     "${release}"
+            val_expect \
+                "${default_www_user}" \
+                "www-data"
+            ;;
+
+        FreeBSD)
+            val_expect \
+                "${default_www_user}" \
+                "worker"
+            ;;
+
+        Darwin)
+            ;;
+
+    esac
+}
+
+
+# Invoke tests:
+validate_env && \
+self_test && \
+system_specific_test && \
+note "Everything as expected!"
