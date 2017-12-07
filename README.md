@@ -15,8 +15,16 @@ POSIX compliant system with /bin/sh at least compatible with BSD-4x version from
 * Async processing support.
 
 
-# Example usage:
+# Example usage (single remote):
 `bin/reign inventory test-reign hostname` - will execute tasks defined under `reigns/test-reign.task` on host `hostname` (defined in Ansible compliant inventory file).
+
+
+# Example usage (sync, multiple remotes - all defined in inventory file):
+`./call-reign-sync test-reign`
+
+
+# Example usage (async, multiple remotes - all defined in inventory file):
+`./call-reign-async test-reign`
 
 
 # Debugging:
