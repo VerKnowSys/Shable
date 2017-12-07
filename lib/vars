@@ -10,6 +10,7 @@ DEFAULT_CACHE_FACTS_DIR="facts/cached"
 DEFAULT_CACHE_FILE_LOCAL="facts/cached/local.facts"
 DEFAULT_LOGDIR="${HOME}/.shable/logs"
 DEFAULT_REMOTEDIR="${HOME}/.shable/remotes"
+DEFAULT_INVENTORY="inventory"
 
 # system specific
 HOST_NAME="$(hostname -s)"
