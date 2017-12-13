@@ -7,9 +7,9 @@ POSIX compliant system with /bin/sh at least compatible with BSD-4x version from
 
 ## Features:
 * Pure Sh implementation using standard base system utils found on any modern OS.
-* Support for Ansible inventory input format.
+* Support for Ansible inventory input format (no group support - processing all inventory entries by default).
 * Support for Ansible templates - `{{ something }}` is supported, but without any logic whatsoever (it's not php to write logic on template side).
-* Facts, Environmnet and Inventory values validation (explicit and done BEFORE task is invoked on remote host - since it should never leave remote in "unknown-in-middle-of" state).
+* Facts, Environment and Inventory values validation (explicit and done BEFORE task is invoked on remote host - since it should never leave remote in "unknown-in-middle-of" state).
 * Clear, easy, eyes-friendly colored debugging (just define DEBUG in env and enjoy).
 * Faster than anything else (has to be).
 * Async processing support.
