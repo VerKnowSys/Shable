@@ -78,6 +78,8 @@ else
                                 fi
                         done
                         return 0
+                    else
+                        sleep 10
                     fi
                 done
                 return 1
@@ -107,7 +109,7 @@ else
                         return 0
                     else
                         debug "Job unsuccessful, attempt: $(distd "${_attempt}")"
-                        sleep 1
+                        sleep 10
                     fi
                 done
                 return 1
