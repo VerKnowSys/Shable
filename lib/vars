@@ -88,6 +88,17 @@ case "${SYSTEM_NAME}" in
             # no mysql client available, just unset it to avoid validate_env() failure:
             unset PASS_BIN
         fi
+
+        if [ -x "/usr/bin/curl" ]; then
+            CURL_BIN="/usr/bin/curl"
+        elif [ -x "/usr/local/bin/curl" ]; then
+            CURL_BIN="/usr/local/bin/curl"
+        elif [ -x "/Software/Curl/exports/curl" ]; then
+            CURL_BIN="/Software/Curl/exports/curl"
+        elif [ -x "/usr/bin/fetch" ]; then
+            # XXX: kinda hacky, but at least a fallback on some minimal BSD-like system:
+            CURL_BIN="/usr/bin/fetch"
+        fi
         ;;
 
     Linux)
