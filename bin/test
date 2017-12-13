@@ -149,12 +149,46 @@ make_var_test0 () {
 }
 
 
+make_cron_test0 () {
+    mkdir -p /tmp/periodic/daily
+    cronjob \
+        rootdir="/tmp" \
+        type="periodic" \
+        frequency="daily" \
+        name="test0" \
+        job="'echo 123'"
+
+    sha_expect \
+        "/tmp/periodic/daily/test0" \
+        "325bbcceadec1bee22c09a693b9642181ccf576a"
+
+    mkdir -p /tmp/cron.d
+    cronjob \
+        rootdir="/tmp" \
+        type="cron" \
+        name="test1" \
+        minute="1" \
+        hour="2" \
+        mday="3" \
+        month="4" \
+        wday="5" \
+        user="root" \
+        job="'echo 321'"
+
+    _a="$(${CAT_BIN} "/tmp/cron.d/test1" 2>/dev/null)"
+    val_expect \
+        "${_a}" \
+        "1 2 3 4 5  root  echo 321"
+}
+
+
 self_test () {
     template_test1 && \
     include_test0 && \
     include_test1 && \
     include_pass_cache_vault_test0 && \
-    make_var_test0
+    make_var_test0 && \
+    make_cron_test0
 
     { echo "2593645942376593476592374653294765" ; echo "eriujtuitjiuerjtiuertiyjerotiuyjeruiyj"; echo "abc 123 666"; echo "flamenco classico"; } > "${_tmpfile}"
     expected_sha1="248bece1356b0881aaf845703a09ee3375c260ff"
