@@ -150,7 +150,15 @@ make_var_test0 () {
 
 
 make_cron_test0 () {
-    mkdir -p /tmp/periodic/daily
+    case "${SYSTEM_NAME}" in
+        Linux)
+            _dest="/tmp/cron.daily"
+            ;;
+        FreeBSD|Darwin)
+            _dest="/tmp/periodic/daily"
+            ;;
+    esac
+    mkdir -p "${_dest}"
     cronjob \
         rootdir="/tmp" \
         type="periodic" \
@@ -159,7 +167,7 @@ make_cron_test0 () {
         job="'echo 123'"
 
     sha_expect \
-        "/tmp/periodic/daily/test0" \
+        "${_dest}/test0" \
         "325bbcceadec1bee22c09a693b9642181ccf576a"
 
     mkdir -p /tmp/cron.d
