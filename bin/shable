@@ -35,8 +35,10 @@ else
 
     # load cached facts (if any)
     if [ -d "facts/cached" ]; then
-        debug "+ common local facts cache file: $(distd "${DEFAULT_CACHE_FILE_LOCAL}")"
-        . "${DEFAULT_CACHE_FILE_LOCAL}"
+        if [ -f "${DEFAULT_CACHE_FILE_LOCAL}" ]; then
+            debug "+ common local facts cache file: $(distd "${DEFAULT_CACHE_FILE_LOCAL}")"
+            . "${DEFAULT_CACHE_FILE_LOCAL}"
+        fi
 
         for _facts in facts/cached/*.facts; do
             if [ "${DEFAULT_CACHE_FILE_LOCAL}" != "${_facts}" ]; then
