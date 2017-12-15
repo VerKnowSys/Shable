@@ -63,20 +63,6 @@ else
                         "./" \
                         "root@${_remote}:${_base_name}" 2>/dev/null
                     if [ "0" = "$?" ]; then
-                        # Core Shable repository was synchronised, now time for siblings!
-                        for _sibling in ${DEFAULT_REMOTEDIR}/*; do
-                            debug "Syncing sibling: $(distd "${_sibling}") to $(distd "root@${_remote}:${_base_name}")"
-                            ${RSYNC_BIN} \
-                                --exclude=".git" \
-                                --recursive \
-                                --compress \
-                                --archive \
-                                "${_sibling}/" \
-                                "root@${_remote}:${_base_name}" 2>/dev/null
-                                if [ "0" != "$?" ]; then
-                                    return 1
-                                fi
-                        done
                         return 0
                     else
                         sleep 10
