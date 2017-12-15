@@ -8,7 +8,7 @@ mkdir -p "${DEFAULT_LOGDIR}" "${DEFAULT_REMOTEDIR}"
 
 
 debug () {
-    if [ -n "${DEBUG}" ]; then
+    if [ -n "${@}" ] && [ -n "${DEBUG}" ]; then
         ${PRINTF_BIN} "#%b%s%b\n" "${ColorDebug}" "${@}" "${ColorReset}"
     fi
     return 0
@@ -16,19 +16,31 @@ debug () {
 
 
 warn () {
-    ${PRINTF_BIN} "\n%b%s%b\n\n" "${ColorYellow}" "${@}" "${ColorReset}"
+    if [ -n "${@}" ]; then
+        ${PRINTF_BIN} "\n%b%s%b\n\n" "${ColorYellow}" "${@}" "${ColorReset}"
+    else
+        ${PRINTF_BIN} "\n"
+    fi
     return 0
 }
 
 
 note () {
-    ${PRINTF_BIN} "\n%b%s%b\n" "${ColorGreen}" "${@}" "${ColorReset}"
+    if [ -n "${@}" ]; then
+        ${PRINTF_BIN} "\n%b%s%b\n" "${ColorGreen}" "${@}" "${ColorReset}"
+    else
+        ${PRINTF_BIN} "\n"
+    fi
     return 0
 }
 
 
 error () {
-    ${PRINTF_BIN} "%b\n  %s %s\n    %b %b\n\n" "${ColorRed}" "${NoteChar}" "Task crashed!" "${0}: ${1}${2}${3}${4}${5}" "${ColorReset}"
+    if [ -n "${@}" ]; then
+        ${PRINTF_BIN} "%b\n  %s %s\n    %b %b\n\n" "${ColorRed}" "${NoteChar}" "Task crashed!" "${0}: ${1}${2}${3}${4}${5}" "${ColorReset}"
+    else
+        ${PRINTF_BIN} "%b\n  %s%b\n" "${ColorRed}" "ERROR!" "${ColorReset}"
+    fi
     exit 1
 }
 
