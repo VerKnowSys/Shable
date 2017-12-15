@@ -90,8 +90,6 @@ case "${SYSTEM_NAME}" in
 
         if [ -x "/usr/bin/curl" ]; then
             CURL_BIN="/usr/bin/curl"
-        elif [ -x "/usr/local/bin/curl" ]; then
-            CURL_BIN="/usr/local/bin/curl"
         elif [ -x "/Software/Curl/exports/curl" ]; then
             CURL_BIN="/Software/Curl/exports/curl"
         elif [ -x "/usr/bin/fetch" ]; then
