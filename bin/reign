@@ -88,14 +88,9 @@ else
             debug "Rsyncing Shable to: $(distd "${_base_name}")"
             sync_with_rsync || commit_failure "Failed to rsync to: $(distw "root@${_remote}:${_base_name}")"
 
-            _shell_export="export"
-            if [ "/bin/csh" = "${SHELL}" ]; then
-                _shell_export="set"
-            fi
-
-            _job="cd ${_base_name}; \
-                ${_shell_export} ${_inventory_values} commands='${commands}' domain='${domain}' _remote='${_remote}' DEBUG=${DEBUG} SKIP_ENV_VALIDATION=${SKIP_ENV_VALIDATION} build_uuid='${build_uuid}' silk_branch='${silk_branch}' && \
-                bin/shable ${_reign}"
+            _job="cd ${_base_name}; /bin/sh -c '\
+                export ${_inventory_values} commands='${commands}' domain='${domain}' _remote='${_remote}' DEBUG=${DEBUG} SKIP_ENV_VALIDATION=${SKIP_ENV_VALIDATION} build_uuid='${build_uuid}' silk_branch='${silk_branch}' && \
+                bin/shable ${_reign}'"
 
             invoke_ssh () {
                 debug "Invoking remote job: $(distd "invoke_ssh('${_job}')")"
