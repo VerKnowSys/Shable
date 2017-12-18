@@ -2,6 +2,9 @@
 
 . lib/shable
 
+if [ ! -d "templates/test" ]; then
+    cd Shable
+fi
 
 # test helpers:
 
@@ -369,3 +372,7 @@ validate_env && \
 self_test && \
 system_specific_test && \
 note "Everything as expected!"
+
+if [ -d "templates/test" ]; then
+    cd ..
+fi
