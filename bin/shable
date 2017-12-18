@@ -41,9 +41,11 @@ else
         fi
 
         for _facts in facts/cached/*.facts; do
-            if [ "${DEFAULT_CACHE_FILE_LOCAL}" != "${_facts}" ]; then
-                debug "+ additional facts from cache file: $(distd "${_facts}")"
-                . "${_facts}"
+            if [ -f "${_facts}" ]; then
+                if [ "${DEFAULT_CACHE_FILE_LOCAL}" != "${_facts}" ]; then
+                    debug "+ additional facts from cache file: $(distd "${_facts}")"
+                    . "${_facts}"
+                fi
             fi
         done
     fi
