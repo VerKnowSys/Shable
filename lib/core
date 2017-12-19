@@ -35,6 +35,14 @@ note () {
 }
 
 
+progress_note () {
+    if [ -n "${*}" ]; then
+        ${PRINTF_BIN} "${REPLAY_PREVIOUS_LINE}%b%s%b\n" "${ColorGreen}" "${@}" "${ColorReset}"
+    fi
+    return 0
+}
+
+
 error () {
     if [ -n "${*}" ]; then
         ${PRINTF_BIN} "%b\n  %s %s\n    %b %b\n\n" "${ColorRed}" "${NoteChar}" "Task crashed!" "${0}: ${1}${2}${3}${4}${5}" "${ColorReset}"
