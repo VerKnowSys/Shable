@@ -156,6 +156,11 @@ await_async () {
         done
 
         note "Completed: $(distn "${_completed}" "${ColorGreen}"). Failed: $(distn "${_failed}" "${ColorRed}"). Total: $(distn "${_all}")"
+        # If failed count >0 use red color:
+        _fcolour="${ColorDistinct}"
+        if [ "0" != "${_failed}" ]; then
+            _fcolour="${ColorRed}"
+        fi
         _countall="$(echo "${_completed} + ${_failed}" | ${BC_BIN} 2>/dev/null)"
         debug "Done count: $(distd "${_countall}") of all: $(distd "${_all}")"
         if [ "${_countall}" = "${_all}" ]; then
