@@ -134,6 +134,9 @@ await_async () {
     _process_logs="${*}"
     _all="$(echo "${_process_logs}" | ${WC_BIN} -w 2>/dev/null | ${TR_BIN} -d ' ' 2>/dev/null)"
     debug "Awaiting background processes. Logs: $(distd "${_process_logs}")"
+    _time_elapsed="0"
+
+    note "…"; note; note
     while true; do
         _completed="0"
         _failed="0"
@@ -155,17 +158,19 @@ await_async () {
             fi
         done
 
-        note "Completed: $(distn "${_completed}" "${ColorGreen}"). Failed: $(distn "${_failed}" "${ColorRed}"). Total: $(distn "${_all}")"
         # If failed count >0 use red color:
         _fcolour="${ColorDistinct}"
         if [ "0" != "${_failed}" ]; then
             _fcolour="${ColorRed}"
         fi
+        progress_note "Completed: $(distn "${_completed}"). Failed: $(distn "${_failed}" "${_fcolour}"). Total: $(distn "${_all}")  [elapsed: $(distn "${_time_elapsed}")s]"
+        _time_elapsed="$(echo "${_time_elapsed}+1" | ${BC_BIN} 2>/dev/null)"
         _countall="$(echo "${_completed} + ${_failed}" | ${BC_BIN} 2>/dev/null)"
         debug "Done count: $(distd "${_countall}") of all: $(distd "${_all}")"
         if [ "${_countall}" = "${_all}" ]; then
             debug "Finished!"
             for _plog in ${_process_logs}; do
+                note
                 note "===>  Showing log: $(distn "${_plog}")"
                 note "==================================================================================="
                 ${CAT_BIN} "${_plog}"
@@ -175,6 +180,7 @@ await_async () {
                     ${PRINTF_BIN} "%b\n%s %s\n    %b %b\n\n" "${ColorRed}" "${NoteChar}" "StdERR:" "$(${CAT_BIN} "${_plog}.error")" "${ColorReset}"
                 fi
                 note "==================================================================================="
+                note
             done
             break
         fi
