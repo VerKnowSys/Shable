@@ -115,6 +115,14 @@ case "${SYSTEM_NAME}" in
 esac
 
 
+# FreeBSD specific:
+case "${SYSTEM_NAME}" in
+    FreeBSD)
+        SYSCTL_BIN="/sbin/sysctl"
+        ;;
+esac
+
+
 # Special chars:
 NoteChar="»"
 
