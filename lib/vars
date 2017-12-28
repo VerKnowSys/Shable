@@ -123,6 +123,7 @@ case "${SYSTEM_NAME}" in
         GIT_BIN="/Software/Git/exports/git"
         RSYNC_BIN="/Software/Rsync/exports/rsync"
         DRILL_BIN="/usr/bin/drill"
+        DOAS_BIN="/Software/Doas/exports/doas"
 
         unset MYSQL_BIN
         unset DIG_BIN
