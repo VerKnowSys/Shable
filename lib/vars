@@ -119,6 +119,7 @@ esac
 case "${SYSTEM_NAME}" in
     FreeBSD)
         SYSCTL_BIN="/sbin/sysctl"
+        UUIDGEN_BIN="/bin/uuidgen"
         ;;
 esac
 
