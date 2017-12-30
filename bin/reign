@@ -18,13 +18,6 @@ else
         if [ -z "${_remote}" ]; then
             error "Client name is required as 3rd param!"
         else
-            # NOTE:
-            # 1. build tarball from cwd
-            # 2. scp tarball to remote
-            # 3. unpack on remote
-            # 4. invoke Shable
-            #
-
             # Read base.facts - cause bin/reign can make use of base facts too
             if [ -f "facts/base.facts" ]; then
                 debug "+ base facts: $(distd "facts/base.facts")"
