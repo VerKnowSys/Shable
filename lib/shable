@@ -241,3 +241,36 @@ cronjob () {
     esac
     unset _args type _cron_job_file minute hour mday month wday user rootdir frequency
 }
+
+
+
+#
+# System constraint helper.
+#   Will iterate over given uname names and throw an error if reign task is invoked on unsupported platform(s).
+#
+# Args:
+#   Systemname Othersystemname …
+#
+# Example:
+#   Linux Darwin FreeBSD
+#
+only_for () {
+    if [ -n "${*}" ]; then
+        unset _found
+        for _os_name_element in ${*}; do
+            if [ "${SYSTEM_NAME}" = "${_os_name_element}" ]; then
+                _found="YES"
+                debug "Found system match: $(distd "${_os_name_element}")"
+                break
+            fi
+        done
+        if [ -z "${_found}" ]; then
+            error "Reign task: $(diste "${_reign}") has OS-requirements: $(diste "${*}")"
+        fi
+        unset _found
+        return 0
+    else
+        debug "No system names specified as params to: $(distd "only_for()")! -> Ignoring empty constraint!"
+        return 0
+    fi
+}
