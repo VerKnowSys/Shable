@@ -40,9 +40,21 @@ else
                 debug "Defined no $(distd "_inventory_values") for remote: $(distd "${_remote}")"
             fi
 
-            _base_name="/tmp/shable_current"
+            # use default value of remote user:
+            _remote_user="${default_remote_user}"
+
+            # default remote user can be overriden with RUN_AS value:
+            if [ -z "${RUN_AS}" ]; then
+                debug "Running as default user: $(distd "${_remote_user}")"
+            else
+                debug "Running as user: $(distd "${RUN_AS}")"
+                _remote_user="${RUN_AS}"
+            fi
+            _base_name="/tmp/shable_current_${_remote_user}"
 
             validate \
+                _remote_user="${_remote_user}" \
+                default_remote_user="${default_remote_user}" \
                 connection_timeout="${connection_timeout}" \
                 connection_attempts="${connection_attempts}"
 
@@ -61,7 +73,7 @@ else
                         --archive \
                         --delete \
                         "./" \
-                        "root@${_remote}:${_base_name}" 2>/dev/null
+                        "${_remote_user}@${_remote}:${_base_name}" 2>/dev/null
                     if [ "0" = "$?" ]; then
                         return 0
                     else
@@ -71,8 +83,8 @@ else
                 return 1
             }
 
-            debug "Rsyncing Shable to: $(distd "${_base_name}")"
-            sync_with_rsync || commit_failure "Failed to rsync to: $(distw "root@${_remote}:${_base_name}")"
+            debug "rSyncing Shable as: $(distd "${_remote_user}") to: $(distd "${_base_name}")"
+            sync_with_rsync || commit_failure "Failed to rsync to: $(distw "${_remote_user}@${_remote}:${_base_name}")"
 
             _job="cd ${_base_name}; /bin/sh -c '\
                 export ${_inventory_values} commands='${commands}' domain='${domain}' _remote='${_remote}' DEBUG=${DEBUG} SKIP_ENV_VALIDATION=${SKIP_ENV_VALIDATION} build_uuid='${build_uuid}' silk_branch='${silk_branch}' && \
