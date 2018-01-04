@@ -265,7 +265,7 @@ only_for () {
             fi
         done
         if [ -z "${_found}" ]; then
-            error "Reign can only be run for: system($(diste "${*}"))"
+            error "This reign task can only be invoked for: system($(diste "${*}"))"
         fi
         unset _found
         return 0
@@ -285,6 +285,6 @@ only_for () {
 #
 only_as () {
     if [ "${USER}" != "${1}" ]; then
-        error "Reign can only be run as: user($(diste "${1}"))!"
+        error "This reign task can only be invoked as: user($(diste "${1}"))!"
     fi
 }
