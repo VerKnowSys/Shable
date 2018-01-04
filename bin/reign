@@ -92,7 +92,7 @@ else
                         -o "ConnectTimeout=${connection_timeout}" \
                         -o "ConnectionAttempts=${connection_attempts}" \
                         -o "ServerAliveInterval=1" \
-                        "${_remote}" \
+                        "${_remote_user}@${_remote}" \
                         "${_job}"
 
                     if [ "0" = "$?" ]; then
