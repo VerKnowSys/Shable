@@ -265,7 +265,7 @@ only_for () {
             fi
         done
         if [ -z "${_found}" ]; then
-            error "Reign task: $(diste "${_reign}") has OS-requirements: $(diste "${*}")"
+            error "Reign can only be run for: system($(diste "${*}"))"
         fi
         unset _found
         return 0
