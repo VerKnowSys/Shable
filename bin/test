@@ -353,15 +353,27 @@ system_specific_test () {
             val_expect \
                 "${default_www_user}" \
                 "www-data"
+            only_for "Linux"
+            only_for "       Darwin              Linux           "
+            only_for "Darwin Linux Linux"
+            only_for "Minix FreeBSD Darwin NetBSD Linux FreeBSD"
             ;;
 
         FreeBSD)
             val_expect \
                 "${default_www_user}" \
                 "worker"
+            only_for "FreeBSD"
+            only_for "       Darwin              FreeBSD           "
+            only_for "Darwin FreeBSD Linux"
+            only_for "Minix FreeBSD Darwin NetBSD Linux FreeBSD"
             ;;
 
         Darwin)
+            only_for "Darwin"
+            only_for "       Darwin              Darwin           "
+            only_for "Darwin FreeBSD Linux"
+            only_for "Minix FreeBSD Linux NetBSD Darwin FreeBSD"
             ;;
 
     esac
