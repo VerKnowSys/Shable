@@ -1,6 +1,5 @@
 #!/bin/sh
 
-. lib/core
 . lib/shable
 
 _reign="${1}"
