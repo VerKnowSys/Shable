@@ -274,3 +274,17 @@ only_for () {
         return 0
     fi
 }
+
+
+#
+# User constraint helper.
+#   Will make sure that reign task is invoked as given POSIX username.
+#
+# Arg:
+#   username
+#
+only_as () {
+    if [ "${USER}" != "${1}" ]; then
+        error "Reign can only be run as: user($(diste "${1}"))!"
+    fi
+}
