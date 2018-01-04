@@ -17,7 +17,7 @@ for _host in ${_hosts}; do
     _process_logs="${_log} ${_process_logs}"
     echo > "${_log}" > "${_log}.error" # Clean previous log
 
-    note "Invoking reign: $(distn "${_reign}") for host: $(distn "${_host}")"
+    progress_note "Invoking reign: $(distn "${_reign}") for host: $(distn "${_host}")"
     bin/reign "${DEFAULT_INVENTORY}" "${_reign}" "${_host}" >> "${_log}" 2>> "${_log}.error" &
 done
 
