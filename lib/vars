@@ -3,7 +3,7 @@
 SHABLE_VERSION="0.6.8"
 
 # definitions
-DEFAULT_TIMEOUT_S="10" # interval between each failed reign to retry in seconds
+DEFAULT_TIMEOUT_S="5" # interval between each failed reign to retry in seconds
 PATH="/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
 DEFAULT_LANG="en_US.UTF-8"
 DEFAULT_SSH_PORT="60022"
