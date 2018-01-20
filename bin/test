@@ -203,7 +203,7 @@ self_test () {
 
     { echo "2593645942376593476592374653294765" ; echo "eriujtuitjiuerjtiuertiyjerotiuyjeruiyj"; echo "abc 123 666"; echo "flamenco classico"; } > "${_tmpfile}"
     expected_sha1="248bece1356b0881aaf845703a09ee3375c260ff"
-    expected2_sha1="92987ae71dc2408fb11899380d28e1404a874d28"
+    expected2_sha1="8b2b8cf901b974c412e7a4ea90bd40222388f5af"
     sha_expect \
         "${_tmpfile}" \
         "${expected_sha1}"

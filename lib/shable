@@ -148,7 +148,7 @@ lineinfile () {
     write_line_if_not_already_present () {
         debug "lineinfile: $(distd "${src}"): line: $(distd "${line}")"
         ${GREP_BIN} -F "${line}" "${src}" >/dev/null 2>&1 || \
-            ${PRINTF_BIN} "\n%s\n" "${line}" >> "${src}"
+            ${PRINTF_BIN} "%s\n" "${line}" >> "${src}"
     }
     if [ -n "${pattern}" ] && [ "${line}" != "${pattern}" ]; then
         debug "lineinfile-pattern: $(distd "${pattern}") => $(distd "${src}"): line: $(distd "${line}")"
