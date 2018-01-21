@@ -18,6 +18,10 @@ else
             error "Client name is required as 3rd param!"
         else
             # Read base.facts - cause bin/reign can make use of base facts too
+            if [ -f "${SHABLE_NAME}/facts/base.facts" ]; then
+                debug "+ common base facts: $(distd "${SHABLE_NAME}/facts/base.facts")"
+                . "${SHABLE_NAME}/facts/base.facts"
+            fi
             if [ -f "facts/base.facts" ]; then
                 debug "+ base facts: $(distd "facts/base.facts")"
                 . "facts/base.facts"
