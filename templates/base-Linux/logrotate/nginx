@@ -1,0 +1,13 @@
+/var/log/nginx/*.log {
+        daily
+        missingok
+        rotate 14
+        compress
+        delaycompress
+        notifempty
+        create 0640 {{ default_www_user }} adm
+        sharedscripts
+        postrotate
+                service nginx configtest && service nginx reload
+        endscript
+}

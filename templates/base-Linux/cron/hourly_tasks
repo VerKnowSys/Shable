@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo 'never' > /sys/kernel/mm/transparent_hugepage/enabled
+echo 0 > /proc/sys/kernel/perf_cpu_time_max_percent

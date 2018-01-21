@@ -1,0 +1,12 @@
+#!/bin/sh
+
+PATH="/bin/:/usr/bin:/usr/local/bin"
+
+curl -o "/usr/local/bin/acme_tiny.new" "{{ acme_source }}" 2>/dev/null
+if [ "0" = "${?}" ]; then
+    rm -f "/usr/local/bin/acme_tiny"
+    mv "/usr/local/bin/acme_tiny.new" "/usr/local/bin/acme_tiny"
+    chmod 750 "/usr/local/bin/acme_tiny"
+else
+    echo "ERROR: Refresh of ACME utility from: {{ acme_source }} failed!"
+fi

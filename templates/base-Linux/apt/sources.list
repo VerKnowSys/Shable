@@ -1,0 +1,8 @@
+###### Ubuntu Main Repos
+deb http://pl.archive.ubuntu.com/ubuntu/ {{ release }} main restricted universe multiverse
+
+###### Ubuntu Update Repos
+deb http://pl.archive.ubuntu.com/ubuntu/ {{ release }}-security main restricted universe multiverse
+deb http://pl.archive.ubuntu.com/ubuntu/ {{ release }}-updates main restricted universe multiverse
+deb http://pl.archive.ubuntu.com/ubuntu/ {{ release }}-proposed main restricted universe multiverse
+deb http://pl.archive.ubuntu.com/ubuntu/ {{ release }}-backports main restricted universe multiverse
