@@ -64,8 +64,12 @@ template () {
         error "Unspecified $(diste "dest") for $(diste "template()")!"
     fi
 
-    if [ ! -f "templates/${src}" ]; then
-        error "Source template $(diste "src=${src}") doesn't exist!"
+    _template_file="templates/${src}"
+    if [ ! -f "${_template_file}" ]; then
+        _template_file="${SHABLE_NAME}/${_template_file}"
+        if [ ! -f "${_template_file}" ]; then
+            error "Source template $(diste "src=${_template_file}") not found!"
+        fi
     fi
 
     validate "${_args}"
@@ -87,7 +91,7 @@ template () {
     ${INSTALL_BIN} -v \
         -m "${mode}" \
         -o "${owner}" \
-        "templates/${src}" \
+        "${_template_file}" \
         "${dest}"
 
     for _arg in ${_args}; do
@@ -103,7 +107,7 @@ template () {
                 ;;
         esac
     done
-    unset mode owner src dest _arg _args _key _val _base
+    unset mode owner src dest _arg _args _key _val _base _template_file
 }
 
 
