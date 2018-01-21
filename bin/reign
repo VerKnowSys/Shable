@@ -75,7 +75,7 @@ else
                 return 1
             }
 
-            debug "rSyncing Shable as: $(distd "${_remote_user}") to: $(distd "${_base_name}")"
+            debug "rSyncing ${SHABLE_NAME} as: $(distd "${_remote_user}") to: $(distd "${_base_name}")"
             sync_with_rsync || commit_failure "Failed to rsync to: $(distw "${_remote_user}@${_remote}:${_base_name}")"
 
             _job="cd ${_base_name}; /bin/sh -c '\
@@ -105,7 +105,7 @@ else
                 return 1
             }
 
-            debug "Invoking Shable on remote: $(distd "${_remote}")"
+            debug "Invoking ${SHABLE_NAME} on remote: $(distd "${_remote}")"
             invoke_ssh || commit_failure "Failed to invoke ssh connection to remote: $(diste "${_remote}")"
 
             note "Reign completed: $(distn "${_reign}")"

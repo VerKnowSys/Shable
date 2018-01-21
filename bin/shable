@@ -21,12 +21,12 @@ export LC_NUMERIC="${DEFAULT_LANG}"
 if [ -z "${_reign}" ]; then
     error "Reign task required as first param!"
 else
-    note "Calling Shable v${SHABLE_VERSION}, Reign: $(distn "${_reign}"), on Host: $(distn "$(${HOSTNAME_BIN})"), System: $(distn "${SYSTEM_NAME}")"
+    note "${SHABLE_NAME}: $(distn "v${SHABLE_VERSION}"), Reign: $(distn "${_reign}"), Host: $(distn "$(${HOSTNAME_BIN})"), OS: $(distn "${SYSTEM_NAME}")"
     if [ -f "reigns/${_reign}.task" ]; then
-        debug "+ task file: $(distd "reigns/${_reign}.task")"
+        debug "+ reign file: $(distd "reigns/${_reign}.task")"
         . "reigns/${_reign}.task"
     elif [ -f "reigns/${_reign}" ]; then
-        debug "+ task file: $(distd "reigns/${_reign}")"
+        debug "+ reign file: $(distd "reigns/${_reign}")"
         . "reigns/${_reign}"
     else
         error "No such reign task: '$(diste "${_reign}")'"
