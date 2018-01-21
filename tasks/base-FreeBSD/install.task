@@ -40,6 +40,10 @@ install_sofin_software () {
     ${default_shell} -c "${sofin_bin} up" 2>/dev/null
     ${default_shell} -c "${sofin_bin} i Nginx Php70 Redis Mc Vim Tmux Curl Libressl Atop Zip Geoipupdate Nano Rsync" 2>/dev/null
     # NOTE: disabled: Syslog-ng Doas Openvpn
+
+    debug "Copying current definitions state for www user"
+    ${CP_BIN} -r "${HOME}/.sofin" /var/www/
+    ${CHOWN_BIN} -R "${default_www_user}" "/var/www/.sofin"
 }
 
 
