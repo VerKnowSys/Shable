@@ -2,7 +2,7 @@ install_security_limits_configuration () {
     note "Ensure PAM limits are enabled"
     for _file in common-session common-session-noninteractive; do
         lineinfile \
-            src="${_file}" \
+            src="/etc/pam.d/${_file}" \
             line="'session required pam_limits.so'"
     done
 
