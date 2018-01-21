@@ -1,3 +1,6 @@
+# Default "Linux" => Ubuntu/Debian
+release="trusty"
+
 default_shell="/bin/bash"
 default_www_user="www-data"
 homedir="/var/www"

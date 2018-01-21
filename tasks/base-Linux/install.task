@@ -1,0 +1,126 @@
+install_security_limits_configuration () {
+    note "Ensure PAM limits are enabled"
+    for _file in common-session common-session-noninteractive; do
+        lineinfile \
+            src="${_file}" \
+            line="'session required pam_limits.so'"
+    done
+
+    note "Install security limits.conf"
+    _srcf="base/security/limits.conf"
+    if [ ! -f "${_srcf}" ]; then
+        _srcf="base-${SYSTEM_NAME}/security/limits.conf"
+        if [ -f "${_srcf}" ]; then
+            template \
+                src="${_srcf}" \
+                dest="/etc/security/limits.conf" \
+                default_www_user="${default_www_user}"
+        else
+            note "Fallback to default OS security limits since no $(distn "limits.conf") provided."
+        fi
+    fi
+
+    note "Install specific limits.d/*.conf"
+    for _cnf in templates/base-${SYSTEM_NAME}/security/limits.d/*.conf templates/base/security/limits.d/*.conf; do
+        _base="${_cnf##*/}" # basename
+        _username="${_base%.conf}"
+        ${ID_BIN} -u "${_username}" >/dev/null 2>&1
+        if [ "0" = "${?}" ]; then
+            note "Installing custom limits for custom user: $(distn "${_username}") found on host: $(distn "${_remote}")"
+            template \
+                src="${_cnf}" \
+                dest="/etc/security/limits.d/${_username}.conf"
+        fi
+    done
+}
+
+
+install_cron_hourly_tasks () {
+    note "Install periodic cron hourly tasks"
+    for _file in maintain_ooms hourly_tasks; do
+        template \
+            src="base-${SYSTEM_NAME}/cron/${_file}" \
+            dest="/etc/cron.hourly/${_file}" \
+            mode="0755"
+    done
+
+}
+
+
+install_cron_daily_tasks () {
+    note "Install periodic cron daily tasks"
+    for _file in acme_tiny_download; do
+        template \
+            src="base-${SYSTEM_NAME}/cron/${_file}" \
+            dest="/etc/cron.daily/${_file}" \
+            mode="0755" \
+            acme_source="${acme_remote_http_source}"
+    done
+}
+
+
+install_software () {
+    note "Install apt sources files"
+    template \
+        src="base-${SYSTEM_NAME}/apt/sources.list" \
+        dest="/etc/apt/sources.list" \
+        release="${release}"
+
+    note "Install apt mariadb list."
+    template \
+        src="base-${SYSTEM_NAME}/apt/mariadb.list" \
+        dest="/etc/apt/sources.list.d/mariadb.list" \
+        release="${release}"
+
+    note "Install apt nginx list."
+    template \
+        src="base-${SYSTEM_NAME}/apt/nginx.list" \
+        dest="/etc/apt/sources.list.d/nginx.list" \
+        release="${release}"
+
+    note "Install 3rd party repository keys"
+    add-apt-repository --yes ppa:ondrej/php
+    apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
+    # add-apt-repository --yes ppa:nginx/stable
+    wget -q -O- http://nginx.org/keys/nginx_signing.key | apt-key add -
+
+    note "Updating apt cache"
+    aptitude update
+
+    note "Remove unwanted software"
+    DEBIAN_FRONTEND=noninteractive aptitude remove -y \
+        nginx-core nginx-common php5 php5-cli php5-readline php5-common php5-json php5-mysql php5-curl php5-gd php5-mcrypt php5-memcache php5-memcached php5-xcache php5-sqlite php-gettext phpmyadmin libjs-codemirror libjs-jquery-cookie libjs-jquery-event-drag libjs-jquery-mousewheel libjs-jquery-tablesorter libjs-underscore libjs-jquery-ui dbconfig-common javascript-common libmemcached10 php-sqlite3 apache2 apache2-bin apache2-data dh-php libaprutil1-dbd-sqlite3 libaprutil1-ldap libapache2-mod-php5.6 php-apcu ubuntu-minimal rsyslog ntp libapr1 libaprutil1 liblist-moreutils-perl
+    DEBIAN_FRONTEND=noninteractive aptitude purge -y \
+        nginx-core nginx-common php5 php5-cli php5-readline php5-common php5-json php5-mysql php5-curl php5-gd php5-mcrypt php5-memcache php5-memcached php5-xcache php5-sqlite php-gettext phpmyadmin libjs-codemirror libjs-jquery-cookie libjs-jquery-event-drag libjs-jquery-mousewheel libjs-jquery-tablesorter libjs-underscore libjs-jquery-ui dbconfig-common javascript-common libmemcached10 php-sqlite3 apache2 apache2-bin apache2-data dh-php libaprutil1-dbd-sqlite3 libaprutil1-ldap libapache2-mod-php5.6 php-apcu ubuntu-minimal rsyslog ntp libapr1 libaprutil1 liblist-moreutils-perl
+
+    note "Install base software"
+    DEBIAN_FRONTEND=noninteractive aptitude install -y \
+        -o Dpkg::Options::="--force-confdef" \
+        -o Dpkg::Options::="--force-confold" \
+        syslog-ng \
+        syslog-ng-core \
+        uuid-runtime \
+        curl \
+        unzip \
+        vim \
+        nano \
+        diffutils \
+        irqbalance \
+        git \
+        iotop \
+        htop \
+        mc \
+        openntpd \
+        openssl \
+        openvpn \
+        zip \
+        dnsutils \
+        nginx \
+        nginx-module-geoip
+
+    note "Cancel possible pending actions"
+    aptitude keep-all
+
+    note "Get rid of critical errors thrown by syslog-ng to stdio"
+    ${SED_BIN} -i '/log { source(s_src); filter(f_crit); destination(d_console); };/ d' /etc/syslog-ng/syslog-ng.conf
+}
