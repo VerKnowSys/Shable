@@ -1,60 +1,9 @@
 setup_base_system () {
-    note "Generate default locales"
-    locale-gen \
-        "en_US.UTF-8" \
-        "en_GB.UTF-8" \
-        "sv_SE.UTF-8"
-
-    note "Installing .htoprc"
-    mkdir -p "${HOME}/.config/htop"
-    template \
-        src="base/htoprc" \
-        dest="${HOME}/.config/htop/htoprc"
-
-    note "Disabling apparmor from system start"
-    update-rc.d -f apparmor remove
-
-    note "Stop apparmor"
-    service apparmor teardown
-    service apparmor stop
-
+    configure_system
     install_security_limits_configuration
 
-    note "Install sysctl.conf"
-    template \
-        src="base/sysctl.conf" \
-        dest="/etc/sysctl.conf"
-
-    note "Reloading sysctl.conf"
-    ${SYSCTL_BIN} -p 2>> /var/log/sysctl.error.log
-
-    note "Install logrotate files"
-    for _file in nginx silk-logs; do
-        template \
-            src="base/logrotate/${_file}" \
-            dest="/etc/logrotate.d/${_file}"
-    done
+    configure_logrotate
 
     install_cron_hourly_tasks
     install_cron_daily_tasks
-
-    note "Install sshd configuration"
-    template \
-        src="base/sshd_config" \
-        dest="/etc/ssh/sshd_config" \
-        sshd_port="${sshd_port}"
-
-    note "Allow sshd port: $(distn "${sshd_port}") for ufw"
-    ufw allow "${sshd_port}"
-
-    note "Install /etc/timezone"
-    template \
-        src="base/timezone" \
-        dest="/etc/timezone"
-
-    note "Apply timezone change"
-    dpkg-reconfigure -f noninteractive tzdata
-
-    note "Allowing login as ${default_www_user}"
-    ${SED_BIN} -i 's|/var/www:/usr/sbin/nologin|/var/www:/bin/bash|' /etc/passwd
 }

@@ -1,0 +1,52 @@
+configure_logrotate () {
+    note "Install logrotate files"
+    for _file in nginx silk-logs; do
+        template \
+            src="base-${SYSTEM_NAME}/logrotate/${_file}" \
+            dest="/etc/logrotate.d/${_file}"
+    done
+}
+
+
+configure_system () {
+    note "Generate locales"
+    locale-gen \
+        "en_US.UTF-8" \
+        "en_GB.UTF-8" \
+        "sv_SE.UTF-8"
+
+    note "Disable apparmor"
+    update-rc.d -f apparmor remove
+    service apparmor teardown
+    service apparmor stop
+
+    note "Install configuration"
+    mkdir -p "${HOME}/.config/htop"
+    template \
+        src="base-${SYSTEM_NAME}/htoprc" \
+        dest="${HOME}/.config/htop/htoprc"
+
+    template \
+        src="base-${SYSTEM_NAME}/sysctl.conf" \
+        dest="/etc/sysctl.conf"
+    ${SYSCTL_BIN} -p >/dev/null 2>> /var/log/sysctl.error.log
+
+    template \
+        src="base-${SYSTEM_NAME}/sshd_config" \
+        dest="/etc/ssh/sshd_config" \
+        sshd_port="${sshd_port}"
+
+    note "Install /etc/timezone"
+    template \
+        src="base-${SYSTEM_NAME}/timezone" \
+        dest="/etc/timezone"
+
+    note "Apply timezone change"
+    dpkg-reconfigure -f noninteractive tzdata
+
+    note "Allowing login as ${default_www_user}"
+    ${SED_BIN} -i 's|/var/www:/usr/sbin/nologin|/var/www:/bin/bash|' /etc/passwd
+
+    note "Allow sshd port: $(distn "${sshd_port}") for ufw"
+    ufw allow "${sshd_port}"
+}
