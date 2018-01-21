@@ -1,10 +1,23 @@
 configure_logrotate () {
-    note "Install logrotate files"
-    for _file in nginx silk-logs; do
-        template \
-            src="base-${SYSTEM_NAME}/logrotate/${_file}" \
-            dest="/etc/logrotate.d/${_file}"
-    done
+    note "Install default system logrotate files"
+    if [ -d "templates/base-${SYSTEM_NAME}/logrotate" ]; then
+        for _file in templates/base-${SYSTEM_NAME}/logrotate/*; do
+            _name="${_file##*/}"
+            template \
+                src="base-${SYSTEM_NAME}/logrotate/${_name}" \
+                dest="/etc/logrotate.d/${_name}"
+        done
+    fi
+
+    note "Install user logrotate files"
+    if [ -d "templates/base/logrotate" ]; then
+        for _file in templates/base/logrotate/*; do
+            _name="${_file##*/}"
+            template \
+                src="base/logrotate/${_name}" \
+                dest="/etc/logrotate.d/${_name}"
+        done
+    fi
 }
 
 
