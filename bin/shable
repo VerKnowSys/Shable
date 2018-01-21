@@ -28,6 +28,9 @@ else
     elif [ -f "reigns/${_reign}" ]; then
         debug "+ reign file: $(distd "reigns/${_reign}")"
         . "reigns/${_reign}"
+    elif [ -f "${SHABLE_NAME}/reigns/${_reign}" ]; then
+        debug "+ common reign file: $(distd "${SHABLE_NAME}/reigns/${_reign}")"
+        . "${SHABLE_NAME}/reigns/${_reign}"
     else
         error "No such reign task: '$(diste "${_reign}")'"
     fi
