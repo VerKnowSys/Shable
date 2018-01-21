@@ -1,0 +1,10 @@
+default_shell="/Software/Zsh/exports/zsh"
+default_www_user="www"
+homedir="/var/${default_www_user}"
+homedir_root="/User"
+
+ZFS_BIN="/sbin/zfs"
+FETCH_BIN="/usr/bin/fetch"
+CHSH_BIN="/usr/bin/chsh"
+PW_BIN="/usr/sbin/pw"
+DAEMON_BIN="/usr/sbin/daemon"

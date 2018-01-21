@@ -1,0 +1,50 @@
+install_default_cacert () {
+    # NOTE: this hack is caused by DigitalOcean FreeBSD hacks:
+    if [ -L "/etc/ssl/cert.pem" ] || [ ! -f "/etc/ssl/cert.pem" ]; then
+        ${RM_BIN} -f "/etc/ssl/cert.pem"
+        template \
+            src="base-${SYSTEM_NAME}/ca/cacert.pem" \
+            dest="/etc/ssl/cert.pem"
+    fi
+}
+
+
+install_default_profile () {
+    note "Installing default profile and setting up environment for user: $(distn "${default_www_user}")"
+    template \
+        src="base-${SYSTEM_NAME}/sofin-enabled" \
+        dest="${homedir}/.sofin-enabled" \
+        owner="${default_www_user}"
+
+    template \
+        src="base-${SYSTEM_NAME}/profile" \
+        dest="${homedir}/.profile" \
+        owner="${default_www_user}"
+}
+
+
+install_system_image () {
+    note "Upgrading FreeBSD to svdOS!"
+    ${FETCH_BIN} "${svdup_https_source}" || \
+        error "Couldn't download svdup!"
+
+    #
+    # NOTE: All changes made to /etc will be lost after invocation of this mechanism after first reboot:
+    note "Downloading and installing new system snapshot…"
+    sh ./svdup >> "/var/log/svdup.log" 2>> "/var/log/svdup.log"
+}
+
+
+install_sofin_software () {
+    note "Installing base software…"
+    ${default_shell} -c "${sofin_bin} up" 2>/dev/null
+    ${default_shell} -c "${sofin_bin} i Nginx Php70 Redis Mc Vim Tmux Curl Libressl Atop Zip Geoipupdate Nano Rsync" 2>/dev/null
+    # NOTE: disabled: Syslog-ng Doas Openvpn
+}
+
+
+install_software () {
+    install_sofin_software
+    generate_audit_utils
+    configure_root_user
+}

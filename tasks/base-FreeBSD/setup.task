@@ -1,0 +1,16 @@
+setup_base_system () {
+    setup_loader_conf
+    setup_ttys_and_motd
+
+    configure_www_user
+    install_default_profile
+    install_default_cacert
+
+    create_local_dataset
+    create_var_datasets
+    switch_sshd_port
+
+    generate_audit_conf
+    generate_default_environment
+    generate_default_rc
+}

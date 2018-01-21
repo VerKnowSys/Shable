@@ -1,0 +1,9 @@
+host:localhost
+dir:/var/audit
+dist:off
+flags:lo,aa
+minfree:10
+naflags:lo,aa
+policy:cnt,argv
+filesz:10M
+expire-after:100M

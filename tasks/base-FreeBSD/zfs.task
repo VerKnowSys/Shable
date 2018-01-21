@@ -1,0 +1,57 @@
+make_root_dataset_readonly () {
+    # get active root dataset name:
+    _os_root="$(beadm list -H 2>/dev/null| ${GREP_BIN} -IF "NR" 2>/dev/null | ${CUT_BIN} -f1 2>/dev/null)"
+    if [ -n "${_os_root}" ]; then
+        note "Setting active ROOT: $(distn "zroot/ROOT/${_os_root}") dataset in $(distn "+R-W") mode"
+        ${ZFS_BIN} set readonly=on "zroot/ROOT/${_os_root}"
+    fi
+    unset _os_root
+}
+
+
+make_root_dataset_writable () {
+    # get active root dataset name:
+    _os_root="$(beadm list -H 2>/dev/null| ${GREP_BIN} -IF "NR" 2>/dev/null | ${CUT_BIN} -f1 2>/dev/null)"
+    if [ -n "${_os_root}" ]; then
+        note "Setting active ROOT: $(distn "zroot/ROOT/${_os_root}") dataset in $(distn "+R+W") mode"
+        ${ZFS_BIN} set readonly=off "zroot/ROOT/${_os_root}"
+    fi
+    unset _os_root
+}
+
+
+create_homedir_dataset () {
+    ${ZFS_BIN} create \
+        -o devices="off" \
+        -o utf8only="on" \
+        -o mountpoint="${homedir}" \
+        "zroot${homedir}"
+
+    ${ZFS_BIN} set dedup="on" "zroot${homedir}"
+    ${ZFS_BIN} set setuid="off" "zroot${homedir}"
+    ${ZFS_BIN} set compression="lz4" "zroot${homedir}"
+    ${ZFS_BIN} set atime="off" "zroot${homedir}"
+}
+
+
+create_local_dataset () {
+    note "Preparing $(distn "zroot/usr/local") dataset."
+    ${ZFS_BIN} create -o mountpoint=/usr/local zroot/usr/local
+    mkdir -p /usr/local/bin /usr/local/etc/rc.d
+    ${CHOWN_BIN} -R "${default_www_user}:${default_www_user}" /usr/local
+}
+
+
+create_var_datasets () {
+    note "Setting up additional ZFS datasets"
+    ${ZFS_BIN} create -o mountpoint="/var/run" "zroot/var/run"
+    ${ZFS_BIN} set readonly="off" "zroot/var/run"
+    ${ZFS_BIN} create -o mountpoint="/var/db" "zroot/var/db"
+    ${ZFS_BIN} set readonly="off" "zroot/var/db"
+    ${ZFS_BIN} create -o mountpoint="/var/backups" "zroot/var/backups"
+    ${ZFS_BIN} set readonly="off" "zroot/var/backups"
+    ${ZFS_BIN} set readonly="off" "zroot/var/audit"
+    ${ZFS_BIN} set dedup="on" "zroot/var/audit"
+    ${ZFS_BIN} set compression="lz4" "zroot/var/audit"
+    mkdir -p "/var/db/zfsd/cases" "/var/db/entropy"
+}

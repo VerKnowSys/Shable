@@ -1,0 +1,28 @@
+generate_audit_utils () {
+    note "Setting up hourly audit new log"
+    template \
+        src="base-${SYSTEM_NAME}/audit/start_new_log_hourly" \
+        dest="/usr/local/bin/start_new_log_hourly" \
+        mode="755"
+
+    cronjob \
+        name="audit_start_new_log_hourly" \
+        type="cron" \
+        job="/usr/local/bin/start_new_log_hourly" \
+        user="root" \
+        minute="*/10"
+}
+
+
+generate_audit_conf () {
+    note "Setting up auditd"
+    ${PW_BIN} usermod "${default_www_user}" -G audit
+    template \
+        src="base-${SYSTEM_NAME}/audit/audit_user" \
+        dest="/etc/security/audit_user" \
+        www_user="${default_www_user}"
+    note "Installing security file: $(distn audit_control)"
+    template \
+        src="base-${SYSTEM_NAME}/audit/audit_control" \
+        dest="/etc/security/audit_control"
+}

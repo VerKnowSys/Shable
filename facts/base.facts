@@ -2,4 +2,14 @@
 connection_timeout=5
 connection_attempts=1
 
+# base values
+worker_connections=1024
 default_remote_user="www"
+
+# svdup default source
+sofin_bin="/Software/Sofin/bin/s"
+svdup_https_source="https://raw.githubusercontent.com/VerKnowSys/svdOS/master/svdup"
+
+# External resources:
+default_binary_resource="http://software.verknowsys.com/binary"
+acme_remote_http_source="https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py"

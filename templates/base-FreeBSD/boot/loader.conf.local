@@ -1,0 +1,83 @@
+loader_logo="beastie"
+autoboot_delay="2"
+
+cc_htcp_load="YES"
+# accf_http_load="YES"
+dtrace_load="YES"
+vmm_load="YES"
+nullfs_load="YES"
+
+net.link.ifqmaxlen="2048"
+net.inet.tcp.syncache.hashsize=32768
+net.inet.tcp.syncache.bucketlimit=32
+net.inet.tcp.syncache.cachelimit=1048576
+kern.ipc.maxsockets=204800
+kern.ipc.nmbclusters=262144
+hw.em.rxd=4096
+hw.em.txd=4096
+hw.em.rx_process_limit="-1"
+hw.igb.rxd=4096
+hw.igb.txd=4096
+hw.igb.rx_process_limit=100
+kern.maxusers=2048
+net.fibs=16
+
+kern.ipc.semmap=512
+kern.ipc.shmseg=64
+kern.ipc.shmmni=16384
+kern.ipc.shmall=33554432
+kern.ipc.shmmax=68719476736
+kern.ipc.semmni=4096
+kern.ipc.semmns=8194
+kern.ipc.semmnu=4096
+
+
+
+# hostcache cachelimit is the number of ip addresses in the hostcache list.
+# Setting the value to zero(0) stops any ip address connection information from
+# being cached and negates the need for "net.inet.tcp.hostcache.expire". We
+# find disabling the hostcache increases burst data rates by 2x if a subnet was
+# incorrectly graded as slow on a previous connection. A host cache entry is
+# the client's cached tcp connection details and metrics (TTL, SSTRESH and
+# VARTTL) the server can use to improve future performance of connections
+# between the same two hosts. When a tcp connection is completed, our server
+# will cache information about the connection until an expire timeout. If a new
+# connection between the same client is initiated before the cache has expired,
+# the connection will use the cached connection details to setup the
+# connection's internal variables. This pre-cached setup allows the client and
+# server to reach optimal performance significantly faster because the server
+# will not need to go through the usual steps of re-learning the optimal
+# parameters for the connection. To view the current host cache stats use
+# "sysctl net.inet.tcp.hostcache.list"
+net.inet.tcp.hostcache.cachelimit="0"
+
+
+# Nginx: Enable the optimized version of soreceive() for stream (TCP) sockets.
+# soreceive_stream() only does one sockbuf unlock/lock per receive independent
+# of the length of data to be moved into the uio compared to soreceive() which
+# unlocks/locks per *mbuf*. soreceive_stream() can significantly reduced CPU
+# usage and lock contention when receiving fast TCP streams. Additional gains
+# are obtained when the receiving application is using SO_RCVLOWAT to batch up
+# some data before a read (and wakeup) is done.
+net.inet.tcp.soreceive_stream=1
+
+
+# Nginx: A FreeBSD accept_data filter can be used to protect https HTTP/2 (TLS)
+# web servers, proxies, and accelerators. When a remote client connects to an
+# Nginx https (TCP port 443) service the FreeBSD network stack negotiates the
+# TCP connection. Without an accept_filter, the Nginx daemon immediately
+# accept()'s the connection and will process the client data stream no matter
+# how small or slow the transfer is. This means Nginx will waste resources on
+# clients who never send any requests, send partial requests, immediately
+# disconnect or time out. With an accept_filter, the FreeBSD kernel still does
+# the TCP handshake but now the accept_filter will wait for the remote client
+# to send a full request before ever notifying the nginx deamon of the new
+# connection. The result is the Nginx deamon can focus on serving active client
+# connections using its resources more efficiently. The accept_filter does not
+# affect the latency or speed of client requests to Nginx because the Nginx
+# daemon is notified of a complete client request at the same time as not using
+# a filter. For nginx https servers add "listen 127.0.0.1:443 ssl http2
+# accept_filter=dataready;" to the nginx.conf .
+# https://savagedlight.me/2015/08/23/eli5-freebsd-accept-filters/
+accf_data_load="YES"
+

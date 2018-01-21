@@ -1,0 +1,96 @@
+configure_root_user () {
+    note "Installing default profile and setting up environment for root"
+    template \
+        src="base-${SYSTEM_NAME}/profile" \
+        dest="${homedir_root}/.profile"
+
+    if [ ! -f "${homedir_root}/.zshrc" ]; then
+        ${PRINTF_BIN} "%s\n%s\n" \
+            "test -f ${homedir_root}/.profile || ${sofin_bin} reload" \
+            "alias htop=atop" \
+            > ${homedir_root}/.zshrc
+    fi
+}
+
+
+setup_ttys_and_motd () {
+    note "Wiping out motd"
+    echo > /etc/motd
+
+    note "Setting up: $(distn "/etc/ttys")"
+    ${SED_BIN} -i '' -e "s|ttyv2|#ttyv2|; s|ttyv3|#ttyv3|; s|ttyv4|#ttyv4|; s|ttyv5|#ttyv5|; s|ttyv6|#ttyv6|; s|ttyv7|#ttyv7|; s|ttyv8|#ttyv8|; s|ttyu0|#ttyu0|; s|ttyu1|#ttyu1|; s|ttyu2|#ttyu2|; s|ttyu3|#ttyu3|; s|dcons|#dcons|" /etc/ttys
+    kill -HUP 1
+}
+
+
+configure_www_user () {
+    note "Configuring user: $(distn "${default_www_user}") under homedir: $(distn "${homedir}")"
+    mkdir -p "${homedir}"
+    ${CHSH_BIN} -s "${default_shell}" "${default_www_user}" 2>/dev/null
+    create_homedir_dataset
+
+    ${PW_BIN} user mod "${default_www_user}" -d "${homedir}"
+    if [ ! -f "${homedir}/.zshrc" ]; then
+        ${PRINTF_BIN} "%s\n%s\n%s\n" \
+            "#!/bin/sh" \
+            "alias htop=atop" \
+            "test -f ${homedir}/.profile || ${sofin_bin} reload" \
+            > "${homedir}/.zshrc"
+    fi
+    ${CHOWN_BIN} -R "${default_www_user}" "${homedir}"
+}
+
+
+switch_sshd_port () {
+    note "Switching default SSH port to $(distn "${DEFAULT_SSH_PORT}")"
+    ${SED_BIN} -i '' -e "s|#Port 22|Port ${DEFAULT_SSH_PORT}|" /etc/ssh/sshd_config
+}
+
+
+setup_loader_conf () {
+    note "Setting up default modules enabled on OS start: $(distn "cc_htcp, vmm, dtrace…")"
+    template \
+        src="base-${SYSTEM_NAME}/boot/loader.conf.local" \
+        dest="/boot/loader.conf.local"
+}
+
+
+generate_default_environment () {
+    note "Allow read access for user level audit through pipe: $(distn "/dev/auditpipe")"
+    lineinfile \
+        src="/etc/devfs.conf" \
+        line="'own auditpipe root:audit'"
+    lineinfile \
+        src="/etc/devfs.conf" \
+        line="'perm auditpipe 0440'"
+}
+
+
+generate_default_rc () {
+    #
+    # NOTE: rc.conf services setup, before invoking svdup:
+    note "Setting up auditd service autostart"
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'auditd_enable=YES'"
+
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'cron_enable=YES'"
+
+    note "Installing system control configuration: $(distn "/etc/sysctl.conf")"
+    template \
+        src="base-${SYSTEM_NAME}/sysctl.conf" \
+        dest="/etc/sysctl.conf"
+
+    note "Setting up: $(distn "NTPd")"
+    lineinfile \
+        src="/etc/ntp.conf" \
+        line="'rlimit memlock 0'"
+    lineinfile \
+        src="/etc/ntp.conf" \
+        line="'tinker panic 0'"
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'ntpd_enable=YES'"
+}
