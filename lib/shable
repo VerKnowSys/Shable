@@ -336,6 +336,12 @@ only_as () {
 #
 inventory_read () {
     _inventory="${1}"
+    if [ ! -f "${_inventory}" ]; then
+        _inventory="${SHABLE_NAME}/${_inventory}"
+        if [ ! -f "${_inventory}" ]; then
+            error "No inventory found: $(diste "${_inventory}")"
+        fi
+    fi
     _group="${2}"
     _host="${3}"
 
