@@ -384,6 +384,7 @@ system_specific_test () {
 validate_env && \
 self_test && \
 system_specific_test && \
+test_inventory_reader && \
 note "Everything as expected!"
 
 if [ -d "templates/test" ]; then

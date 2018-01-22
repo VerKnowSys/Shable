@@ -1,15 +1,18 @@
 include "base"
 include "test"
 
+SKIP_ENV_VALIDATION=1
+
 
 main () {
+    inventory_read "inventory-test" "anything" "demo2"
     validate \
-        some_remote="${_remote}" \
-        some_test_value="${test2value}" \
-        some_inventory_value="${test3value}"
+        a_remote="${_remote}" \
+        atest2value="${test2value}" \
+        atest3value="${test3value}"
 
-    only="${test3value}"
-
+    test_inventory_reader
     only_test
     my_own_test_function_love
+    note "Reign test done!"
 }
