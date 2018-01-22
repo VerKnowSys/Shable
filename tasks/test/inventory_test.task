@@ -13,10 +13,16 @@ test_inventory_reader () {
     if [ "thing" != "${a}" ]; then
         error "Loading value from inventory failure. Wrong value: $(diste "${a}")! Expected: $(diste "thing")"
     fi
+    if [ "${global_value}" != "456" ]; then
+        error "Loading value from inventory failure. Wrong value: $(diste "${global_value}")! Expected: $(diste "456")"
+    fi
 
     inventory_read "inventory-test" "other-thing" "peter"
     if [ "otherthing" != "${other}" ]; then
         error "Loading value from inventory failure. Wrong value: $(diste "${other}")! Expected: $(diste "otherthing")"
+    fi
+    if [ "${global_val1}" != "123" ]; then
+        error "Loading value from inventory failure. Wrong value: $(diste "${global_value}")! Expected: $(diste "123")"
     fi
 
     inventory_read "inventory-test" "other-thing" "demo2"
@@ -28,6 +34,9 @@ test_inventory_reader () {
     inventory_read "inventory-test2" "-" "all"
     if [ "6" != "${test3value}" ]; then
         error "Loading value from inventory failure. Wrong value: $(diste "${test3value}")! Expected: $(diste "6")"
+    fi
+    if [ "${global_value}" != "456" ]; then
+        error "Loading value from inventory failure. Wrong value: $(diste "${global_value}")! Expected: $(diste "456")"
     fi
 
     inventory_read "inventory-test" "emptything" "all"

@@ -1,5 +1,5 @@
-
-
+_ global_val1=123
+any global_value=456
 
 
 [anything]
