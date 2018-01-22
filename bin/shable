@@ -25,12 +25,9 @@ else
     if [ -f "reigns/${_reign}.task" ]; then
         debug "+ reign file: $(distd "reigns/${_reign}.task")"
         . "reigns/${_reign}.task"
-    elif [ -f "reigns/${_reign}" ]; then
-        debug "+ reign file: $(distd "reigns/${_reign}")"
-        . "reigns/${_reign}"
-    elif [ -f "${SHABLE_NAME}/reigns/${_reign}" ]; then
-        debug "+ common reign file: $(distd "${SHABLE_NAME}/reigns/${_reign}")"
-        . "${SHABLE_NAME}/reigns/${_reign}"
+    elif [ -f "${SHABLE_NAME}/reigns/${_reign}.task" ]; then
+        debug "+ common reign file: $(distd "${SHABLE_NAME}/reigns/${_reign}.task")"
+        . "${SHABLE_NAME}/reigns/${_reign}.task"
     else
         error "No such reign task: '$(diste "${_reign}")'"
     fi
