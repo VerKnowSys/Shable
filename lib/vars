@@ -19,6 +19,7 @@ HOST_NAME="$(hostname -s)"
 SYSTEM_NAME="$(uname)"
 
 # binaries
+SEQ_BIN="/usr/bin/seq"
 ENV_BIN="/usr/bin/env"
 OPENSSL_BIN="/usr/bin/openssl"
 BASENAME_BIN="/usr/bin/basename"

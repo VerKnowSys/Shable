@@ -317,3 +317,89 @@ only_as () {
         error "This reign task can only be invoked as: user($(diste "${1}"))!"
     fi
 }
+
+
+#
+# Inventory helper, with groups support
+#   Will read given inventory file and find values per given group and user
+#
+# Args:
+#   1. inventory file
+#   2. group name
+#   3. host name
+#
+# Example, when inventory file has no groups:
+#   inventory_read inventory - host18
+#
+# Example, when inventory file has defined groups:
+#   inventory_read inventory third-party host18
+#
+inventory_read () {
+    _inventory="${1}"
+    _group="${2}"
+    _host="${3}"
+
+    # all lines of inventory file
+    _inventory_all_lines="$(${CAT_BIN} "${_inventory}" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')"
+
+    # read groups
+    __gcount=0
+    for _dynval in $(${GREP_BIN} -nE "\[.*\]" "${_inventory}" 2>/dev/null | ${SED_BIN} "s/^/__ln=/; s#:\[#;__grp=#; s#]##" 2>/dev/null); do # read groups
+        eval "${_dynval}"
+        __gcount=$(( ${__gcount} + 1 ))
+        debug "inventory grp: $(distd "${__grp}"), start line: $(distd "${__ln}")"
+        eval "__grp${__gcount}=${__grp}; __ln${__gcount}=${__ln}" # store values in dynamic variables
+    done
+
+    process_inventory () {
+        for _lnum in $(${SEQ_BIN} "${_line_to_read_start}" "${_line_to_read_end}" 2>/dev/null); do
+            debug "Inventory lines to read: $(distd "${_line_to_read_start}") => $(distd "${_line_to_read_end}")"
+            _line="$(${SED_BIN} "${_lnum}q;d" "${_inventory}")" # print N-th line of file
+            if [ -n "${_line}" ]; then
+                echo "${_line}" | ${GREP_BIN} -E "^${_host}\ " >/dev/null 2>&1
+                if [ "0" = "${?}" ]; then
+                    debug "Found wanted host in inventory file: $(distd "${_host}"). Line: $(distd "${_line}")"
+                    eval "$(echo "${_line}" | ${CUT_BIN} -d' ' -f2-)" && \
+                        return 0
+                fi
+            else
+                continue
+            fi
+        done
+    }
+
+    case ${__gcount} in
+        0)
+            debug "No groups. Reading whole inventory"
+            _line_to_read_start=1
+            _line_to_read_end="${_inventory_all_lines}"
+
+            process_inventory
+            ;;
+
+        *)
+            # read first part of inventory file.
+            for _gnum in $(${SEQ_BIN} 1 ${__gcount}); do
+                _gr="$(eval "echo \$$(eval "echo __grp${_gnum}")")" # read group name
+                _ln="$(eval "echo \$$(eval "echo __ln${_gnum}")")"  # read line value
+                debug "Processing line: $(distd "${_ln}") of group: $(distd "${_gr}")"
+                if [ "${_gr}" = "${_group}" ]; then
+                    debug "Found wanted group: $(distd "${_gr}") on line: $(distd "${_ln}")"
+                    _line_to_read_start=$(( ${_ln} + 1 ))
+                    _next_num=$(( ${_gnum} + 1 ))
+                    _next_group_ln="$(eval "echo \$$(eval "echo __ln${_next_num}")")"
+                    if [ -z "${_next_group_ln}" ]; then
+                        _line_to_read_end="${_inventory_all_lines}"
+                        debug "No next group. Setting end of file: $(distd "${_line_to_read_end}")"
+                    else
+                        _line_to_read_end=$(( ${_next_group_ln} - 1 ))
+                    fi
+                    # debug "_next_num: ${_next_num}, _next_group_ln: ${_next_group_ln}, _line_to_read_start: ${_line_to_read_start}, _line_to_read_end: ${_line_to_read_end}"
+
+                    process_inventory
+                fi
+            done
+            ;;
+    esac
+    unset _gnum _gr _ln _line _next_num _next_group_ln _line_to_read_end _line_to_read_start _dynval __gcount _group _inventory
+}
