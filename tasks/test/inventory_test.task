@@ -1,0 +1,38 @@
+test_inventory_reader () {
+    inventory_read "inventory-test" "anything" "demo2"
+    if [ "888" != "${test3value}" ]; then
+        error "Loading value from inventory failure. Wrong value: $(diste "${test3value}")! Expected: $(diste "888")"
+    fi
+
+    inventory_read "inventory-test" "anything" "peter"
+    if [ "666" != "${test3value}" ]; then
+        error "Loading value from inventory failure. Wrong value: $(diste "${test3value}")! Expected: $(diste "666")"
+    fi
+
+    inventory_read "inventory-test" "nothing" "notuser"
+    if [ "thing" != "${a}" ]; then
+        error "Loading value from inventory failure. Wrong value: $(diste "${a}")! Expected: $(diste "thing")"
+    fi
+
+    inventory_read "inventory-test" "other-thing" "peter"
+    if [ "otherthing" != "${other}" ]; then
+        error "Loading value from inventory failure. Wrong value: $(diste "${other}")! Expected: $(diste "otherthing")"
+    fi
+
+    inventory_read "inventory-test" "other-thing" "demo2"
+    if [ "876" != "${test3value}" ]; then
+        error "Loading value from inventory failure. Wrong value: $(diste "${test3value}")! Expected: $(diste "876")"
+    fi
+
+    # read all values from file since group name is ambigous
+    inventory_read "inventory-test2" "-" "all"
+    if [ "6" != "${test3value}" ]; then
+        error "Loading value from inventory failure. Wrong value: $(diste "${test3value}")! Expected: $(diste "6")"
+    fi
+
+    inventory_read "inventory-test" "emptything" "all"
+    if [ "6" != "${test3value}" ]; then
+        error "Loading value from inventory failure. Wrong value: $(diste "${test3value}")! Expected: $(diste "6")"
+    fi
+
+}
