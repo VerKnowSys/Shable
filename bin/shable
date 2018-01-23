@@ -2,46 +2,56 @@
 
 . lib/shable
 
-_reign="${1}"
-if [ -z "${_reign}" ]; then
-    error "Reign task required as first param!"
-else
-    note "${SHABLE_NAME}: $(distn "v${SHABLE_VERSION}"), Reign: $(distn "${_reign}"), Host: $(distn "$(${HOSTNAME_BIN})"), OS: $(distn "${SYSTEM_NAME}")"
-    if [ -f "reigns/${_reign}.task" ]; then
-        debug "+ reign file: $(distd "reigns/${_reign}.task")"
-        . "reigns/${_reign}.task"
-    elif [ -f "${SHABLE_NAME}/reigns/${_reign}.task" ]; then
-        debug "+ common reign file: $(distd "${SHABLE_NAME}/reigns/${_reign}.task")"
-        . "${SHABLE_NAME}/reigns/${_reign}.task"
-    else
-        error "No such reign task: '$(diste "${_reign}")'"
-    fi
+_inventory="${1}"
+_reign="${2}"
 
-    # load cached facts (if any)
-    if [ -d "facts/cached" ]; then
-        if [ -f "${DEFAULT_CACHE_FILE_LOCAL}" ]; then
-            debug "+ common local facts cache file: $(distd "${DEFAULT_CACHE_FILE_LOCAL}")"
-            . "${DEFAULT_CACHE_FILE_LOCAL}"
+
+if [ -z "${_inventory}" ]; then
+    error "Inventory required as first param!"
+else
+    if [ -z "${_reign}" ]; then
+        error "Reign task required as second param!"
+    else
+        note "${SHABLE_NAME}: $(distn "v${SHABLE_VERSION}"), Reign: $(distn "${_reign}"), Host: $(distn "$(${HOSTNAME_BIN})"), OS: $(distn "${SYSTEM_NAME}")"
+        if [ -f "reigns/${_reign}.task" ]; then
+            debug "+ reign file: $(distd "reigns/${_reign}.task")"
+            . "reigns/${_reign}.task"
+        elif [ -f "${SHABLE_NAME}/reigns/${_reign}.task" ]; then
+            debug "+ common reign file: $(distd "${SHABLE_NAME}/reigns/${_reign}.task")"
+            . "${SHABLE_NAME}/reigns/${_reign}.task"
+        else
+            error "No such reign task: '$(diste "${_reign}")'"
         fi
 
-        for _facts in facts/cached/*.facts; do
-            if [ -f "${_facts}" ]; then
-                if [ "${DEFAULT_CACHE_FILE_LOCAL}" != "${_facts}" ]; then
-                    debug "+ additional facts from cache file: $(distd "${_facts}")"
-                    . "${_facts}"
-                fi
+        # load cached facts (if any)
+        if [ -d "facts/cached" ]; then
+            if [ -f "${DEFAULT_CACHE_FILE_LOCAL}" ]; then
+                debug "+ common local facts cache file: $(distd "${DEFAULT_CACHE_FILE_LOCAL}")"
+                . "${DEFAULT_CACHE_FILE_LOCAL}"
             fi
-        done
+
+            for _facts in facts/cached/*.facts; do
+                if [ -f "${_facts}" ]; then
+                    if [ "${DEFAULT_CACHE_FILE_LOCAL}" != "${_facts}" ]; then
+                        debug "+ additional facts from cache file: $(distd "${_facts}")"
+                        . "${_facts}"
+                    fi
+                fi
+            done
+        fi
+
+        # values of upmost importance, so loaded as last:
+        inventory_read "${_inventory}" "${_remote}"
+
+        # call validation of required software defined in lib/vars (*_BIN):
+        if [ -z "${SKIP_ENV_VALIDATION}" ]; then
+            validate_env
+        fi
+
+        # call main() from reign:
+        main
+
+        # call cleanup of cached tasks:
+        cleanup_fragile_facts
     fi
-
-    # call validation of required software defined in lib/vars (*_BIN):
-    if [ -z "${SKIP_ENV_VALIDATION}" ]; then
-        validate_env
-    fi
-
-    # call main() from reign:
-    main
-
-    # call cleanup of cached tasks:
-    cleanup_fragile_facts
 fi
