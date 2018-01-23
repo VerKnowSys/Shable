@@ -352,6 +352,10 @@ inventory_read () {
     debug "Loading inventory: $(distd "${_inventory}:${_inventory_group}"), for client: $(distd "${_remote}")"
 
     _host="${2}"
+    if [ -z "${_host}" ]; then
+        error "No host specified for inventory: '$(diste "${_inventory}:${_inventory_group}")'!"
+    fi
+
     # all lines of inventory file
     _inventory_all_lines="$(${CAT_BIN} "${_inventory}" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')"
     if [ "0" = "${_inventory_all_lines}" ]; then
@@ -376,7 +380,6 @@ inventory_read () {
                 debug "Lnum: $(distd "${_lnum}"). Inventory first lines to read: $(distd "${_end}")"
                 _line="$(${SED_BIN} "${_lnum}q;d" "${_inventory}")" # print N-th line of file
                 if [ -n "${_line}" ]; then
-                    debug "processing line: $(distd "${_line}")"
                     eval "$(echo "${_line}" | ${CUT_BIN} -d' ' -f2-)"
                 else
                     continue
