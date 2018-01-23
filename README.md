@@ -18,6 +18,22 @@ POSIX compliant system with /bin/sh at least compatible with BSD-4x version from
 * Support for tasks overloading added with v0.8 since Shable repo contains some shared/common base system files for FreeBSD and Linux.
 
 
+## Few words about inventory files:
+
+Shable supports idea of "global inventory variables" via special: _ like this:
+
+```
+_ pi=3.14159
+_ phi=1.618033988749894848204586834
+
+[default]
+myhost1
+myhost2 supports=dtrace
+```
+
+For any host you'd like to read values for, each will also get values of "pi" and "phi" injected.
+
+
 ## Usage examples:
 
 
