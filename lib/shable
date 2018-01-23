@@ -354,6 +354,10 @@ inventory_read () {
     _host="${2}"
     # all lines of inventory file
     _inventory_all_lines="$(${CAT_BIN} "${_inventory}" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')"
+    if [ "0" = "${_inventory_all_lines}" ]; then
+        warn "Empty inventory: $(distw "${_inventory}"). Nothing to load."
+        return 0
+    fi
 
     # read groups
     __gcount=0
