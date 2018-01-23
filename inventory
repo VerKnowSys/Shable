@@ -1,0 +1,4 @@
+_ bring_fish=yes
+
+[default]
+localhost has_fish=1
