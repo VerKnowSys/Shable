@@ -5,7 +5,7 @@ SKIP_ENV_VALIDATION=1
 
 
 main () {
-    inventory_read "inventory-test" "anything" "demo2"
+    inventory_read "inventory-test:anything" "demo2"
     validate \
         a_remote="${_remote}" \
         atest2value="${test2value}" \

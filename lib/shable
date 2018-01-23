@@ -324,9 +324,8 @@ only_as () {
 #   Will read given inventory file and find values per given group and user
 #
 # Args:
-#   1. inventory file
-#   2. group name
-#   3. host name
+#   1. inventory-file:group-name
+#   2. host name
 #
 # Example, when inventory file has no groups:
 #   inventory_read inventory - host18
@@ -336,14 +335,22 @@ only_as () {
 #
 inventory_read () {
     _inventory="${1}"
+
+    # support for specifying group like on unixes, by username:groupname as inventory
+    _inventory_group="${default_inventory_group}"
+    echo "${_inventory}" | ${GREP_BIN} -F ":" >/dev/null 2>&1
+    if [ "0" = "${?}" ]; then
+        _inventory_group="$(echo "${_inventory}" | ${CUT_BIN} -d':' -f2 2>/dev/null)"
+        _inventory="$(echo "${_inventory}" | ${CUT_BIN} -d':' -f1 2>/dev/null)"
+    fi
     if [ ! -f "${_inventory}" ]; then
         _inventory="${SHABLE_NAME}/${_inventory}"
         if [ ! -f "${_inventory}" ]; then
             error "No inventory found: $(diste "${_inventory}")"
         fi
     fi
-    _group="${2}"
     _host="${3}"
+    debug "Loading inventory: $(distd "${_inventory}:${_inventory_group}"), for client: $(distd "${_remote}")"
 
     # all lines of inventory file
     _inventory_all_lines="$(${CAT_BIN} "${_inventory}" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')"
@@ -357,7 +364,7 @@ inventory_read () {
         eval "__grp${__gcount}=${__grp}; __ln${__gcount}=${__ln}" # store values in dynamic variables
     done
 
-    process_inventory () {
+    process_inventory_values () {
         # when running with inventory groups,  invoke loading inventory header file first, before loading first group:
         if [ "1" = "${_gnum}" ]; then
             _end=$(( ${_line_to_read_start} - 2 ))
@@ -395,7 +402,7 @@ inventory_read () {
             _line_to_read_start=1
             _line_to_read_end="${_inventory_all_lines}"
 
-            process_inventory
+            process_inventory_values
             ;;
 
         *)
@@ -404,7 +411,7 @@ inventory_read () {
                 _gr="$(eval "echo \$$(eval "echo __grp${_gnum}")")" # read group name
                 _ln="$(eval "echo \$$(eval "echo __ln${_gnum}")")"  # read line value
                 debug "Processing line: $(distd "${_ln}") of group: $(distd "${_gr}")"
-                if [ "${_gr}" = "${_group}" ]; then
+                if [ "${_gr}" = "${_inventory_group}" ]; then
                     debug "Found wanted group: $(distd "${_gr}") on line: $(distd "${_ln}")"
                     _line_to_read_start=$(( ${_ln} + 1 ))
                     _next_num=$(( ${_gnum} + 1 ))
@@ -417,10 +424,11 @@ inventory_read () {
                     fi
                     # debug "_next_num: ${_next_num}, _next_group_ln: ${_next_group_ln}, _line_to_read_start: ${_line_to_read_start}, _line_to_read_end: ${_line_to_read_end}"
 
-                    process_inventory
+                    process_inventory_values
                 fi
             done
             ;;
     esac
-    unset _gnum _gr _ln _line _next_num _next_group_ln _line_to_read_end _line_to_read_start _dynval __gcount _group _inventory
+    unset _gnum _gr _ln _line _next_num _next_group_ln _line_to_read_end _line_to_read_start _dynval __gcount _group _inventory _inventory_group
+}
 }
