@@ -9,7 +9,7 @@ POSIX compliant system with /bin/sh at least compatible with BSD-4x version from
 * Pure Sh implementation using standard base system utils found on any modern POSIX OS.
 * Support for [Pass](https://www.passwordstore.org/) vault utility (requires GPG2).
 * Support for Pass vault values caching (to prevent "GPG2 password prompt flood" issue for parallel tasks).
-* Support for Ansible inventory input format (no group support - processing all inventory entries by default).
+* Support for Ansible inventory input format, including groups. (More about groups in examples below)
 * Support for Ansible templates - `{{ something }}` is supported, but without any logic whatsoever (it's not php to write logic on template side).
 * Facts, Environment and Inventory values validation (explicit and done BEFORE task is invoked on remote host - since it should never leave remote in "unknown-in-middle-of" state).
 * Clear, easy, eyes-friendly colored debugging (just define DEBUG in env and enjoy).
@@ -29,7 +29,7 @@ Execute reign task on local system.
 
 
 
-Execute tasks defined under "reigns/test-reign.task" on host "kenny"
+Execute tasks defined under "reigns/test-reign.task" on host "kenny" for "default" inventory group:
 > Host params are loaded from Ansible-compliant "inventory" file.
 
     bin/reign inventory test-reign kenny
@@ -49,6 +49,15 @@ Execute asynchronously (all at once), for each remote defined in inventory file.
     ./call-reign-async test-reign
 
 
+Calling Reigns and inventory groups:
+> Shable is using Ansible inventory format, groups are no different. The only difference is with group calling. Shable is using unix-like notation, for example: `inventory:group`
+
+    # invoke shable reign locally: "test-reign" on local host:
+    bin/shable test-reign
+
+    # invoke reign: "test-reign" on host: "myhost" of group: "mygroup" from inventory file: "inventory":
+    bin/reign inventory:mygroup test-reign myhost
+
 
 Debugging:
 > Shable is using ANSI coloring for output by default. If you don't like it, try disabling TTY feature of your terminal.
@@ -56,12 +65,27 @@ Debugging:
     DEBUG=1 bin/reign …
 
 Debugging per Shable function:
-> Here we're loading shable functions and calling inner function "inventory_read()" directly with debugging enabled:
+> Here we're loading shable functions and calling inner functions "inventory_hosts()" and "inventory_read()" directly:
 
-    ${SHELL}    # load new shell since in case of error
-                # whole environment will be closed by error()
-    . lib/shable
+Example 1:
+    ${SHELL}        # load new shell since in case of error
+                    # whole environment will be closed by error()
+    . lib/shable    # load Shable functions
+
+    # load hosts of group: "anything" from inventory file: "inventory-test" with debugging information:
     DEBUG=1 inventory_hosts inventory-test:anything
+
+Example 2:
+    ${SHELL}        # load new shell since in case of error
+                    # whole environment will be closed by error()
+    . lib/shable    # load Shable functions
+
+    # load and inject values of user: "demo2" of group: "anything" from inventory file: "inventory-test"
+    inventory_read inventory-test:anything demo2
+
+    echo "${test3value}" # value from params of host "demo2" from inventory file
+    # => 888
+
 
 
 Testing Shable core functionality:
