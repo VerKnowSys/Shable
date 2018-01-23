@@ -9,7 +9,7 @@ mkdir -p "${DEFAULT_LOGDIR}"
 
 debug () {
     if [ -n "${*}" ] && [ -n "${DEBUG}" ]; then
-        ${PRINTF_BIN} "#%b%s%b\n" "${ColorDebug}" "${@}" "${ColorReset}"
+        ${PRINTF_BIN} "#%b%s%b\n" "${ColorDebug}" "${@}" "${ColorReset}" >&2
     fi
     return 0
 }
@@ -17,7 +17,7 @@ debug () {
 
 warn () {
     if [ -n "${*}" ]; then
-        ${PRINTF_BIN} "\n%b%s%b\n\n" "${ColorYellow}" "${@}" "${ColorReset}"
+        ${PRINTF_BIN} "\n%b%s%b\n\n" "${ColorYellow}" "${@}" "${ColorReset}" >&2
     else
         ${PRINTF_BIN} "\n"
     fi
@@ -27,7 +27,7 @@ warn () {
 
 note () {
     if [ -n "${*}" ]; then
-        ${PRINTF_BIN} "\n%b%s%b\n" "${ColorGreen}" "${@}" "${ColorReset}"
+        ${PRINTF_BIN} "\n%b%s%b\n" "${ColorGreen}" "${@}" "${ColorReset}" >&2
     else
         ${PRINTF_BIN} "\n"
     fi
@@ -37,7 +37,7 @@ note () {
 
 progress_note () {
     if [ -n "${*}" ]; then
-        ${PRINTF_BIN} "${REPLAY_PREVIOUS_LINE}%b%s%b\n" "${ColorGreen}" "${@}" "${ColorReset}"
+        ${PRINTF_BIN} "${REPLAY_PREVIOUS_LINE}%b%s%b\n" "${ColorGreen}" "${@}" "${ColorReset}" >&2
     fi
     return 0
 }
@@ -45,9 +45,9 @@ progress_note () {
 
 error () {
     if [ -n "${*}" ]; then
-        ${PRINTF_BIN} "%b\n  %s %s\n    %b %b\n\n" "${ColorRed}" "${NoteChar}" "Task crashed!" "${0}: ${1}${2}${3}${4}${5}" "${ColorReset}"
+        ${PRINTF_BIN} "%b\n  %s %s\n    %b %b\n\n" "${ColorRed}" "${NoteChar}" "Task crashed!" "${0}: ${1}${2}${3}${4}${5}" "${ColorReset}" >&2
     else
-        ${PRINTF_BIN} "%b\n  %s%b\n" "${ColorRed}" "ERROR!" "${ColorReset}"
+        ${PRINTF_BIN} "%b\n  %s%b\n" "${ColorRed}" "ERROR!" "${ColorReset}" >&2
     fi
     exit 1
 }
