@@ -41,14 +41,14 @@ For any host you'd like to read values for, each will also get values of "pi" an
 Execute reign task on local system.
 > "bin/shable" is invoked by "bin/reign" on remote hosts this way.
 
-    bin/shable test-reign
+    bin/shable inventory-test test-reign
 
 
 
 Execute tasks defined under "reigns/test-reign.task" on host "kenny" for "default" inventory group:
 > Host params are loaded from Ansible-compliant "inventory" file.
 
-    bin/reign inventory test-reign kenny
+    bin/reign inventory-test test-reign kenny
 
 
 
