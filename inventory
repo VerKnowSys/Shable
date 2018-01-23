@@ -1,4 +1,5 @@
-_ bring_fish=yes
+_ pi=3.14159
+_ phi=1.618033988749894848204586834
 
 [default]
 localhost has_fish=1

@@ -349,9 +349,9 @@ inventory_read () {
             error "No inventory found: $(diste "${_inventory}")"
         fi
     fi
-    _host="${3}"
     debug "Loading inventory: $(distd "${_inventory}:${_inventory_group}"), for client: $(distd "${_remote}")"
 
+    _host="${2}"
     # all lines of inventory file
     _inventory_all_lines="$(${CAT_BIN} "${_inventory}" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')"
 

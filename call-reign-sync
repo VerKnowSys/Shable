@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. lib/core
+. lib/shable
 
 _reign="${1}"
 if [ -z "${_reign}" ]; then
