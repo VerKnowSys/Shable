@@ -88,6 +88,7 @@ export commands='${commands}' domain='${domain}' _remote='${_remote}' DEBUG=${DE
                 for _attempt in 1 2 3; do
                     debug "Job attempt: $(distd "${_attempt}")"
                     ${SSH_BIN} -tt \
+                        -p "${_sshd_port}" \
                         -o "BatchMode=yes" \
                         -o "ConnectTimeout=${connection_timeout}" \
                         -o "ConnectionAttempts=${connection_attempts}" \
