@@ -27,14 +27,15 @@ else
                 . "facts/base.facts"
             fi
 
-            debug "Using inventory file: $(distd "inventory"), client: $(distd "${_remote}")"
-            _inventory_values="$(${GREP_BIN} -E "^${_remote}\ " "${_inventory}" | ${HEAD_BIN} -n1 | ${CUT_BIN} -d' ' -f2-)"
-            if [ -n "${_inventory_values}" ]; then
-                debug "Defined $(distd "_inventory_values"): $(distd "${_inventory_values}")"
-                eval "export ${_inventory_values}" >/dev/null 2>/dev/null
-            else
-                debug "Defined no $(distd "_inventory_values") for remote: $(distd "${_remote}")"
+            # support for specifying group like on unixes, by username:groupname as inventory
+            _inventory_group="${default_inventory_group}"
+            echo "${_inventory}" | ${GREP_BIN} -F ":" >/dev/null 2>&1
+            if [ "0" = "${?}" ]; then
+                _inventory_group="$(echo "${_inventory}" | ${CUT_BIN} -d':' -f2 2>/dev/null)"
+                _inventory="$(echo "${_inventory}" | ${CUT_BIN} -d':' -f1 2>/dev/null)"
             fi
+            note "Loading inventory: $(distn "${_inventory}:${_inventory_group}"), for client: $(distn "${_remote}")"
+            inventory_read "${_inventory}" "${_inventory_group}" "${_remote}"
 
             # use default value of remote user:
             _remote_user="${default_remote_user}"
