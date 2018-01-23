@@ -1,6 +1,5 @@
 default_shell="/Software/Zsh/exports/zsh"
-default_www_user="www"
-homedir="/var/${default_www_user}"
+homedir="/var/www"
 homedir_root="/User"
 
 ZFS_BIN="/sbin/zfs"

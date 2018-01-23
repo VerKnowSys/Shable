@@ -5,7 +5,8 @@ connection_attempts=1
 # base values
 default_inventory_group="default"
 worker_connections=1024
-default_remote_user="www"
+default_www_user="www"
+default_remote_user="${default_www_user}"
 
 # svdup default source
 sofin_bin="/Software/Sofin/bin/s"
