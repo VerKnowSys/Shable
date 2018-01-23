@@ -3,6 +3,7 @@ connection_timeout=5
 connection_attempts=1
 
 # base values
+default_inventory_group="default"
 worker_connections=1024
 default_remote_user="www"
 
