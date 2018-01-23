@@ -42,6 +42,7 @@ else
             _base_name="/tmp/shable_current_${_remote_user}"
 
             validate \
+                _inventory="${_inventory}" \
                 _remote_user="${_remote_user}" \
                 default_remote_user="${default_remote_user}" \
                 connection_timeout="${connection_timeout}" \
