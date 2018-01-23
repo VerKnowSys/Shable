@@ -55,6 +55,14 @@ Debugging:
 
     DEBUG=1 bin/reign …
 
+Debugging per Shable function:
+> Here we're loading shable functions and calling inner function "inventory_read()" directly with debugging enabled:
+
+    ${SHELL}    # load new shell since in case of error
+                # whole environment will be closed by error()
+    . lib/shable
+    DEBUG=1 inventory_hosts inventory-test:anything
+
 
 Testing Shable core functionality:
 
