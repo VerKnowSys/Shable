@@ -376,8 +376,8 @@ inventory_read () {
         # when running with inventory groups,  invoke loading inventory header file first, before loading first group:
         if [ "1" = "${_gnum}" ]; then
             _end=$(( ${_line_to_read_start} - 2 ))
+            debug "Inventory first lines to read: $(distd "${_end}")"
             for _lnum in $(${SEQ_BIN} "1" "${_end}" 2>/dev/null); do
-                debug "Lnum: $(distd "${_lnum}"). Inventory first lines to read: $(distd "${_end}")"
                 _line="$(${SED_BIN} "${_lnum}q;d" "${_inventory}")" # print N-th line of file
                 if [ -n "${_line}" ]; then
                     eval "$(echo "${_line}" | ${CUT_BIN} -d' ' -f2-)"
@@ -500,8 +500,8 @@ inventory_hosts () {
 
         if [ "1" = "${_gnum}" ]; then
             _end=$(( ${_line_to_read_start} - 2 ))
+            debug "Inventory first lines to read: $(distd "${_end}")"
             for _lnum in $(${SEQ_BIN} "1" "${_end}" 2>/dev/null); do
-                debug "Lnum: $(distd "${_lnum}"). Inventory first lines to read: $(distd "${_end}")"
                 _line="$(${SED_BIN} "${_lnum}q;d" "${_inventory}")" # print N-th line of file
                 if [ -n "${_line}" ]; then
                     _rl="$(echo "${_line}" | ${CUT_BIN} -d' ' -f1)"
