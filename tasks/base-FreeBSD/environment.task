@@ -5,7 +5,7 @@ configure_root_user () {
         dest="${homedir_root}/.profile"
 
     if [ ! -f "${homedir_root}/.zshrc" ]; then
-        ${PRINTF_BIN} "%s\n%s\n" \
+        printf "%s\n%s\n" \
             "test -f ${homedir_root}/.profile || ${sofin_bin} reload" \
             "alias htop=atop" \
             > "${homedir_root}/.zshrc"
@@ -31,7 +31,7 @@ configure_www_user () {
 
     ${PW_BIN} user mod "${default_www_user}" -d "${homedir}"
     if [ ! -f "${homedir}/.zshrc" ]; then
-        ${PRINTF_BIN} "%s\n%s\n%s\n" \
+        printf "%s\n%s\n%s\n" \
             "#!/bin/sh" \
             "alias htop=atop" \
             "test -f ${homedir}/.profile || ${sofin_bin} reload" \

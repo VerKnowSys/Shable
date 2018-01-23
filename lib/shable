@@ -177,7 +177,7 @@ lineinfile () {
     write_line_if_not_already_present () {
         debug "lineinfile: $(distd "${src}"): line: $(distd "${line}")"
         ${GREP_BIN} -F "${line}" "${src}" >/dev/null 2>&1 || \
-            ${PRINTF_BIN} "%s\n" "${line}" >> "${src}"
+            printf "%s\n" "${line}" >> "${src}"
     }
     if [ -n "${pattern}" ] && [ "${line}" != "${pattern}" ]; then
         debug "lineinfile-pattern: $(distd "${pattern}") => $(distd "${src}"): line: $(distd "${line}")"
@@ -242,7 +242,7 @@ cronjob () {
             fi
             debug "Writing periodic: $(distd "${frequency}"), cronjob: $(distd "${name}"), file: $(distd "${_cron_job_file}")"
 
-            ${PRINTF_BIN} "#!/bin/sh\n\n%s\n" "${job}" > "${_cron_job_file}"
+            printf "#!/bin/sh\n\n%s\n" "${job}" > "${_cron_job_file}"
             ${CHMOD_BIN} 750 "${_cron_job_file}"
             ;;
 
@@ -260,7 +260,7 @@ cronjob () {
             wday="${wday:-"*"}"
             user="${user:-root}"
             debug "Writing cron job: $(distd "${minute} ${hour} ${mday} ${month} ${wday} ${user} ${job}"), cronjob: $(distd "${name}"), file: $(distd "${_cron_job_file}")"
-            ${PRINTF_BIN} "%s %s %s %s %s  %s  %s\n" "${minute}" "${hour}" "${mday}" "${month}" "${wday}" "${user}" "${job}" > "${_cron_job_file}"
+            printf "%s %s %s %s %s  %s  %s\n" "${minute}" "${hour}" "${mday}" "${month}" "${wday}" "${user}" "${job}" > "${_cron_job_file}"
             ${CHMOD_BIN} 640 "${_cron_job_file}"
             ;;
 
