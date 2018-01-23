@@ -3,21 +3,6 @@
 . lib/shable
 
 _reign="${1}"
-# shift
-# _params="${*}"
-# debug "Shable params: $(distd "${_params}")"
-# eval "export ${_params}" >/dev/null 2>/dev/null
-
-export LANG="${DEFAULT_LANG}"
-export LANGUAGE="${DEFAULT_LANG}"
-export LC_ALL="${DEFAULT_LANG}"
-export LC_TIME="${DEFAULT_LANG}"
-export LC_MONETARY="${DEFAULT_LANG}"
-export LC_CTYPE="${DEFAULT_LANG}"
-export LC_COLLATE="${DEFAULT_LANG}"
-export LC_MESSAGES="${DEFAULT_LANG}"
-export LC_NUMERIC="${DEFAULT_LANG}"
-
 if [ -z "${_reign}" ]; then
     error "Reign task required as first param!"
 else

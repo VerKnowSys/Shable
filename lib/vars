@@ -18,6 +18,18 @@ REPLAY_PREVIOUS_LINE="\033[A\33[2K\r"
 HOST_NAME="$(hostname -s)"
 SYSTEM_NAME="$(uname)"
 
+# shell specific:
+LANG="${DEFAULT_LANG}"
+LANGUAGE="${DEFAULT_LANG}"
+LC_ALL="${DEFAULT_LANG}"
+LC_TIME="${DEFAULT_LANG}"
+LC_MONETARY="${DEFAULT_LANG}"
+LC_CTYPE="${DEFAULT_LANG}"
+LC_COLLATE="${DEFAULT_LANG}"
+LC_MESSAGES="${DEFAULT_LANG}"
+LC_NUMERIC="${DEFAULT_LANG}"
+
+
 # binaries
 SEQ_BIN="/usr/bin/seq"
 ENV_BIN="/usr/bin/env"
@@ -113,6 +125,7 @@ case "${SYSTEM_NAME}" in
             # no mysql client available, just unset it to avoid validate_env() failure:
             unset PASS_BIN
         fi
+        USERMOD_BIN="/usr/sbin/usermod"
         ;;
 
 esac
