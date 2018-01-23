@@ -387,8 +387,8 @@ inventory_read () {
             done
         fi
 
+        debug "Inventory lines to read: $(distd "${_line_to_read_start}") => $(distd "${_line_to_read_end}")"
         for _lnum in $(${SEQ_BIN} "${_line_to_read_start}" "${_line_to_read_end}" 2>/dev/null); do
-            debug "Inventory lines to read: $(distd "${_line_to_read_start}") => $(distd "${_line_to_read_end}")"
             _line="$(${SED_BIN} "${_lnum}q;d" "${_inventory}")" # print N-th line of file
             if [ -n "${_line}" ]; then
                 echo "${_line}" | ${GREP_BIN} -E "^${_host}\ " >/dev/null 2>&1
@@ -512,8 +512,8 @@ inventory_hosts () {
             done
         fi
 
+        debug "Inventory lines to read: $(distd "${_line_to_read_start}") => $(distd "${_line_to_read_end}")"
         for _lnum in $(${SEQ_BIN} "${_line_to_read_start}" "${_line_to_read_end}" 2>/dev/null); do
-            debug "Inventory lines to read: $(distd "${_line_to_read_start}") => $(distd "${_line_to_read_end}")"
             _line="$(${SED_BIN} "${_lnum}q;d" "${_inventory}")" # print N-th line of file
             if [ -n "${_line}" ]; then
                 _rl="$(echo "${_line}" | ${CUT_BIN} -d' ' -f1)"
