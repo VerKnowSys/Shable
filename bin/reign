@@ -53,6 +53,7 @@ else
             sync_with_rsync () {
                 for _attempt in 1 2 3; do
                     ${RSYNC_BIN} \
+                        -e "${SSH_BIN} -p ${_sshd_port}" \
                         --timeout=2 \
                         --exclude=".git" \
                         --recursive \
