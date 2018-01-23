@@ -350,9 +350,6 @@ system_specific_test () {
             # val_expect \
             #     "$(lsb_release -c | ${AWK_BIN} '{print $2;}')" \
             #     "${release}"
-            val_expect \
-                "${default_www_user}" \
-                "www-data"
             only_for "Linux"
             only_for "       Darwin              Linux           "
             only_for "Darwin Linux Linux"
@@ -360,9 +357,6 @@ system_specific_test () {
             ;;
 
         FreeBSD)
-            val_expect \
-                "${default_www_user}" \
-                "worker"
             only_for "FreeBSD"
             only_for "       Darwin              FreeBSD           "
             only_for "Darwin FreeBSD Linux"
