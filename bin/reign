@@ -27,6 +27,8 @@ else
                 . "facts/base.facts"
             fi
 
+            inventory_read "${_inventory}" "${_remote}"
+
             # use default value of remote user:
             _remote_user="${default_remote_user}"
 
