@@ -1,0 +1,5 @@
+default_shell="/Software/Zsh/exports/zsh"
+homedir="${HOME}"
+homedir_root="/var/root"
+
+ZFS_BIN="/usr/bin/zfs"
