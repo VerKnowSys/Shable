@@ -44,4 +44,11 @@ test_inventory_reader () {
         error "Loading value from inventory failure. Wrong value: $(diste "${test3value}")! Expected: $(diste "6")"
     fi
 
+    if [ "2" != "$(inventory_hosts "inventory-test:anything" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')" ]; then
+        error "Expected $(diste "2") inventory hosts in inventory: $(diste "inventory-test:anything")"
+    fi
+
+    if [ "4" != "$(inventory_hosts "inventory-test:+" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')" ]; then
+        error "Expected $(diste "4") unique inventory hosts in inventory: $(diste "inventory-test")"
+    fi
 }

@@ -8,7 +8,7 @@ if [ -z "${_reign}" ]; then
 fi
 debug "Reign to be invoked: $(distd "${_reign}")"
 
-_hosts=$(${CAT_BIN} "${DEFAULT_INVENTORY}" | ${AWK_BIN} '{print $1;}' 2>/dev/null | ${GREP_BIN} -v '\[' 2>/dev/null | ${SORT_BIN} 2>/dev/null | ${UNIQ_BIN} 2>/dev/null)
+_hosts=$(inventory_hosts "${DEFAULT_INVENTORY}")
 note "Calling reign: $(distn "${_reign}") on hosts: $(distd "$(echo "${_hosts}" | ${TR_BIN} '\n' ' ' 2>/dev/null)")"
 
 unset _process_logs

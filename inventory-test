@@ -10,6 +10,7 @@ demo2 other=someother test3value=888
 [other-thing]
 peter other=otherthing
 demo2 other=someother test3value=876
+bro some=111
 
 [omgthing]
 
