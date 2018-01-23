@@ -334,38 +334,38 @@ only_as () {
 #   inventory_read inventory third-party host18
 #
 inventory_read () {
-    _inventory="${1}"
+    _inv_internal="${1}"
 
     # support for specifying group like on unixes, by username:groupname as inventory
-    _inventory_group="${default_inventory_group}"
-    echo "${_inventory}" | ${GREP_BIN} -F ":" >/dev/null 2>&1
+    _inv_grp="${default_inventory_group}"
+    echo "${_inv_internal}" | ${GREP_BIN} -F ":" >/dev/null 2>&1
     if [ "0" = "${?}" ]; then
-        _inventory_group="$(echo "${_inventory}" | ${CUT_BIN} -d':' -f2 2>/dev/null)"
-        _inventory="$(echo "${_inventory}" | ${CUT_BIN} -d':' -f1 2>/dev/null)"
+        _inv_grp="$(echo "${_inv_internal}" | ${CUT_BIN} -d':' -f2 2>/dev/null)"
+        _inv_internal="$(echo "${_inv_internal}" | ${CUT_BIN} -d':' -f1 2>/dev/null)"
     fi
-    if [ ! -f "${_inventory}" ]; then
-        _inventory="${SHABLE_NAME}/${_inventory}"
-        if [ ! -f "${_inventory}" ]; then
-            error "No inventory found: $(diste "${_inventory}")"
+    if [ ! -f "${_inv_internal}" ]; then
+        _inv_internal="${SHABLE_NAME}/${_inv_internal}"
+        if [ ! -f "${_inv_internal}" ]; then
+            error "No inventory found: $(diste "${_inv_internal}")"
         fi
     fi
-    debug "Loading inventory: $(distd "${_inventory}:${_inventory_group}"), for client: $(distd "${_remote}")"
+    debug "Loading inventory: $(distd "${_inv_internal}:${_inv_grp}"), for client: $(distd "${_remote}")"
 
     _host="${2}"
     if [ -z "${_host}" ]; then
-        error "No host specified for inventory: '$(diste "${_inventory}:${_inventory_group}")'!"
+        error "No host specified for inventory: '$(diste "${_inv_internal}:${_inv_grp}")'!"
     fi
 
     # all lines of inventory file
-    _inventory_all_lines="$(${CAT_BIN} "${_inventory}" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')"
-    if [ "0" = "${_inventory_all_lines}" ]; then
-        warn "Empty inventory: $(distw "${_inventory}"). Nothing to load."
+    _inv_all_lines="$(${CAT_BIN} "${_inv_internal}" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')"
+    if [ "0" = "${_inv_all_lines}" ]; then
+        warn "Empty inventory: $(distw "${_inv_internal}"). Nothing to load."
         return 0
     fi
 
     # read groups
     __gcount=0
-    for _dynval in $(${GREP_BIN} -nE "\[.*\]" "${_inventory}" 2>/dev/null | ${SED_BIN} "s/^/__ln=/; s#:\[#;__grp=#; s#]##" 2>/dev/null); do # read groups
+    for _dynval in $(${GREP_BIN} -nE "\[.*\]" "${_inv_internal}" 2>/dev/null | ${SED_BIN} "s/^/__ln=/; s#:\[#;__grp=#; s#]##" 2>/dev/null); do # read groups
         eval "${_dynval}"
         __gcount=$(( ${__gcount} + 1 ))
         debug "inventory grp: $(distd "${__grp}"), start line: $(distd "${__ln}")"
@@ -378,7 +378,7 @@ inventory_read () {
             _end=$(( ${_line_to_read_start} - 2 ))
             debug "Inventory first lines to read: $(distd "${_end}")"
             for _lnum in $(${SEQ_BIN} "1" "${_end}" 2>/dev/null); do
-                _line="$(${SED_BIN} "${_lnum}q;d" "${_inventory}")" # print N-th line of file
+                _line="$(${SED_BIN} "${_lnum}q;d" "${_inv_internal}")" # print N-th line of file
                 if [ -n "${_line}" ]; then
                     eval "$(echo "${_line}" | ${CUT_BIN} -d' ' -f2-)"
                 else
@@ -389,7 +389,7 @@ inventory_read () {
 
         debug "Inventory lines to read: $(distd "${_line_to_read_start}") => $(distd "${_line_to_read_end}")"
         for _lnum in $(${SEQ_BIN} "${_line_to_read_start}" "${_line_to_read_end}" 2>/dev/null); do
-            _line="$(${SED_BIN} "${_lnum}q;d" "${_inventory}")" # print N-th line of file
+            _line="$(${SED_BIN} "${_lnum}q;d" "${_inv_internal}")" # print N-th line of file
             if [ -n "${_line}" ]; then
                 echo "${_line}" | ${GREP_BIN} -E "^${_host}\ " >/dev/null 2>&1
                 if [ "0" = "${?}" ]; then
@@ -407,7 +407,7 @@ inventory_read () {
         0)
             debug "No groups. Reading whole inventory"
             _line_to_read_start=1
-            _line_to_read_end="${_inventory_all_lines}"
+            _line_to_read_end="${_inv_all_lines}"
 
             process_inventory_values
             ;;
@@ -418,13 +418,13 @@ inventory_read () {
                 _gr="$(eval "echo \$$(eval "echo __grp${_gnum}")")" # read group name
                 _ln="$(eval "echo \$$(eval "echo __ln${_gnum}")")"  # read line value
                 debug "Processing line: $(distd "${_ln}") of group: $(distd "${_gr}")"
-                if [ "${_gr}" = "${_inventory_group}" ]; then
+                if [ "${_gr}" = "${_inv_grp}" ]; then
                     debug "Found wanted group: $(distd "${_gr}") on line: $(distd "${_ln}")"
                     _line_to_read_start=$(( ${_ln} + 1 ))
                     _next_num=$(( ${_gnum} + 1 ))
                     _next_group_ln="$(eval "echo \$$(eval "echo __ln${_next_num}")")"
                     if [ -z "${_next_group_ln}" ]; then
-                        _line_to_read_end="${_inventory_all_lines}"
+                        _line_to_read_end="${_inv_all_lines}"
                         debug "No next group. Setting end of file: $(distd "${_line_to_read_end}")"
                     else
                         _line_to_read_end=$(( ${_next_group_ln} - 1 ))
@@ -436,7 +436,7 @@ inventory_read () {
             done
             ;;
     esac
-    unset _gnum _gr _ln _line _next_num _next_group_ln _line_to_read_end _line_to_read_start _dynval __gcount _group _inventory _inventory_group
+    unset _gnum _gr _ln _line _next_num _next_group_ln _line_to_read_end _line_to_read_start _dynval __gcount _group _inv_internal _inv_grp
 }
 
 
@@ -454,35 +454,35 @@ inventory_read () {
 #   inventory_hosts inventory:third-party
 #
 inventory_hosts () {
-    _inventory="${1}"
+    _inv_int="${1}"
 
     # by default - read whole inventory, ignore groups
-    _inventory_group="+"
+    _inv_grp="+"
 
     # support for specifying group like on unixes, by username:groupname as inventory
-    echo "${_inventory}" | ${GREP_BIN} -F ":" >/dev/null 2>&1
+    echo "${_inv_int}" | ${GREP_BIN} -F ":" >/dev/null 2>&1
     if [ "0" = "${?}" ]; then
-        _inventory_group="$(echo "${_inventory}" | ${CUT_BIN} -d':' -f2 2>/dev/null)"
-        _inventory="$(echo "${_inventory}" | ${CUT_BIN} -d':' -f1 2>/dev/null)"
+        _inv_grp="$(echo "${_inv_int}" | ${CUT_BIN} -d':' -f2 2>/dev/null)"
+        _inv_int="$(echo "${_inv_int}" | ${CUT_BIN} -d':' -f1 2>/dev/null)"
     fi
-    if [ ! -f "${_inventory}" ]; then
-        _inventory="${SHABLE_NAME}/${_inventory}"
-        if [ ! -f "${_inventory}" ]; then
-            error "No inventory found: $(diste "${_inventory}")"
+    if [ ! -f "${_inv_int}" ]; then
+        _inv_int="${SHABLE_NAME}/${_inv_int}"
+        if [ ! -f "${_inv_int}" ]; then
+            error "No inventory found: $(diste "${_inv_int}")"
         fi
     fi
-    debug "Loading inventory: $(distd "${_inventory}:${_inventory_group}"), for client: $(distd "${_remote}")"
+    debug "Loading inventory: $(distd "${_inv_int}:${_inv_grp}"), for client: $(distd "${_remote}")"
 
     # all lines of inventory file
-    _inventory_all_lines="$(${CAT_BIN} "${_inventory}" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')"
-    if [ "0" = "${_inventory_all_lines}" ]; then
-        warn "Empty inventory: $(distw "${_inventory}"). Nothing to load."
+    _inv_all_lines="$(${CAT_BIN} "${_inv_int}" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')"
+    if [ "0" = "${_inv_all_lines}" ]; then
+        warn "Empty inventory: $(distw "${_inv_int}"). Nothing to load."
         return 0
     fi
 
     # read groups
     __gcount=0
-    for _dynval in $(${GREP_BIN} -nE "\[.*\]" "${_inventory}" 2>/dev/null | ${SED_BIN} "s/^/__ln=/; s#:\[#;__grp=#; s#]##" 2>/dev/null); do # read groups
+    for _dynval in $(${GREP_BIN} -nE "\[.*\]" "${_inv_int}" 2>/dev/null | ${SED_BIN} "s/^/__ln=/; s#:\[#;__grp=#; s#]##" 2>/dev/null); do # read groups
         eval "${_dynval}"
         __gcount=$(( ${__gcount} + 1 ))
         debug "inventory grp: $(distd "${__grp}"), start line: $(distd "${__ln}")"
@@ -490,7 +490,7 @@ inventory_hosts () {
     done
 
     # if group is + - read all hosts
-    if [ "+" = "${_inventory_group}" ] || [ "all" = "${_inventory_group}" ]; then
+    if [ "+" = "${_inv_grp}" ] || [ "all" = "${_inv_grp}" ]; then
         __gcount=0
     fi
 
@@ -502,7 +502,7 @@ inventory_hosts () {
             _end=$(( ${_line_to_read_start} - 2 ))
             debug "Inventory first lines to read: $(distd "${_end}")"
             for _lnum in $(${SEQ_BIN} "1" "${_end}" 2>/dev/null); do
-                _line="$(${SED_BIN} "${_lnum}q;d" "${_inventory}")" # print N-th line of file
+                _line="$(${SED_BIN} "${_lnum}q;d" "${_inv_int}")" # print N-th line of file
                 if [ -n "${_line}" ]; then
                     _rl="$(echo "${_line}" | ${CUT_BIN} -d' ' -f1)"
                     if [ "${_rl}" != "_" ]; then
@@ -514,7 +514,7 @@ inventory_hosts () {
 
         debug "Inventory lines to read: $(distd "${_line_to_read_start}") => $(distd "${_line_to_read_end}")"
         for _lnum in $(${SEQ_BIN} "${_line_to_read_start}" "${_line_to_read_end}" 2>/dev/null); do
-            _line="$(${SED_BIN} "${_lnum}q;d" "${_inventory}")" # print N-th line of file
+            _line="$(${SED_BIN} "${_lnum}q;d" "${_inv_int}")" # print N-th line of file
             if [ -n "${_line}" ]; then
                 _rl="$(echo "${_line}" | ${CUT_BIN} -d' ' -f1)"
                 echo "${_rl}" | ${GREP_BIN} '[_\[]' >/dev/null 2>&1
@@ -536,7 +536,7 @@ inventory_hosts () {
         0)
             debug "No groups. Reading whole inventory"
             _line_to_read_start=1
-            _line_to_read_end="${_inventory_all_lines}"
+            _line_to_read_end="${_inv_all_lines}"
 
             process_inventory_hosts
             ;;
@@ -547,13 +547,13 @@ inventory_hosts () {
                 _gr="$(eval "echo \$$(eval "echo __grp${_gnum}")")" # read group name
                 _ln="$(eval "echo \$$(eval "echo __ln${_gnum}")")"  # read line value
                 debug "Processing line: $(distd "${_ln}") of group: $(distd "${_gr}")"
-                if [ "${_gr}" = "${_inventory_group}" ]; then
+                if [ "${_gr}" = "${_inv_grp}" ]; then
                     debug "Found wanted group: $(distd "${_gr}") on line: $(distd "${_ln}")"
                     _line_to_read_start=$(( ${_ln} + 1 ))
                     _next_num=$(( ${_gnum} + 1 ))
                     _next_group_ln="$(eval "echo \$$(eval "echo __ln${_next_num}")")"
                     if [ -z "${_next_group_ln}" ]; then
-                        _line_to_read_end="${_inventory_all_lines}"
+                        _line_to_read_end="${_inv_all_lines}"
                         debug "No next group. Setting end of file: $(distd "${_line_to_read_end}")"
                     else
                         _line_to_read_end=$(( ${_next_group_ln} - 1 ))
@@ -564,5 +564,5 @@ inventory_hosts () {
             done
             ;;
     esac
-    unset _gnum _gr _ln _line _next_num _next_group_ln _line_to_read_end _line_to_read_start _dynval __gcount _group _inventory _inventory_group
+    unset _gnum _gr _ln _line _next_num _next_group_ln _line_to_read_end _line_to_read_start _dynval __gcount _group _inv_int _inv_grp
 }
