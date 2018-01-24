@@ -83,23 +83,23 @@ For any host you'd like to read values for, each will also get values of "pi" an
 
 ## Shable functions a.k.a. "Shable API":
 
-* `include()`: Usage example: `include "base"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L13)
+    * `include()`: Usage example: `include "base"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L13)
 
-* `template()`: Usage example: `template src="base/myfile" dest="/tmp/there" mode=0775 owner=www`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L81)
+    * `template()`: Usage example: `template src="base/myfile" dest="/tmp/there" mode=0775 owner=www`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L81)
 
-* `validate()`: Usage example: `validate name="${my_variable}" other="${variable}"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L143)
+    * `validate()`: Usage example: `validate name="${my_variable}" other="${variable}"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L143)
 
-* `lineinfile()`: Usage example: `lineinfile src="/some/file" line="'flamenco classico'"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L169)
+    * `lineinfile()`: Usage example: `lineinfile src="/some/file" line="'flamenco classico'"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L169)
 
-* `cronjob()`: Usage example: `cronjob name="audit_start" type="cron" job="/usr/local/bin/start_new_log_hourly" user="root" minute="*/10"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L214)
+    * `cronjob()`: Usage example: `cronjob name="audit_start" type="cron" job="/usr/local/bin/start_new_log_hourly" user="root" minute="*/10"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L214)
 
-* `only_for()`: Usage example: `only_for Darwin FreeBSD NetBSD OpenBSD`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L298)
+    * `only_for()`: Usage example: `only_for Darwin FreeBSD NetBSD OpenBSD`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L298)
 
-* `only_as()`: Usage example: `only_as "root"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L327)
+    * `only_as()`: Usage example: `only_as "root"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L327)
 
-* `inventory_read()`: Usage example: `inventory_read inventory:group host`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L336)
+    * `inventory_read()`: Usage example: `inventory_read inventory:group host`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L336)
 
-* `inventory_hosts()`: Usage example: `inventory_hosts inventory:somegroup`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L458)
+    * `inventory_hosts()`: Usage example: `inventory_hosts inventory:somegroup`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L458)
 
     * `facts_write()`: Usage example: `facts_write mykey=somevalue`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L600)
 
