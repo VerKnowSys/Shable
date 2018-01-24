@@ -18,15 +18,50 @@ POSIX compliant system with /bin/sh at least compatible with BSD-4x version from
 * Support for tasks overloading added with v0.8 since Shable repo contains some shared/common base system files for FreeBSD and Linux.
 
 
-## Facts priorities:
+## Terms and glossary used:
 
-1. Load `base.facts` (from Shable main repo first, then from sibling repo)
-2. Load `SYSTEM_NAME.facts` (from Shable main repo first, then from sibling repo)
-3. Load `facts/cached/local.facts` (if exists)
-4. Load cached facts from facts/cached (if exists)
-5. Load inventory facts (global, then host specific)
+1. Fact - stored as `*.facts` - shell script format file containing facts. Example fact: `feature=dtrace`
+2. Task - stored as `*.task` - shell script format file containing functions. Example function: `test_inventory_reader()`
 
-If there would be facts with same name, they will be overriden following this order.
+
+## General facts/tasks loading priorities.
+
+How `include()` actually loads stuff in Shable (It's assuming usage of [sibling repository](https://github.com/VerKnowSys/Shable.Sibling) - with Shable as submodule with same name):
+
+1. Try loading `Shable/facts/SYSTEM_NAME.facts` (read from Shable main repo first…)
+2. Try loading `facts/SYSTEM_NAME.facts` (… then from sibling repo)
+3. Try loading `Shable/facts/base.facts` (read base facts from Shable main repo first…)
+4. Try loading `facts/base.facts` (… then read base facts from sibling repo)
+5. Try loading `Shable/facts/given_groupname.facts` (read specific facts from Shable main repo first…)
+6. Try loading `facts/given_groupname.facts` (… then from sibling repo)
+7. Try loading `facts/cached/local.facts` (if exists)
+8. Try loading cached facts from `facts/cached/*.facts` (if any)
+9. Load inventory facts (global, then host specific)
+
+If there would be facts (or task functions or group) with same name, they will be overriden following this order.
+
+
+## How facts/tasks loading works:
+
+Tasks are loaded after all facts with similar order - Shable tasks first, sibling tasks as last.
+
+1. Load all facts (…)
+2. Try loading `Shable/tasks/given_groupname/*.task`
+3. Try loading `tasks/given_groupname/*.task`
+
+This way we can override any Shable function (or fact) on demand on any level, but also be sure that our functions will always be loaded and available under reign task.
+
+
+
+## "Reign tasks" - explanation:
+
+The reign task is just and ordinary task put under `reigns/` (or `Shable/reigns/`) directory. Each reign task definition file has to have `main()` function - one that will be invoked when reign task will be called. Only reign tasks can be "called" from "the outside" (using script or terminal). These are the only differences between "regular tasks" and "reign tasks".
+
+Each reign task can be invoked directly this way:
+
+1. `bin/shable inventory-test test-reign` - invokes `reigns/test-reign.task` on local host.
+2. `bin/reign inventory-test test-reign my_remote_host` - syncs repository and invokes `reigns/test-reign.task` on remote host: "my_remote_host".
+
 
 
 ## Few words about inventory files:
@@ -45,8 +80,22 @@ myhost2 supports=dtrace
 For any host you'd like to read values for, each will also get values of "pi" and "phi" injected.
 
 
-## Usage examples:
 
+## Shable functions a.k.a. "Shable API":
+
+> `include()`: Usage example: `include "base"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L13)
+> `template()`: Usage example: `template src="base/myfile" dest="/tmp/there" mode=0775 owner=www`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L81)
+> `validate()`: Usage example: `validate name="${my_variable}" other="${variable}"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L143)
+> `lineinfile()`: Usage example: `lineinfile src="/some/file" line="'flamenco classico'"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L169)
+> `cronjob()`: Usage example: `cronjob name="audit_start" type="cron" job="/usr/local/bin/start_new_log_hourly" user="root" minute="*/10"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L214)
+> `only_for()`: Usage example: `only_for Darwin FreeBSD NetBSD OpenBSD`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L298)
+> `only_as()`: Usage example: `only_as "root"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L327)
+> `inventory_read()`: Usage example: `inventory_read inventory:group host`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L336)
+> `inventory_hosts()`: Usage example: `inventory_hosts inventory:somegroup`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L458)
+
+
+
+## Usage examples:
 
 
 Execute reign task on local system.
