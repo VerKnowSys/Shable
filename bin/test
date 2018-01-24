@@ -374,11 +374,32 @@ system_specific_test () {
 }
 
 
+test_facts_write () {
+    facts_write b0=5 c0=8 d0=123
+    facts_write b1=5 c1=8 d1=123
+
+    # bin/shable does this automatically before
+    # invoking each reign task:
+    . facts/cached/b0.facts
+    . facts/cached/b1.facts
+    . facts/cached/c0.facts
+    . facts/cached/c1.facts
+    . facts/cached/d0.facts
+    . facts/cached/d1.facts
+
+    val_expect "b${b0}" "b${b1}"
+    val_expect "c${c0}" "c${c1}"
+    val_expect "d${d0}" "d${d1}"
+}
+
+
+
 # Invoke tests:
 validate_env && \
 self_test && \
 system_specific_test && \
 test_inventory_reader && \
+test_facts_write && \
 note "Everything as expected!"
 
 if [ -d "templates/test" ]; then

@@ -586,3 +586,28 @@ inventory_hosts () {
     esac
     unset _gnum _gr _ln _line _next_num _next_group_ln _line_to_read_end _line_to_read_start _dynval __gcount _group _inv_int _inv_grp
 }
+
+
+#
+# Simply put new fact to cached facts.
+#
+# Params:
+#   1. a=fact
+#
+# Example:
+#   facts_write favourite=phi yummy=bananas
+#
+facts_write () {
+    if [ -z "${*}" ]; then
+        error "No params given for: $(diste "facts_write()")"
+    else
+        test -d "facts/cached" || mkdir -p "facts/cached"
+        for _fact in ${*}; do
+            _fname="${_fact%=*}.facts"
+            _fdest="facts/cached/${_fname}"
+            echo "${_fact}" > "${_fdest}"
+            debug "Stored fact: $(distd "${_fact}") under: $(distd "${_fdest}")"
+        done
+    fi
+    unset _fact _fname _fdest
+}
