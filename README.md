@@ -95,6 +95,7 @@ Debugging per Shable function:
 > Here we're loading shable functions and calling inner functions "inventory_hosts()" and "inventory_read()" directly:
 
 Example 1:
+
     ${SHELL}        # load new shell since in case of error
                     # whole environment will be closed by error()
     . lib/shable    # load Shable functions
@@ -103,6 +104,7 @@ Example 1:
     DEBUG=1 inventory_hosts inventory-test:anything
 
 Example 2:
+
     ${SHELL}        # load new shell since in case of error
                     # whole environment will be closed by error()
     . lib/shable    # load Shable functions
