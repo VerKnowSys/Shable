@@ -1,6 +1,8 @@
 include "base"
 include "agency"
 
+only_as "root"
+
 SKIP_ENV_VALIDATION=1
 
 
