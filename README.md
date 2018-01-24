@@ -18,6 +18,17 @@ POSIX compliant system with /bin/sh at least compatible with BSD-4x version from
 * Support for tasks overloading added with v0.8 since Shable repo contains some shared/common base system files for FreeBSD and Linux.
 
 
+## Facts priorities:
+
+1. Load `base.facts` (from Shable main repo first, then from sibling repo)
+2. Load `SYSTEM_NAME.facts` (from Shable main repo first, then from sibling repo)
+3. Load `facts/cached/local.facts` (if exists)
+4. Load cached facts from facts/cached (if exists)
+5. Load inventory facts (global, then host specific)
+
+If there would be facts with same name, they will be overriden following this order.
+
+
 ## Few words about inventory files:
 
 Shable supports idea of "global inventory variables" via special: _ like this:
