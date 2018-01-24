@@ -18,7 +18,7 @@ for _host in ${_hosts}; do
     echo > "${_log}" > "${_log}.error" # Clean previous log
 
     progress_note "Invoking reign: $(distn "${_reign}") for host: $(distn "${_host}")"
-    bin/reign "${DEFAULT_INVENTORY}" "${_reign}" "${_host}" >> "${_log}" 2>> "${_log}.error" &
+    bin/reign "${DEFAULT_INVENTORY}" "${_reign}" "${_host}" >> "${_log}" 2>> "${_log}" &
 done
 
 await_async "${_process_logs}"
