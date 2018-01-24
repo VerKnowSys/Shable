@@ -116,8 +116,11 @@ install_software () {
         nginx-module-geoip
     DEBIAN_FRONTEND=noninteractive aptitude install -y bind9-host dnsutils
 
-    note "Cancel possible pending actions"
-    aptitude keep-all
+    note "Upgrading what's left to be upgraded on host"
+    DEBIAN_FRONTEND=noninteractive aptitude --without-recommends -y \
+        -o Dpkg::Options::="--force-confdef" \
+        -o Dpkg::Options::="--force-confold" \
+        upgrade
 
     note "Get rid of critical errors thrown by syslog-ng to stdio"
     ${SED_BIN} -i '/log { source(s_src); filter(f_crit); destination(d_console); };/ d' /etc/syslog-ng/syslog-ng.conf
