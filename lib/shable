@@ -340,10 +340,10 @@ only_as () {
 #   2. host name
 #
 # Example, when inventory file has no groups:
-#   inventory_read inventory - host18
+#   inventory_read inventory host18
 #
 # Example, when inventory file has defined groups:
-#   inventory_read inventory third-party host18
+#   inventory_read inventory:third-party host18
 #
 inventory_read () {
     _inv_internal="${1}"
@@ -461,10 +461,14 @@ inventory_read () {
 # Args:
 #   1. inventory-file:group-name
 #
-# Example, when inventory file has no groups:
-#   inventory_hosts inventory:-
+# Example, load all hosts:
+#   inventory_hosts inventory
+#   or
+#   inventory_hosts inventory:+
+#   or
+#   inventory_hosts inventory:all
 #
-# Example, when inventory file has defined group:
+# Example, load only hosts of group "third-party":
 #   inventory_hosts inventory:third-party
 #
 inventory_hosts () {
