@@ -80,7 +80,7 @@ Calling Reigns and inventory groups:
 > Shable is using Ansible inventory format, groups are no different. The only difference is with group calling. Shable is using unix-like notation, for example: `inventory:group`
 
     # invoke shable reign locally: "test-reign" on local host:
-    bin/shable test-reign
+    bin/shable inventory-test test-reign
 
     # invoke reign: "test-reign" on host: "myhost" of group: "mygroup" from inventory file: "inventory":
     bin/reign inventory:mygroup test-reign myhost
