@@ -1,0 +1,10 @@
+include "base"
+include "agency"
+
+SKIP_ENV_VALIDATION=1
+
+
+main () {
+    note "Rebooting: $(distn "${_remote}")"
+    reboot
+}
