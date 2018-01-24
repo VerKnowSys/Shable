@@ -14,59 +14,71 @@ include () {
     _partial_path="${1}"
     shift
     _args="${*}"
-    eval "export ${_args}" >/dev/null 2>/dev/null
+    eval "${_args}" >/dev/null 2>/dev/null
 
-    # load base facts from Shable "base stdlib"
-    if [ -f "${SHABLE_NAME}/facts/${_partial_path}.facts" ]; then
-        debug "+ all common facts from: $(distd "${SHABLE_NAME}/facts/${_partial_path}.facts") with args: '$(distd "${_args}")'"
-        . "${SHABLE_NAME}/facts/${_partial_path}.facts"
-    fi
-
-    # seek for particular task file:
-    if [ -f "${SHABLE_NAME}/tasks/${_partial_path}" ]; then
-        debug "+ only common task from: $(distd "${SHABLE_NAME}/tasks/${_partial_path}") with args: '$(distd "${_args}")'"
-        . "${SHABLE_NAME}/tasks/${_partial_path}"
-        return
-    fi
-    if [ -f "tasks/${_partial_path}" ]; then
-        debug "+ only task from: $(distd "tasks/${_partial_path}") with args: '$(distd "${_args}")'"
-        . "tasks/${_partial_path}"
-        return
-    fi
-
-    # seek for facts:
-    if [ -f "${SHABLE_NAME}/facts/${_partial_path}.facts" ]; then
-        debug "+ all common OS facts from: $(distd "${SHABLE_NAME}/facts/${_partial_path}.facts") with args: '$(distd "${_args}")'"
-        . "${SHABLE_NAME}/facts/${_partial_path}.facts"
-    fi
-    if [ -f "facts/${_partial_path}.facts" ]; then
-        debug "+ all facts from: $(distd "facts/${_partial_path}.facts") with args: '$(distd "${_args}")'"
-        . "facts/${_partial_path}.facts"
-    fi
+    #
+    # Facts:
+    #
 
     # seek for system speficic facts (override)
-    if [ -f "${SHABLE_NAME}/facts/${SYSTEM_NAME}.facts" ]; then
-        debug "+ OS common facts from: $(distd "${SHABLE_NAME}/facts/${SYSTEM_NAME}.facts") with args: '$(distd "${_args}")'"
-        . "${SHABLE_NAME}/facts/${SYSTEM_NAME}.facts"
-    fi
-    if [ -f "facts/${SYSTEM_NAME}.facts" ]; then
-        debug "+ OS specific facts from: $(distd "facts/${SYSTEM_NAME}.facts") with args: '$(distd "${_args}")'"
-        . "facts/${SYSTEM_NAME}.facts"
-    fi
+        if [ -f "${SHABLE_NAME}/facts/${SYSTEM_NAME}.facts" ]; then
+            debug "+ OS common facts from: $(distd "${SHABLE_NAME}/facts/${SYSTEM_NAME}.facts") with args: '$(distd "${_args}")'"
+            . "${SHABLE_NAME}/facts/${SYSTEM_NAME}.facts"
+        fi
+        if [ -f "facts/${SYSTEM_NAME}.facts" ]; then
+            debug "+ OS specific facts from: $(distd "facts/${SYSTEM_NAME}.facts") with args: '$(distd "${_args}")'"
+            . "facts/${SYSTEM_NAME}.facts"
+        fi
 
-    # seek for task group:
-    if [ -d "${SHABLE_NAME}/tasks/${_partial_path}/" ]; then
-        for _taskfile in ${SHABLE_NAME}/tasks/${_partial_path}/*; do
-            debug "+ common tasks from: $(distd "${_taskfile}") with args: '$(distd "${_args}")'"
-            . "${_taskfile}"
-        done
-    fi
-    if [ -d "tasks/${_partial_path}/" ]; then
-        for _taskfile in tasks/${_partial_path}/*; do
-            debug "+ tasks from: $(distd "${_taskfile}") with args: '$(distd "${_args}")'"
-            . "${_taskfile}"
-        done
-    fi
+    # load base facts from Shable "base stdlib"
+        if [ -f "${SHABLE_NAME}/facts/base.facts" ]; then
+            debug "+ all common facts from: $(distd "${SHABLE_NAME}/facts/base.facts") with args: '$(distd "${_args}")'"
+            . "${SHABLE_NAME}/facts/base.facts"
+        fi
+        if [ -f "facts/base.facts" ]; then
+            debug "+ all facts from: $(distd "facts/base.facts") with args: '$(distd "${_args}")'"
+            . "facts/base.facts"
+        fi
+
+    # load specific facts
+        if [ -f "${SHABLE_NAME}/facts/${_partial_path}.facts" ]; then
+            debug "+ all common facts from: $(distd "${SHABLE_NAME}/facts/${_partial_path}.facts") with args: '$(distd "${_args}")'"
+            . "${SHABLE_NAME}/facts/${_partial_path}.facts"
+        fi
+        if [ -f "facts/${_partial_path}.facts" ]; then
+            debug "+ all facts from: $(distd "facts/${_partial_path}.facts") with args: '$(distd "${_args}")'"
+            . "facts/${_partial_path}.facts"
+        fi
+
+
+    # Tasks:
+
+    # seek for particular task file:
+        if [ -f "${SHABLE_NAME}/tasks/${_partial_path}" ]; then
+            debug "+ only common task from: $(distd "${SHABLE_NAME}/tasks/${_partial_path}") with args: '$(distd "${_args}")'"
+            . "${SHABLE_NAME}/tasks/${_partial_path}"
+            return
+        fi
+        if [ -f "tasks/${_partial_path}" ]; then
+            debug "+ only task from: $(distd "tasks/${_partial_path}") with args: '$(distd "${_args}")'"
+            . "tasks/${_partial_path}"
+            return
+        fi
+
+    # load all tasks by task group name:
+        if [ -d "${SHABLE_NAME}/tasks/${_partial_path}/" ]; then
+            for _taskfile in ${SHABLE_NAME}/tasks/${_partial_path}/*; do
+                debug "+ common tasks from: $(distd "${_taskfile}") with args: '$(distd "${_args}")'"
+                . "${_taskfile}"
+            done
+        fi
+        if [ -d "tasks/${_partial_path}/" ]; then
+            for _taskfile in tasks/${_partial_path}/*; do
+                debug "+ tasks from: $(distd "${_taskfile}") with args: '$(distd "${_args}")'"
+                . "${_taskfile}"
+            done
+        fi
+
     unset _args _taskfile _partial_path
 }
 
