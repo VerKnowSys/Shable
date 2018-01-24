@@ -502,16 +502,18 @@ inventory_hosts () {
 
         if [ "1" = "${_gnum}" ]; then
             _end=$(( ${_line_to_read_start} - 2 ))
-            debug "Inventory first lines to read: $(distd "${_end}")"
-            for _lnum in $(${SEQ_BIN} "1" "${_end}" 2>/dev/null); do
-                _line="$(${SED_BIN} "${_lnum}q;d" "${_inv_int}")" # print N-th line of file
-                if [ -n "${_line}" ]; then
-                    _rl="$(echo "${_line}" | ${CUT_BIN} -d' ' -f1)"
-                    if [ "${_rl}" != "_" ]; then
-                        _results="${_rl}_${_results}"
+            if [ "0" != "${_end}" ]; then
+                debug "Inventory first lines to read: $(distd "${_end}")"
+                for _lnum in $(${SEQ_BIN} "1" "${_end}" 2>/dev/null); do
+                    _line="$(${SED_BIN} "${_lnum}q;d" "${_inv_int}")" # print N-th line of file
+                    if [ -n "${_line}" ]; then
+                        _rl="$(echo "${_line}" | ${CUT_BIN} -d' ' -f1)"
+                        if [ "${_rl}" != "_" ]; then
+                            _results="${_rl}_${_results}"
+                        fi
                     fi
-                fi
-            done
+                done
+            fi
         fi
 
         debug "Inventory lines to read: $(distd "${_line_to_read_start}") => $(distd "${_line_to_read_end}")"
