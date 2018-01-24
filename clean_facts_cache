@@ -1,0 +1,6 @@
+#!/bin/sh
+
+. lib/core
+
+note "Cleaning facts cache: $(distn "facts/cached/*")"
+cleanup_fragile_facts
