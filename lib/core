@@ -191,6 +191,7 @@ await_async () {
 
 # validate environment availability or crash
 validate_env () {
+    unset _res_container
     for _envvar in $(${CAT_BIN} lib/vars 2>/dev/null | ${GREP_BIN} -E "^.*[A-Z]+_BIN=\"\/.*\/.*\"" 2>/dev/null); do
         _vname="$(printf '%s' "${_envvar}" | ${SED_BIN} 's/=.*$//' 2>/dev/null)"
         if [ -n "${_vname}" ]; then
@@ -198,12 +199,13 @@ validate_env () {
         else
             unset _val
         fi
-        debug "validate_env('$(distd "${_vname}")'='$(distd "${_val}")')"
+        _res_container="${_res_container}'$(distd "${_vname}")'='$(distd "${_val}")', "
         if [ -n "${_val}" ] && [ ! -x "${_val}" ]; then
             error "Required binary is unavailable: $(diste "${_val}") on hostname: $(diste "${HOST_NAME}")"
         fi
     done
-    unset _vname _val _envvar
+    debug "validate_env(): ${_res_container}"
+    unset _vname _val _envvar _res_container
 }
 
 
