@@ -22,25 +22,31 @@ else
         else
             error "No such reign task: '$(diste "${_reign}")'"
         fi
+        # Say hello ;)
+        note "${SHABLE_NAME}: $(distn "v${SHABLE_VERSION}") is executing task: $(distn "${_reign}"), on host: $(distn "$(${HOSTNAME_BIN})") ($(distn "${SYSTEM_NAME}"))"
 
-        # load cached facts (if any)
+        #
+        # NOTE: Shable assumes that at this point all necessary facts and tasks were loaded…
+        #
+
+        # Load local cached facts (if any)
         if [ -d "facts/cached" ]; then
             if [ -f "${DEFAULT_CACHE_FILE_LOCAL}" ]; then
-                debug "+ common local facts cache file: $(distd "${DEFAULT_CACHE_FILE_LOCAL}")"
+                debug "+ common facts file: $(distd "${DEFAULT_CACHE_FILE_LOCAL}")"
                 . "${DEFAULT_CACHE_FILE_LOCAL}"
             fi
 
             for _facts in facts/cached/*.facts; do
                 if [ -f "${_facts}" ]; then
                     if [ "${DEFAULT_CACHE_FILE_LOCAL}" != "${_facts}" ]; then
-                        debug "+ additional facts from cache file: $(distd "${_facts}")"
+                        debug "+ additional facts from cached file: $(distd "${_facts}")"
                         . "${_facts}"
                     fi
                 fi
             done
         fi
 
-        # values of upmost importance, so loaded as last:
+        # Load inventory facts
         inventory_read "${_inventory}" "${_remote}"
 
         # call validation of required software defined in lib/vars (*_BIN):
@@ -48,10 +54,10 @@ else
             validate_env
         fi
 
-        # call main() from reign:
+        # call main() from reign task:
         main
 
-        # call cleanup of cached tasks:
+        # call cleanup of cached tasks (sensitive vault data):
         cleanup_fragile_facts
     fi
 fi
