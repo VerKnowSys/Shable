@@ -12,16 +12,6 @@ else
     if [ -z "${_reign}" ]; then
         error "Reign task required as second param!"
     else
-        note "${SHABLE_NAME}: $(distn "v${SHABLE_VERSION}"), Reign: $(distn "${_reign}"), Host: $(distn "$(${HOSTNAME_BIN})"), OS: $(distn "${SYSTEM_NAME}")"
-        if [ -f "reigns/${_reign}.task" ]; then
-            debug "+ reign file: $(distd "reigns/${_reign}.task")"
-            . "reigns/${_reign}.task"
-        elif [ -f "${SHABLE_NAME}/reigns/${_reign}.task" ]; then
-            debug "+ common reign file: $(distd "${SHABLE_NAME}/reigns/${_reign}.task")"
-            . "${SHABLE_NAME}/reigns/${_reign}.task"
-        else
-            error "No such reign task: '$(diste "${_reign}")'"
-        fi
         # Say hello ;)
         note "${SHABLE_NAME}: $(distn "v${SHABLE_VERSION}") is executing task: $(distn "${_reign}"), on host: $(distn "$(${HOSTNAME_BIN})") ($(distn "${SYSTEM_NAME}"))"
 
@@ -48,6 +38,17 @@ else
 
         # Load inventory facts
         inventory_read "${_inventory}" "${_remote}"
+
+        # Load reign task as last
+        if [ -f "reigns/${_reign}.task" ]; then
+            debug "+ reign task file: $(distd "reigns/${_reign}.task")"
+            . "reigns/${_reign}.task"
+        elif [ -f "${SHABLE_NAME}/reigns/${_reign}.task" ]; then
+            debug "+ common reign task file: $(distd "${SHABLE_NAME}/reigns/${_reign}.task")"
+            . "${SHABLE_NAME}/reigns/${_reign}.task"
+        else
+            error "No such reign task: '$(diste "${_reign}")'"
+        fi
 
         # call validation of required software defined in lib/vars (*_BIN):
         if [ -z "${SKIP_ENV_VALIDATION}" ]; then
