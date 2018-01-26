@@ -166,7 +166,6 @@ await_async () {
         progress_note "Completed: $(distn "${_completed}"). Failed: $(distn "${_failed}" "${_fcolour}"). Total: $(distn "${_all}")  [elapsed: $(distn "${_time_elapsed}")s]"
         _time_elapsed="$(echo "${_time_elapsed}+1" | ${BC_BIN} 2>/dev/null)"
         _countall="$(echo "${_completed} + ${_failed}" | ${BC_BIN} 2>/dev/null)"
-        debug "Done count: $(distd "${_countall}") of all: $(distd "${_all}")"
         if [ "${_countall}" = "${_all}" ]; then
             debug "Finished!"
             for _plog in ${_process_logs}; do
@@ -211,10 +210,10 @@ validate_env () {
 
 # Cleanup of cached facts routine:
 cleanup_fragile_facts () {
-    debug "Invoking cleanup of fragile cached facts"
     for _fact_file in facts/cached/*.facts; do
         if [ "${DEFAULT_CACHE_FILE_LOCAL}" != "${_fact_file}" ]; then
             ${RM_BIN} -f "${_fact_file}"
         fi
     done
+    debug "Cache facts were wiped out"
 }
