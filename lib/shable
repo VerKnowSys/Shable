@@ -92,7 +92,7 @@ include () {
 #
 template () {
     _args="${*}"
-    eval "export ${_args}" >/dev/null 2>/dev/null
+    eval "${_args}" >/dev/null 2>/dev/null
 
     if [ -z "${src}" ]; then
         error "Unspecified $(diste "src") for $(diste "template()")!"
@@ -179,7 +179,7 @@ validate () {
 #   'pattern' - regexp pattern - considered as an additional match-conditional made on file contents
 #
 lineinfile () {
-    eval "export ${*}" >/dev/null 2>&1
+    eval "${*}" >/dev/null 2>&1
     if [ -z "${src}" ]; then
         error "No $(diste "src") file given!"
     fi
@@ -225,7 +225,7 @@ lineinfile () {
 #
 cronjob () {
     _args="${*}"
-    eval "export ${_args}" >/dev/null 2>/dev/null
+    eval "${_args}" >/dev/null 2>/dev/null
 
     validate \
         _job="${job}" \
