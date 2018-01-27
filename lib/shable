@@ -490,7 +490,7 @@ inventory_hosts () {
             error "No inventory found: $(diste "${_inv_int}")"
         fi
     fi
-    debug "Loading inventory: $(distd "${_inv_int}:${_inv_grp}"), for client: $(distd "${_remote}")"
+    debug "Loading inventory: $(distd "${_inv_int}:${_inv_grp}"), for client: $(distd "${REMOTE}")"
 
     # all lines of inventory file
     _inv_all_lines="$(${CAT_BIN} "${_inv_int}" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')"

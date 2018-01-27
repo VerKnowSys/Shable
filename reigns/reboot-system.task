@@ -7,6 +7,6 @@ SKIP_ENV_VALIDATION=1
 
 
 main () {
-    note "Rebooting: $(distn "${_remote}")"
+    note "Rebooting: $(distn "${REMOTE}")"
     reboot
 }

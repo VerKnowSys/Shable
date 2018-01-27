@@ -37,11 +37,11 @@ else
         fi
 
         # Load inventory facts
-        inventory_read "${_inventory}" "${_remote}"
+        inventory_read "${_inventory}" "${REMOTE}"
 
-        # Set fallback for empty value of _remote:
-        if [ -z "${_remote}" ]; then
-            _remote="${HOST:-${DEFAULT_HOST}}"
+        # Set fallback for empty value of REMOTE:
+        if [ -z "${REMOTE}" ]; then
+            REMOTE="${HOST:-${DEFAULT_HOST}}"
         fi
 
         # Load reign task as last

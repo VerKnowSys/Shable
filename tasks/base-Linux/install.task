@@ -26,7 +26,7 @@ install_security_limits_configuration () {
         _username="${_base%.conf}"
         ${ID_BIN} -u "${_username}" >/dev/null 2>&1
         if [ "0" = "${?}" ]; then
-            note "Installing custom limits for custom user: $(distn "${_username}") found on host: $(distn "${_remote}")"
+            note "Installing custom limits for custom user: $(distn "${_username}") found on host: $(distn "${REMOTE}")"
             template \
                 src="${_cnf}" \
                 dest="/etc/security/limits.d/${_username}.conf"

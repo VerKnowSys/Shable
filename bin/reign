@@ -17,6 +17,8 @@ else
         if [ -z "${_remote}" ]; then
             error "Client name is required as 3rd param!"
         else
+            REMOTE="${_remote}"
+
             # Read base.facts - cause bin/reign can make use of base facts too
             if [ -f "${SHABLE_NAME}/facts/base.facts" ]; then
                 debug "+ common base facts: $(distd "${SHABLE_NAME}/facts/base.facts")"
@@ -27,8 +29,8 @@ else
                 . "facts/base.facts"
             fi
 
-            inventory_read "${_inventory}" "${_remote}"
-            if [ -z "${_remote}" ]; then
+            inventory_read "${_inventory}" "${REMOTE}"
+            if [ -z "${REMOTE}" ]; then
                 debug "No inventory values read for empty remote host!"
             fi
 
@@ -52,7 +54,7 @@ else
                 connection_attempts="${connection_attempts}"
 
             commit_failure () {
-                warn "Reign FAILED: $(distw "${_reign}") for host: $(distw "${_remote}"). Reason: ${*}"
+                warn "Reign FAILED: $(distw "${_reign}") for host: $(distw "${REMOTE}"). Reason: ${*}"
                 error "${*}"
             }
 
@@ -66,7 +68,7 @@ else
                         --archive \
                         --delete \
                         "./" \
-                        "${_remote_user}@${_remote}:${_base_name}" 2>/dev/null
+                        "${_remote_user}@${REMOTE}:${_base_name}" 2>/dev/null
                     if [ "0" = "$?" ]; then
                         return 0
                     else
@@ -77,11 +79,11 @@ else
             }
 
             debug "rSyncing ${SHABLE_NAME} as: $(distd "${_remote_user}") to: $(distd "${_base_name}")"
-            sync_with_rsync || commit_failure "Failed to rsync to: $(distw "${_remote_user}@${_remote}:${_base_name}")"
+            sync_with_rsync || commit_failure "Failed to rsync to: $(distw "${_remote_user}@${REMOTE}:${_base_name}")"
 
             _job="cd ${_base_name}; /bin/sh -c \
 ' \
-export commands='${commands}' domain='${domain}' _remote='${_remote}' DEBUG=${DEBUG} SKIP_ENV_VALIDATION=${SKIP_ENV_VALIDATION} \
+export REMOTE=${REMOTE} ARGUMENTS='${ARGUMENTS}' DEBUG=${DEBUG} SKIP_ENV_VALIDATION=${SKIP_ENV_VALIDATION} \
 && bin/shable ${_inventory} ${_reign} \
 '"
 
@@ -94,7 +96,7 @@ export commands='${commands}' domain='${domain}' _remote='${_remote}' DEBUG=${DE
                         -o "ConnectTimeout=${connection_timeout}" \
                         -o "ConnectionAttempts=${connection_attempts}" \
                         -o "ServerAliveInterval=1" \
-                        "${_remote_user}@${_remote}" \
+                        "${_remote_user}@${REMOTE}" \
                         "${_job}"
 
                     if [ "0" = "$?" ]; then
@@ -108,8 +110,8 @@ export commands='${commands}' domain='${domain}' _remote='${_remote}' DEBUG=${DE
                 return 1
             }
 
-            debug "Invoking ${SHABLE_NAME} on remote: $(distd "${_remote}")"
-            invoke_ssh || commit_failure "Failed to invoke ssh connection to remote: $(diste "${_remote}")"
+            debug "Invoking ${SHABLE_NAME} on remote: $(distd "${REMOTE}")"
+            invoke_ssh || commit_failure "Failed to invoke ssh connection to remote: $(diste "${REMOTE}")"
 
             note "Reign completed: $(distn "${_reign}")"
         fi
