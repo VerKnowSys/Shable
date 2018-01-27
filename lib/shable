@@ -365,7 +365,8 @@ inventory_read () {
 
     _host="${2}"
     if [ -z "${_host}" ]; then
-        error "No host specified for inventory: '$(diste "${_inv_internal}:${_inv_grp}")'!"
+        debug "No host specified for inventory: '$(distd "${_inv_internal}:${_inv_grp}")'!"
+        return 0
     fi
 
     # all lines of inventory file
