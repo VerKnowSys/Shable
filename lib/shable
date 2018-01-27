@@ -349,7 +349,7 @@ inventory_read () {
     _inv_internal="${1}"
 
     # support for specifying group like on unixes, by username:groupname as inventory
-    _inv_grp="${default_inventory_group:-${DEFAULT_INVENTORY_GROUP}}"
+    _inv_grp="${default_inventory_group}"
     echo "${_inv_internal}" | ${GREP_BIN} -F ":" >/dev/null 2>&1
     if [ "0" = "${?}" ]; then
         _inv_grp="$(echo "${_inv_internal}" | ${CUT_BIN} -d':' -f2 2>/dev/null)"
