@@ -5,6 +5,7 @@ _ global_value=456
 [anything]
 peter test3value=666
 demo2 other=someother test3value=888
+localhost localvalue=1
 
 
 [other-thing]
