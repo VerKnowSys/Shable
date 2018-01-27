@@ -395,6 +395,7 @@ test_facts_write () {
 
 
 # Invoke tests:
+bin/shable inventory-test test-reign && \
 validate_env && \
 self_test && \
 system_specific_test && \
