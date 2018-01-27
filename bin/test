@@ -3,7 +3,7 @@
 . lib/shable
 
 if [ ! -d "templates/test" ]; then
-    cd Shable
+    cd ./Shable
 fi
 
 # test helpers:
