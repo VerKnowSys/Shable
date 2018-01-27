@@ -39,6 +39,11 @@ else
         # Load inventory facts
         inventory_read "${_inventory}" "${_remote}"
 
+        # Set fallback for empty value of _remote:
+        if [ -z "${_remote}" ]; then
+            _remote="${HOST:-${DEFAULT_HOST}}"
+        fi
+
         # Load reign task as last
         if [ -f "reigns/${_reign}.task" ]; then
             debug "+ reign task file: $(distd "reigns/${_reign}.task")"
