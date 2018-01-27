@@ -1,4 +1,20 @@
 test_inventory_reader () {
+    inventory_read "inventory-test" "peter"
+    if [ "${test3value}" = "666" ]; then
+        error "Unexpected value: $(diste "${test3value}")"
+    fi
+    if [ "${bzzz}" = "3" ]; then
+        error "Unexpected value: $(diste "3")"
+    fi
+
+    inventory_read "inventory-test2" "other"
+    if [ "${test3value}" != "7" ]; then
+        error "Unexpected value: $(diste "${test3value}")"
+    fi
+    if [ "${bzzz}" != "3" ]; then
+        error "Expected value: $(diste "3")"
+    fi
+
     inventory_read "inventory-test:anything" "demo2"
     if [ "888" != "${test3value}" ]; then
         error "Loading value from inventory failure. Wrong value: $(diste "${test3value}")! Expected: $(diste "888")"
