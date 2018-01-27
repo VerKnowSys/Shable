@@ -361,13 +361,13 @@ inventory_read () {
             error "No inventory found: $(diste "${_inv_internal}")"
         fi
     fi
-    debug "Loading inventory: $(distd "${_inv_internal}:${_inv_grp}"), for client: $(distd "${_remote}")"
 
     _host="${2}"
     if [ -z "${_host}" ]; then
         debug "No host specified for inventory: '$(distd "${_inv_internal}:${_inv_grp}")'!"
         return 0
     fi
+    debug "Loading inventory: $(distd "${_inv_internal}:${_inv_grp}"), for host: $(distd "${_host}")"
 
     # all lines of inventory file
     _inv_all_lines="$(${CAT_BIN} "${_inv_internal}" | ${WC_BIN} -l | ${SED_BIN} 's/ //g')"

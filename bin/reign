@@ -28,6 +28,9 @@ else
             fi
 
             inventory_read "${_inventory}" "${_remote}"
+            if [ -z "${_remote}" ]; then
+                debug "No inventory values read for empty remote host!"
+            fi
 
             # use default value of remote user:
             _remote_user="${default_remote_user}"
