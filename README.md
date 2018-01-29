@@ -18,13 +18,17 @@ POSIX compliant system with /bin/sh at least compatible with BSD-4x version from
 * Support for tasks overloading added with v0.8 since Shable repo contains some shared/common base system files for FreeBSD and Linux.
 
 
-## Environment variables and optional arguments passed via bin/reign:
+## Environment variables and optional arguments that can be passed via bin/reign:
 
 * `RUN_AS` - remote reign task will be invoked with given user privileges.
 * `ARGUMENTS` - special arguments (for scripts usage).
-* `REMOTE` - remote host name.
 * `DEBUG` - if set - debug mode is enabled.
 * `SKIP_ENV_VALIDATION` - if set - skip binaries availability validation (useful for host setup tasks).
+
+
+## Envrionemnt variables set by bin/reign while running:
+
+* `REMOTE` - contains remote host name.
 
 
 ## Terms and glossary used:
