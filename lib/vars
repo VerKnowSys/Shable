@@ -20,6 +20,7 @@ DEFAULT_INVENTORY="inventory:${DEFAULT_INVENTORY_GROUP}"
 # system specific
 HOST_NAME="$(hostname -s)"
 SYSTEM_NAME="$(uname)"
+SYSTEM_ARCH="$(uname -m)"
 
 # shell specific:
 LANG="${DEFAULT_LANG}"
