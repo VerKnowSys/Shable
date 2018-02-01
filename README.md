@@ -114,9 +114,9 @@ For any host you'd like to read values for, each will also get values of "pi" an
 
 * `inventory_hosts()`: Usage example: `inventory_hosts inventory:somegroup`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L458)
 
-* `facts_write()`: Usage example: `facts_write mykey=somevalue`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L600)
+* `facts_write()`: Usage example: `facts_write mykey=somevalue`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L601)
 
-* `only_bits()`: Usage example: `only_bits "64"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L635)
+* `only_bits()`: Usage example: `only_bits "64"`. Read [details here](https://github.com/VerKnowSys/Shable/blob/master/lib/shable#L626)
 
 
 
