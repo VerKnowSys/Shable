@@ -13,4 +13,7 @@ setup_base_system () {
     generate_audit_conf
     generate_default_environment
     generate_default_rc
+
+    # install svdOS image:
+    install_system_image
 }

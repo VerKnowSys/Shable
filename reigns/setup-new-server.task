@@ -1,0 +1,18 @@
+include "base"
+include "base-${SYSTEM_NAME}"
+
+only_as "root"
+only_for "FreeBSD Linux"
+
+
+main () {
+    validate \
+        _remote="${REMOTE}" \
+        default_www_user="${default_www_user}"
+
+    # base tasks:
+    setup_base_system
+    install_software
+
+    warn "Please reboot your machine now, to load new kernel…"
+}
