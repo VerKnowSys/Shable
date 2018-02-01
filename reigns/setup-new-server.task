@@ -1,6 +1,7 @@
 include "base"
 include "base-${SYSTEM_NAME}"
 
+only_bits "64"
 only_as "root"
 only_for "FreeBSD Linux"
 

@@ -344,6 +344,7 @@ self_test () {
 
 
 system_specific_test () {
+    only_bits "64"
     only_as "${USER}"
     case "${SYSTEM_NAME}" in
         Linux)

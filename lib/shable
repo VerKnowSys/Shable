@@ -590,6 +590,40 @@ inventory_hosts () {
 
 
 #
+# CPU architecture constraint helper.
+#   Will make sure that reign task is invoked on supported platform architecture.
+#
+# Arg:
+#   bits
+#
+# Arg can be "32" or "64" (at least for now)
+#
+only_bits () {
+    case "${1}" in
+        32)
+            case "${SYSTEM_ARCH}" in
+                amd64|x86_64)
+                    error "System architecture constraint is not satisfied! Required: $(diste "32bit")"
+                    ;;
+            esac
+            ;;
+
+        64)
+            case "${SYSTEM_ARCH}" in
+                i386|i486|i686)
+                    error "System architecture constraint is not satisfied! Required: $(diste "64bit")"
+                    ;;
+            esac
+            ;;
+
+        *)
+            error "Unsupported system architecture: $(diste "${SYSTEM_ARCH}")"
+            ;;
+    esac
+}
+
+
+#
 # Simply put new fact to cached facts.
 #
 # Params:
@@ -612,3 +646,5 @@ facts_write () {
     fi
     unset _fact _fname _fdest
 }
+
+
