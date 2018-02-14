@@ -7,7 +7,7 @@ configure_root_user () {
     if [ ! -f "${homedir_root}/.zshrc" ]; then
         printf "%s\n%s\n" \
             "test -f ${homedir_root}/.profile || ${sofin_bin} reload" \
-            "alias htop=atop" \
+            "alias htop='atop -M -a -c 1'" \
             > "${homedir_root}/.zshrc"
     fi
 }
@@ -33,7 +33,7 @@ configure_www_user () {
     if [ ! -f "${homedir}/.zshrc" ]; then
         printf "%s\n%s\n%s\n" \
             "#!/bin/sh" \
-            "alias htop=atop" \
+            "alias htop='atop -M -a -c 1'" \
             "test -f ${homedir}/.profile || ${sofin_bin} reload" \
             > "${homedir}/.zshrc"
     fi
