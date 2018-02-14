@@ -31,9 +31,10 @@ configure_www_user () {
 
     ${PW_BIN} user mod "${default_www_user}" -d "${homedir}"
     if [ ! -f "${homedir}/.zshrc" ]; then
-        printf "%s\n%s\n%s\n" \
+        printf "%s\n%s\n%s\n%s\n" \
             "#!/bin/sh" \
             "alias htop='atop -M -a -c 1'" \
+            "alias service=/usr/local/bin/service" \
             "test -f ${homedir}/.profile || ${sofin_bin} reload" \
             > "${homedir}/.zshrc"
     fi
