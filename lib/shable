@@ -648,28 +648,38 @@ only_bits () {
 }
 
 
+
 #
-# Simply put new fact to cached facts.
+# Helper to wrap up variable definition check
 #
-# Params:
-#   1. a=fact
+# Args:
+#   'some_value' - variable name that should not be empty
+#   'Some message' - error message if variable is defined
 #
 # Example:
-#   facts_write favourite=phi yummy=bananas
+#   $ empty "${_password}" "$(diste "_password") has to be empty!"
 #
-facts_write () {
-    if [ -z "${*}" ]; then
-        error "No params given for: $(diste "facts_write()")"
-    else
-        test -d "facts/cached" || mkdir -p "facts/cached"
-        for _fact in ${*}; do
-            _fname="${_fact%=*}.facts"
-            _fdest="facts/cached/${_fname}"
-            echo "${_fact}" > "${_fdest}"
-            debug "Stored fact: $(distd "${_fact}") under: $(distd "${_fdest}")"
-        done
+is_empty () {
+    if [ -n "${1}" ]; then
+        error "${2}"
     fi
-    unset _fact _fname _fdest
+}
+
+
+#
+# Helper to wrap up variable emptiness check
+#
+# Args:
+#   'some_value' - variable name that should not be empty
+#   'Some message' - error message if variable is empty
+#
+# Example:
+#   $ not_empty "${_host}" "$(diste "_host") has to be specified!"
+#
+not_empty () {
+    if [ -z "${1}" ]; then
+        error "${2}"
+    fi
 }
 
 

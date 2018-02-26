@@ -67,13 +67,8 @@ include_test0 () {
         "$(only_test)" \
         'always*#$%!'
 
-    val_expect \
-        "${test1value}" \
-        ""
-
-    val_expect \
-        "${test2value}" \
-        ""
+    is_empty "${test1value}" "$(diste "test1value") is set!"
+    is_empty "${test2value}" "$(diste "test2value") is set!"
 
     include \
         "test/onlythis.task" only='of\ horse'
@@ -100,30 +95,20 @@ include_test1 () {
 
 include_pass_cache_vault_test0 () {
     _value="$(pass_cache "i/am/not/there")"
-    val_expect \
-        "${_value}" \
-        ""
+    is_empty "${_value}" "$(diste "_value") is set!"
 
     _value="$(pass_cache "")"
-    val_expect \
-        "${_value}" \
-        ""
+    is_empty "${_value}" "$(diste "_value") is set!"
 
     _value="$(pass_cache)"
-    val_expect \
-        "${_value}" \
-        ""
+    is_empty "${_value}" "$(diste "_value") is set!"
 }
 
 
 make_var_test0 () {
-    val_expect \
-        "$(make_var_name "")" \
-        ""
-
-    val_expect \
-        "$(make_var_name)" \
-        ""
+    is_empty "$(make_var_name "")" "SET: 109"
+    is_empty "$(make_var_name)" "SET: 110"
+    not_empty "$(make_var_name "%")" "EMPTY: 111"
 
     val_expect \
         "$(make_var_name "%")" \
@@ -146,9 +131,7 @@ make_var_test0 () {
         "${_tmpfile}" \
         "a8fdc205a9f19cc1c7507a60c4f01b13d11d7fd0" # sha1 of "123"
 
-    val_expect \
-        "$(get_var_value "im/not/here")" \
-        ""
+    is_empty "$(get_var_value "im/not/here")" "SET: 130"
 }
 
 
