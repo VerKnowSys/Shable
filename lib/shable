@@ -703,3 +703,21 @@ add_ssh_conf_entry () {
 }
 
 
+#
+# Helper that removes host config from ~/.ssh/config
+#
+remove_last_ssh_conf_entry () {
+    for i in $(seq 1 4); do
+        case "${SYSTEM_NAME}" in
+            Darwin|FreeBSD)
+                ${SED_BIN} -i '' -e '$d' "${HOME}/.ssh/config"
+                ;;
+
+            Linux)
+                ${SED_BIN} -i '$d' "${HOME}/.ssh/config"
+                ;;
+        esac
+    done
+}
+
+
