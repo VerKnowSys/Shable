@@ -721,3 +721,19 @@ remove_last_ssh_conf_entry () {
 }
 
 
+#
+# Helper to setup known SSH keys to avoid ssh "yes" confirmations
+#
+# Args:
+#   'ip'
+#
+add_ssh_known_host () {
+    if [ -n "${1}" ]; then
+        ${SSHKEYGEN_BIN} -R "${1}" >/dev/null
+        ${SSHKEYSCAN_BIN} -H "${1}" >> "${HOME}/.ssh/known_hosts"
+    else
+        error "IP is empty? Task aborted!"
+    fi
+}
+
+
