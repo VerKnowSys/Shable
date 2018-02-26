@@ -15,5 +15,19 @@ main () {
     setup_base_system
     install_software
 
-    warn "Please reboot your machine now, to load new kernel…"
+    reboot_and_quit 3
+}
+
+
+reboot_and_quit () {
+    warn "Your machine will reboot now, to load new kernel and base system…"
+    if [ "FreeBSD" = "${SYSTEM_NAME}" ]; then
+        mkdir -p /usr/local/bin
+        printf "%s\n%s\n%s\n" '#!/bin/sh' "sleep ${1:-5}" 'reboot' > /usr/local/bin/reboot_delayed
+        ${CHMOD_BIN} 755 /usr/local/bin/reboot_delayed
+        ${DAEMON_BIN} /usr/local/bin/reboot_delayed
+        exit
+    else
+        reboot && exit
+    fi
 }
