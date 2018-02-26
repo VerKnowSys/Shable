@@ -683,3 +683,23 @@ not_empty () {
 }
 
 
+#
+# Helper to add host config to ~/.ssh/config
+#
+# Args:
+#   'hostname'
+#   'ip'
+#   'port' - optional port argument
+#
+# Example:
+#   add_ssh_conf_entry "myhost" "192.168.1.1"
+#
+add_ssh_conf_entry () {
+    if [ -n "${3}" ]; then
+        printf "\nhost ${1}\nuser root\nhostname ${2}\nport ${3}\n" >> "${HOME}/.ssh/config"
+    else
+        printf "\nhost ${1}\nuser root\nhostname ${2}\n" >> "${HOME}/.ssh/config"
+    fi
+}
+
+
