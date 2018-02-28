@@ -47,7 +47,7 @@ configure_system () {
     template \
         src="base-${SYSTEM_NAME}/sshd_config" \
         dest="/etc/ssh/sshd_config" \
-        sshd_port="${sshd_port}"
+        sshd_port="${DEFAULT_SSH_PORT}"
 
     note "Install /etc/timezone"
     template \
@@ -60,6 +60,6 @@ configure_system () {
     note "Allowing login as ${default_www_user}"
     ${SED_BIN} -i 's|/var/www:/usr/sbin/nologin|/var/www:/bin/bash|' /etc/passwd
 
-    note "Allow sshd port: $(distn "${sshd_port}") for ufw"
-    ufw allow "${sshd_port}"
+    note "Allow sshd port: $(distn "${DEFAULT_SSH_PORT}") for ufw"
+    ufw allow "${DEFAULT_SSH_PORT}"
 }
