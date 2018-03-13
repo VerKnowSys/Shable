@@ -5,7 +5,8 @@ configure_logrotate () {
             _name="${_file##*/}"
             template \
                 src="base-${SYSTEM_NAME}/logrotate/${_name}" \
-                dest="/etc/logrotate.d/${_name}"
+                dest="/etc/logrotate.d/${_name}" \
+                www_user="${default_www_user}"
         done
     fi
 
@@ -15,7 +16,8 @@ configure_logrotate () {
             _name="${_file##*/}"
             template \
                 src="base/logrotate/${_name}" \
-                dest="/etc/logrotate.d/${_name}"
+                dest="/etc/logrotate.d/${_name}" \
+                www_user="${default_www_user}"
         done
     fi
 }
