@@ -17,6 +17,11 @@ setup_ttys_and_motd () {
     note "Wiping out motd"
     echo > /etc/motd
 
+    note "Installing default /etc/fstab"
+    template \
+        src="base-${SYSTEM_NAME}/fstab" \
+        dest="/etc/fstab"
+
     note "Setting up: $(distn "/etc/ttys")"
     ${SED_BIN} -i '' -e "s|ttyv2|#ttyv2|; s|ttyv3|#ttyv3|; s|ttyv4|#ttyv4|; s|ttyv5|#ttyv5|; s|ttyv6|#ttyv6|; s|ttyv7|#ttyv7|; s|ttyv8|#ttyv8|; s|ttyu0|#ttyu0|; s|ttyu1|#ttyu1|; s|ttyu2|#ttyu2|; s|ttyu3|#ttyu3|; s|dcons|#dcons|" /etc/ttys
     kill -HUP 1
