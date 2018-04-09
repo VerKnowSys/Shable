@@ -43,6 +43,16 @@ configure_www_user () {
             "test -f ${homedir}/.profile || ${sofin_bin} reload" \
             > "${homedir}/.zshrc"
     fi
+
+    note "Adding default unprivileged user to DTrace group"
+    ${PW_BIN} groupadd dtrace
+    ${PW_BIN} user mod "${default_www_user}" -G dtrace
+
+    note "Installing default DEVFS rules for DTrace"
+    template \
+        src="base-${SYSTEM_NAME}/devfs.rules" \
+        dest="/etc/devfs.rules"
+
     ${CHOWN_BIN} -R "${default_www_user}" "${homedir}"
 }
 

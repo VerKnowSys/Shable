@@ -1,0 +1,2 @@
+[userdtrace=10]
+add path dtrace/helper mode 0660 group dtrace
