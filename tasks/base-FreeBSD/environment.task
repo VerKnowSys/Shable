@@ -34,6 +34,9 @@ configure_www_user () {
     ${CHSH_BIN} -s "${default_shell}" "${default_www_user}" 2>/dev/null
     create_homedir_dataset
 
+    note "Setting up groups: $(distn "dtrace"),$(distn "audit") for user: $(distn "${default_www_user}")"
+    ${PW_BIN} groupadd dtrace
+    ${PW_BIN} user mod "${default_www_user}" -G dtrace,audit
     ${PW_BIN} user mod "${default_www_user}" -d "${homedir}"
     if [ ! -f "${homedir}/.zshrc" ]; then
         printf "%s\n%s\n%s\n%s\n" \
@@ -43,10 +46,6 @@ configure_www_user () {
             "test -f ${homedir}/.profile || ${sofin_bin} reload" \
             > "${homedir}/.zshrc"
     fi
-
-    note "Adding default unprivileged user to DTrace group"
-    ${PW_BIN} groupadd dtrace
-    ${PW_BIN} user mod "${default_www_user}" -G dtrace
 
     note "Installing default DEVFS rules for DTrace"
     template \

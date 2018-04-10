@@ -15,8 +15,7 @@ generate_audit_utils () {
 
 
 generate_audit_conf () {
-    note "Setting up auditd"
-    ${PW_BIN} usermod "${default_www_user}" -G audit
+    note "Setting up auditd configuration"
     template \
         src="base-${SYSTEM_NAME}/audit/audit_user" \
         dest="/etc/security/audit_user" \
