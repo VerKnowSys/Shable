@@ -85,6 +85,11 @@ generate_default_environment () {
 generate_default_rc () {
     #
     # NOTE: rc.conf services setup, before invoking svdup:
+    note "Setting up default devfs_system_ruleset"
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'devfs_system_ruleset=userdtrace'"
+
     note "Setting up auditd service autostart"
     lineinfile \
         src="/etc/rc.conf.local" \
