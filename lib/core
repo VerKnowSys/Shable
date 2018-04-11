@@ -168,19 +168,32 @@ await_async () {
         _countall="$(echo "${_completed} + ${_failed}" | ${BC_BIN} 2>/dev/null)"
         if [ "${_countall}" = "${_all}" ]; then
             debug "Finished!"
+
             for _plog in ${_process_logs}; do
                 note
                 note "===>  Showing log: $(distn "${_plog}")"
                 note "==================================================================================="
                 ${CAT_BIN} "${_plog}"
 
-                if [ -f "${_plog}.error" ] && [ -n "$(${CAT_BIN} "${_plog}.error" 2>/dev/null)" ]; then
-                    warn "===>  Showing error log: $(distn "${_plog}")"
-                    printf "%b\n%s %s\n    %b %b\n\n" "${ColorRed}" "${NoteChar}" "StdERR:" "$(${CAT_BIN} "${_plog}.error")" "${ColorReset}"
-                fi
                 note "==================================================================================="
                 note
             done
+
+            for _plog in ${_process_logs}; do
+                if [ -f "${_plog}.error" ] && [ -n "$(${CAT_BIN} "${_plog}.error" 2>/dev/null)" ]; then
+                    warn
+                    warn "===>  Showing standard log for: $(distn "${_plog}")"
+                    ${CAT_BIN} "${_plog}"
+
+                    warn "===>  Showing error log for: $(distn "${_plog}")"
+                    printf "%b\n%s %s\n    %b %b\n\n" \
+                        "${ColorRed}" "${NoteChar}" "ERRORS:" "$(${CAT_BIN} "${_plog}.error")" "${ColorReset}"
+
+                    warn "===>  EOF log for: $(distn "${_plog}")"
+                    warn
+                fi
+            done
+
             break
         fi
 
