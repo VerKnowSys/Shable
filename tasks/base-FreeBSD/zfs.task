@@ -44,6 +44,10 @@ create_local_dataset () {
 
 create_var_datasets () {
     note "Setting up additional ZFS datasets"
+    ${ZFS_BIN} create -o mountpoint="/var/cron" "zroot/var/cron"
+    ${ZFS_BIN} set readonly="off" "zroot/var/cron"
+    ${ZFS_BIN} create -o mountpoint="/var/at" "zroot/var/at"
+    ${ZFS_BIN} set readonly="off" "zroot/var/at"
     ${ZFS_BIN} create -o mountpoint="/var/run" "zroot/var/run"
     ${ZFS_BIN} set readonly="off" "zroot/var/run"
     ${ZFS_BIN} create -o mountpoint="/var/db" "zroot/var/db"
@@ -53,5 +57,5 @@ create_var_datasets () {
     ${ZFS_BIN} set readonly="off" "zroot/var/audit"
     ${ZFS_BIN} set dedup="on" "zroot/var/audit"
     ${ZFS_BIN} set compression="lz4" "zroot/var/audit"
-    mkdir -p "/var/db/zfsd/cases" "/var/db/entropy"
+    mkdir -p "/var/db/zfsd/cases" "/var/db/entropy" "/var/cron/tabs" "/var/at/jobs" "/var/at/spool"
 }
