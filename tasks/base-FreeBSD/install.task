@@ -28,6 +28,9 @@ install_system_image () {
     ${FETCH_BIN} "${svdup_https_source}" || \
         error "Couldn't download svdup!"
 
+    note "Unmounting any swaps"
+    ${SWAPOFF_BIN} -a
+
     #
     # NOTE: All changes made to /etc will be lost after invocation of this mechanism after first reboot:
     note "Downloading and installing new system snapshot…"
