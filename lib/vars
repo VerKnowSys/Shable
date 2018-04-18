@@ -35,6 +35,7 @@ LC_NUMERIC="${DEFAULT_LANG}"
 
 
 # binaries
+SWAPOFF_BIN="/sbin/swapoff"
 SEQ_BIN="/usr/bin/seq"
 ENV_BIN="/usr/bin/env"
 OPENSSL_BIN="/usr/bin/openssl"
