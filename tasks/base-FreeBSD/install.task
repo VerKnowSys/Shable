@@ -41,7 +41,7 @@ install_system_image () {
 install_sofin_software () {
     note "Installing base software…"
     ${default_shell} -c "${sofin_bin} up" 2>/dev/null
-    ${default_shell} -c "${sofin_bin} i Nginx Php70 Redis Mc Vim Tmux Curl Libressl Atop Zip Geoipupdate Nano Rsync Python27" 2>/dev/null
+    ${default_shell} -c "${sofin_bin} i Lz4 Rsync Nginx Php70 Redis Mc Vim Tmux Curl Libressl Atop Zip Geoipupdate Nano Python27" 2>/dev/null
     # NOTE: disabled: Syslog-ng Doas Openvpn
 
     debug "Copying current definitions state for www user"
