@@ -8,9 +8,9 @@ install_security_limits_configuration () {
 
     note "Install security limits.conf"
     _srcf="base/security/limits.conf"
-    if [ ! -f "${_srcf}" ]; then
+    if [ ! -f "templates/${_srcf}" ]; then
         _srcf="base-${SYSTEM_NAME}/security/limits.conf"
-        if [ -f "${_srcf}" ]; then
+        if [ -f "Shable/templates/${_srcf}" ]; then
             template \
                 src="${_srcf}" \
                 dest="/etc/security/limits.conf" \
