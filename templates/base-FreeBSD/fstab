@@ -1,3 +1,4 @@
 # Device                       Mountpoint              FStype   Options         Dump    Pass#
 #proc                           /proc                   procfs   rw,noauto       0       0
 fdesc                          /dev/fd                 fdescfs  rw              0       0
+tmpfs                          /tmp                    tmpfs    rw,mode=777     0       0
