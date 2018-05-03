@@ -78,6 +78,42 @@ else
                 return 1
             }
 
+            _remote_system=$(${SSH_BIN} \
+                -o "BatchMode=yes" \
+                -o "ConnectTimeout=3" \
+                -o "ConnectionAttempts=1" \
+                -o "ServerAliveInterval=1" \
+                "${_remote_user}@${REMOTE}" \
+                "uname")
+            note "Remote system: $(distn "${_remote_system}")"
+
+            scp_rsync () {
+                case "${_remote_system}" in
+                    FreeBSD)
+                        ${SCP_BIN} -P "${_sshd_port}" \
+                            "templates/base-FreeBSD/bin/rsync" \
+                            "${_remote_user}@${REMOTE}:/usr/bin/rsync"
+                        ;;
+
+                    Linux)
+                        # XXX: Debian specific base:
+                        apt-get install -y rsync
+                        ;;
+
+                    *)
+                        ;;
+                esac
+            }
+
+            debug "Making sure Rsync is available on remote host"
+            ${SSH_BIN} \
+                -o "BatchMode=yes" \
+                -o "ConnectTimeout=3" \
+                -o "ConnectionAttempts=1" \
+                -o "ServerAliveInterval=1" \
+                "${_remote_user}@${REMOTE}" \
+                "test -x ${RSYNC_BIN}" || scp_rsync
+
             debug "rSyncing ${SHABLE_NAME} as: $(distd "${_remote_user}") to: $(distd "${_base_name}")"
             sync_with_rsync || commit_failure "Failed to rsync to: $(distw "${_remote_user}@${REMOTE}:${_base_name}")"
 
