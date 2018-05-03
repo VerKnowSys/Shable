@@ -90,9 +90,15 @@ else
             scp_rsync () {
                 case "${_remote_system}" in
                     FreeBSD)
-                        ${SCP_BIN} -P "${_sshd_port}" \
-                            "templates/base-FreeBSD/bin/rsync" \
-                            "${_remote_user}@${REMOTE}:/usr/bin/rsync"
+                        if [ -f "templates/base-FreeBSD/bin/rsync" ]; then
+                            ${SCP_BIN} -P "${_sshd_port}" \
+                                "templates/base-FreeBSD/bin/rsync" \
+                                "${_remote_user}@${REMOTE}:/usr/bin/rsync"
+                        elif [ -f "Shable/templates/base-FreeBSD/bin/rsync" ]; then
+                            ${SCP_BIN} -P "${_sshd_port}" \
+                                "Shable/templates/base-FreeBSD/bin/rsync" \
+                                "${_remote_user}@${REMOTE}:/usr/bin/rsync"
+                        fi
                         ;;
 
                     Linux)
