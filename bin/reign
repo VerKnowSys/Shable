@@ -84,7 +84,7 @@ else
                 -o "ConnectionAttempts=1" \
                 -o "ServerAliveInterval=1" \
                 "${_remote_user}@${REMOTE}" \
-                "uname")
+                "uname" 2>/dev/null)
             note "Remote system: $(distn "${_remote_system}")"
 
             scp_rsync () {
