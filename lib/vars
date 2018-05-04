@@ -133,6 +133,17 @@ case "${SYSTEM_NAME}" in
         USERMOD_BIN="/usr/sbin/usermod"
         ;;
 
+    Minix)
+        USERMOD_BIN="/usr/sbin/usermod"
+
+        RSYNC_BIN="/usr/pkg/bin/rsync"
+        GIT_BIN="/usr/pkg/bin/git"
+        CURL_BIN="/usr/pkg/bin/curl"
+
+        unset PASS_BIN
+        unset SYSCTL_BIN
+        ;;
+
 esac
 
 
