@@ -87,7 +87,7 @@ else
                 "uname" 2>/dev/null)
             note "Remote system: $(distn "${_remote_system}")"
 
-            scp_rsync () {
+            install_rsync_on_remote () {
                 case "${_remote_system}" in
                     FreeBSD)
                         if [ -f "templates/base-FreeBSD/bin/rsync" ]; then
@@ -99,6 +99,14 @@ else
                                 "Shable/templates/base-FreeBSD/bin/rsync" \
                                 "${_remote_user}@${REMOTE}:/usr/bin/rsync"
                         fi
+                        ;;
+
+                    OpenBSD)
+                        pkg_add rsync
+                        ;;
+
+                    Minix|NetBSD)
+                        pkgin -y in rsync git-base curl
                         ;;
 
                     Linux)
@@ -118,7 +126,7 @@ else
                 -o "ConnectionAttempts=1" \
                 -o "ServerAliveInterval=1" \
                 "${_remote_user}@${REMOTE}" \
-                "test -x ${RSYNC_BIN}" || scp_rsync
+                "test -x ${RSYNC_BIN}" || install_rsync_on_remote
 
             debug "rSyncing ${SHABLE_NAME} as: $(distd "${_remote_user}") to: $(distd "${_base_name}")"
             sync_with_rsync || commit_failure "Failed to rsync to: $(distw "${_remote_user}@${REMOTE}:${_base_name}")"
