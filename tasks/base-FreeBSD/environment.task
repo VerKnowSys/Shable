@@ -1,3 +1,12 @@
+install_daily_periodic_tasks () {
+    note "Install periodic daily tasks"
+    template \
+        src="base-${SYSTEM_NAME}/cron/maintain_ooms" \
+        dest="/etc/cron.daily/100.${_file}" \
+        mode="0755"
+}
+
+
 configure_root_user () {
     note "Installing default profile and setting up environment for root"
     template \
