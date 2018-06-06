@@ -96,7 +96,27 @@ generate_default_rc () {
 
     lineinfile \
         src="/etc/rc.conf.local" \
+        line="'ntpd_enable=YES'"
+
+    lineinfile \
+        src="/etc/rc.conf.local" \
         line="'cron_enable=YES'"
+
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'syslogd_oomprotect=YES'"
+
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'ntpd_oomprotect=YES'"
+
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'sshd_oomprotect=YES'"
+
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'cron_oomprotect=YES'"
 
     note "Installing system control configuration: $(distn "/etc/sysctl.conf")"
     template \
@@ -110,7 +130,4 @@ generate_default_rc () {
     lineinfile \
         src="/etc/ntp.conf" \
         line="'tinker panic 0'"
-    lineinfile \
-        src="/etc/rc.conf.local" \
-        line="'ntpd_enable=YES'"
 }
