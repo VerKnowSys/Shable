@@ -2,7 +2,7 @@ install_daily_periodic_tasks () {
     note "Install periodic daily tasks"
     template \
         src="base-${SYSTEM_NAME}/cron/maintain_ooms" \
-        dest="/etc/cron.daily/100.maintain_ooms" \
+        dest="/etc/periodic/daily/100.maintain_ooms" \
         mode="0755"
 }
 
