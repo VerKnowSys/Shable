@@ -117,6 +117,12 @@ case "${SYSTEM_NAME}" in
             # XXX: kinda hacky, but at least a fallback on some minimal BSD-like system:
             CURL_BIN="/usr/bin/fetch"
         fi
+
+        if [ -x "/usr/bin/zfs" ]; then
+            ZFS_BIN="/usr/bin/zfs"
+        fi
+
+        unset SWAPOFF_BIN
         ;;
 
     Linux)
