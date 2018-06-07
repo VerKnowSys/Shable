@@ -98,7 +98,12 @@ generate_default_rc () {
         src="/etc/rc.conf.local" \
         line="'devfs_system_ruleset=userdtrace'"
 
-    note "Setting up auditd service autostart"
+    note "Setting up autostart of system services"
+
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'sendmail_enable=NONE'"
+
     lineinfile \
         src="/etc/rc.conf.local" \
         line="'auditd_enable=YES'"
