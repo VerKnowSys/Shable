@@ -121,8 +121,6 @@ case "${SYSTEM_NAME}" in
         if [ -x "/usr/bin/zfs" ]; then
             ZFS_BIN="/usr/bin/zfs"
         fi
-
-        unset SWAPOFF_BIN
         ;;
 
     Linux)
@@ -165,6 +163,11 @@ case "${SYSTEM_NAME}" in
         unset MYSQL_BIN
         unset DIG_BIN
         ;;
+
+    Darwin)
+        unset SWAPOFF_BIN
+        ;;
+
 esac
 
 
