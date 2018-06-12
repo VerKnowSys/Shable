@@ -255,7 +255,7 @@ cronjob () {
             debug "Writing periodic: $(distd "${frequency}"), cronjob: $(distd "${name}"), file: $(distd "${_cron_job_file}")"
 
             printf "#!/bin/sh\n\n%s\n" "${job}" > "${_cron_job_file}"
-            ${CHMOD_BIN} 750 "${_cron_job_file}"
+            ${CHMOD_BIN} 755 "${_cron_job_file}"
             ;;
 
         cron)
@@ -273,7 +273,7 @@ cronjob () {
             user="${user:-root}"
             debug "Writing cron job: $(distd "${minute} ${hour} ${mday} ${month} ${wday} ${user} ${job}"), cronjob: $(distd "${name}"), file: $(distd "${_cron_job_file}")"
             printf "%s %s %s %s %s  %s  %s\n" "${minute}" "${hour}" "${mday}" "${month}" "${wday}" "${user}" "${job}" > "${_cron_job_file}"
-            ${CHMOD_BIN} 640 "${_cron_job_file}"
+            ${CHMOD_BIN} 644 "${_cron_job_file}"
             ;;
 
         *)
