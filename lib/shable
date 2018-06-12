@@ -219,7 +219,7 @@ lineinfile () {
 #      'mday' - used to specify cron value (default: *)
 #      'month' - used to specify cron value (default: *)
 #      'wday' - used to specify cron value (default: *)
-#      'user' - used to specify cron value (default: *)
+#      'user' - used to specify cron value (default: root)
 #
 #   'rootdir' - default: /etc (used only for testing)
 #
