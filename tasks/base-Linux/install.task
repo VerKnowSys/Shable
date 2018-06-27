@@ -79,8 +79,8 @@ install_software () {
         release="${release}"
 
     note "Install 3rd party repository keys"
-    add-apt-repository --yes ppa:ondrej/php
-    apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
+    add-apt-repository --yes ppa:ondrej/php || add-apt-repository --yes ppa:ondrej/php
+    apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db || apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
     # add-apt-repository --yes ppa:nginx/stable
     wget -q -O- http://nginx.org/keys/nginx_signing.key | apt-key add -
 
