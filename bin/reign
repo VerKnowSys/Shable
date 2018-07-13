@@ -85,7 +85,6 @@ else
                 -o "ServerAliveInterval=1" \
                 "${_remote_user}@${REMOTE}" \
                 "uname" 2>/dev/null)
-            note "Remote system: $(distn "${_remote_system}")"
 
             install_rsync_on_remote () {
                 case "${_remote_system}" in
