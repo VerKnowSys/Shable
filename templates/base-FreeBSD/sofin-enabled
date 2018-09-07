@@ -1,16 +1,16 @@
 Atop
+Curl
+Geoipupdate
+Git
 Libressl
 Mc
-Zip
-Geoipupdate
-Tmux
-Git
-Curl
-Vim
 Nano
 Nginx
-Redis
+{{ php_version }}
 Python27
-Php70
+Redis
 Rsync
+Tmux
+Vim
+Zip
 Zsh

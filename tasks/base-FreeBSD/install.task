@@ -14,11 +14,13 @@ install_default_profile () {
     template \
         src="base-${SYSTEM_NAME}/sofin-enabled" \
         dest="${homedir}/.sofin-enabled" \
+        php_version="${php_version}" \
         owner="${default_www_user}"
 
     template \
         src="base-${SYSTEM_NAME}/profile" \
         dest="${homedir}/.profile" \
+        php_version="${php_version}" \
         owner="${default_www_user}"
 }
 
