@@ -8,10 +8,11 @@ install_daily_periodic_tasks () {
 
 
 configure_root_user () {
-    note "Installing default profile and setting up environment for root"
+    note "Installing default profile and environment for current user: $(distn "${USER}")"
     template \
         src="base-${SYSTEM_NAME}/profile" \
-        dest="${homedir_root}/.profile"
+        dest="${homedir_root}/.profile" \
+        php_version="${php_version}"
 
     if [ ! -f "${homedir_root}/.zshrc" ]; then
         printf "%s\n%s\n" \
