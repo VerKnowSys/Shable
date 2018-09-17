@@ -43,6 +43,7 @@ configure_www_user () {
     mkdir -p "${homedir}"
     ${CHSH_BIN} -s "${default_shell}" "${default_www_user}" 2>/dev/null
     create_homedir_dataset
+    create_www_user_software_dataset
 
     note "Setting up groups: $(distn "dtrace"),$(distn "audit") for user: $(distn "${default_www_user}")"
     ${PW_BIN} groupadd dtrace

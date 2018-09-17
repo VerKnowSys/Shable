@@ -31,6 +31,28 @@ create_homedir_dataset () {
     ${ZFS_BIN} set setuid="off" "zroot${homedir}"
     ${ZFS_BIN} set compression="lz4" "zroot${homedir}"
     ${ZFS_BIN} set atime="off" "zroot${homedir}"
+
+    # Allow ZFS ops by regular user on dataset: zroot/var/www
+    ${ZFS_BIN} allow \
+        -u "${default_www_user}" \
+        xattr,atime,casesensitivity,checksum,copies,logbias,primarycache,secondarycache,snapdir,userused,dedup,mountpoint,canmount,userprop,create,destroy,snapshot,rollback,clone,promote,rename,mount,send,receive,reservation,readonly \
+        "zroot/${homedir}"
+}
+
+
+create_www_user_software_dataset () {
+    # NOTE: this dataset is created for Governor + Sofin purposes (jails)
+    #       on top of this dataset, regular user can gain full control
+    #       over dedicated software dataset:
+    ${ZFS_BIN} create \
+        -o devices="off" \
+        -o utf8only="on" \
+        "zroot/Software/${default_www_user}"
+
+    ${ZFS_BIN} allow \
+        -u "${default_www_user}" \
+        xattr,atime,casesensitivity,checksum,copies,logbias,primarycache,secondarycache,snapdir,userused,dedup,mountpoint,canmount,userprop,create,destroy,snapshot,rollback,clone,promote,rename,mount,send,receive,reservation,readonly \
+        "zroot/Software/${default_www_user}"
 }
 
 
