@@ -1,0 +1,92 @@
+include "base"
+include "base-FreeBSD"
+
+only_bits "64"
+only_as "root"
+only_for "FreeBSD"
+
+
+# XXX: hardcoded
+_definitions_dir="${HOME}/.sofin/definitions/definitions"
+
+
+# XXX: Sofin internal function:
+lowercase () {
+    printf '%s' "${@}" 2>/dev/null | ${TR_BIN} '[A-Z]' '[a-z]' 2>/dev/null
+}
+
+
+# XXX: Sofin internal function:
+inherit () {
+    _inhnm="$(printf '%s' "${1}" | ${SED_BIN} -e "s#.def##" 2>/dev/null)"
+    _def_inherit="${_definitions_dir}/${_inhnm}.def"
+    . "${_def_inherit}"
+}
+
+
+main () {
+    validate \
+        _remote="${REMOTE}"
+
+    # update Sofin defintions
+    note "Updating Sofin defintions"
+    ${default_shell} -c "${sofin_bin} up"
+
+    for _software_dir in $(${FIND_BIN} "/Software" \
+                             -type d \
+                             -maxdepth 1 \
+                             -mindepth 1 2>/dev/null | \
+                             ${GREP_BIN} -Ev "Sofin|Git|Zsh"); do
+        _software_bundle_name="${_software_dir##*/}"
+        _software_definition_name="$(lowercase "${_software_bundle_name}")"
+        _software_installed_indicator_file="/Software/${_software_bundle_name}/${_software_definition_name}.installed"
+
+        if [ -f "${_software_installed_indicator_file}" ]; then
+            _software_definition_file="${_definitions_dir}/${_software_definition_name}.def"
+            debug "Expected definition file: $(distd "${_software_definition_file}")"
+            if [ ! -f "${_software_definition_file}" ]; then
+                warn "Expected definition file not found: $(distw "${_software_definition_file}")"
+            else
+                . "${_software_definition_file}"
+                _definition_version="${DEF_VERSION}"
+                _software_version="$(${CAT_BIN} "${_software_installed_indicator_file}")"
+                if [ "${_software_version}" = "${_definition_version}" ]; then
+                    note "Software $(distn "${_software_bundle_name}") installed with most recent version: $(distn "${_software_version}"). Definition version: $(distn "${_definition_version}")"
+                else
+                    note "Software $(distn "${_software_bundle_name}") installed version: $(distn "${_software_version}") differs from definition version: $(distn "${_definition_version}")"
+
+                    _service_pid_file="/Services/${_software_bundle_name}/service.pid"
+                    _service_stop="/Services/${_software_bundle_name}/service-stop"
+                    if [ -x "${_service_stop}" ]; then
+                        note "Stopping service: $(distn "${_software_bundle_name}")…"
+                        ${default_shell} -c "${_service_stop}"
+                        sleep 5
+                        ${RM_BIN} -f "${_service_pid_file}"
+                    fi
+
+                    note "Upgrading bundle: $(distn "${_software_bundle_name}")…"
+                    ${default_shell} -c "${sofin_bin} rm ${_software_bundle_name}"
+                    ${default_shell} -c "${sofin_bin} i ${_software_bundle_name}"
+
+                    # NOTE: since updater temporarely works as root user it can only invoke service-stop.
+                    #       No service-start can be called directly here:
+                    note "Waiting for: $(distn "${_software_bundle_name}") to start itself…"
+                    for i in $(${SEQ_BIN} 1 61); do # NOTE: 60s is max since cron supervisors are invoked each minute
+                        if [ -f "${_service_pid_file}" ]; then
+                            _pid="$(${CAT_BIN} "${_service_pid_file}" 2>/dev/null)"
+                            debug "Service pid: ${_pid}"
+                            if [ -n "${_pid}" ]; then
+                                kill -0 "${_pid}" && \
+                                    break
+                            fi
+                        fi
+                        sleep 1
+                    done
+                    note "Successful upgrade of: $(distn "${_software_bundle_name}")"
+
+                fi
+            fi
+        fi
+    done
+
+}
