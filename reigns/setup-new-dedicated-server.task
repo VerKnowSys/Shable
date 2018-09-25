@@ -54,7 +54,8 @@ main () {
 
     # dedicated backend specific tasks:
     # setup_bridge
-    # setup_vpn
+
+    setup_openvpn
     install_governor
 
     reboot_and_quit 3
