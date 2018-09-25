@@ -47,6 +47,11 @@ create_www_user_software_dataset () {
     ${ZFS_BIN} create \
         -o devices="off" \
         -o utf8only="on" \
+        "zroot/Software"
+
+    ${ZFS_BIN} create \
+        -o devices="off" \
+        -o utf8only="on" \
         "zroot/Software/${default_www_user}"
 
     ${ZFS_BIN} allow \
