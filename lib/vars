@@ -77,6 +77,8 @@ BC_BIN="/usr/bin/bc"
 RSYNC_BIN="/usr/bin/rsync"
 ID_BIN="/usr/bin/id"
 FIND_BIN="/usr/bin/find"
+IFCONFIG_BIN="/sbin/ifconfig"
+PS_BIN="/bin/ps"
 
 # system specific paths
 case "${SYSTEM_NAME}" in
