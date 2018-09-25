@@ -36,7 +36,7 @@ create_homedir_dataset () {
     ${ZFS_BIN} allow \
         -u "${default_www_user}" \
         xattr,atime,casesensitivity,checksum,copies,logbias,primarycache,secondarycache,snapdir,userused,dedup,mountpoint,canmount,userprop,create,destroy,snapshot,rollback,clone,promote,rename,mount,send,receive,reservation,readonly \
-        "zroot/${homedir}"
+        "zroot${homedir}"
 }
 
 
