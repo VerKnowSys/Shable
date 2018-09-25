@@ -3,6 +3,7 @@ homedir="/var/www"
 homedir_root="/User"
 php_version="Php71"
 
+default_network="172.16.3"
 default_network_device="em0"
 
 ZFS_BIN="/sbin/zfs"

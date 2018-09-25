@@ -4,4 +4,5 @@ homedir_root="/var/root"
 
 php_version="Php71"
 
+default_network="100.64.1"
 default_network_device="en0"
