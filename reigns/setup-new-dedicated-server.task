@@ -37,7 +37,16 @@ main () {
     validate \
         _remote="${REMOTE}" \
         default_network_device="${default_network_device}" \
-        default_www_user="${default_www_user}"
+        default_www_user="${default_www_user}" \
+        remote_vpn_server="${remote_vpn_server}" \
+        openvpn_servicedir="${openvpn_servicedir}"
+
+    # Make sure VPN keys are available before we invoke setup process:
+    for k in crt key; do
+        if [ ! -f "templates/vpn/${REMOTE}.${k}" ]; then
+            error "Missing VPN file: $(diste "templates/vpn/${REMOTE}.${k}") - it's required to set up VPN client correctly! Please read $(distd "docs/generate-vpn-key.md")"
+        fi
+    done
 
     # base tasks:
     setup_base_system
