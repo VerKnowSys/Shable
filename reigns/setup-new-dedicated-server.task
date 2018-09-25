@@ -1,0 +1,66 @@
+include "base"
+include "base-FreeBSD"
+
+only_bits "64"
+only_as "root"
+only_for "FreeBSD"
+
+
+# setup_bridge () {
+#     "${IFCONFIG_BIN}" bridge0 >/dev/null 2>&1 || \
+#         "${IFCONFIG_BIN}" bridge0 create
+
+#     lineinfile \
+#         src="/etc/rc.conf.local" \
+#         line="'cloned_interfaces=\"bridge0\"'"
+
+#      "${IFCONFIG_BIN}" bridge0 addm "${default_network_device}" 2>/dev/null
+# }
+
+
+# setup_vpn () {
+#     # NOTE: We'd like to have default route set to: ${default_network}.1
+
+#     printf "123"
+# }
+
+
+install_governor () {
+    ${CP_BIN} /Projects/svdOS/gvr /tmp/gvr_tmp
+    ${SED_BIN} -i '' -e "s|__JAIL_ROUTER_NETWORK|${default_network}|" /tmp/gvr_tmp
+    ${MV_BIN} /tmp/gvr_tmp /usr/bin/gvr
+    ${CHMOD_BIN} 750 /usr/bin/gvr
+}
+
+
+main () {
+    validate \
+        _remote="${REMOTE}" \
+        default_network_device="${default_network_device}" \
+        default_www_user="${default_www_user}"
+
+    # base tasks:
+    setup_base_system
+    install_software
+
+    # dedicated backend specific tasks:
+    # setup_bridge
+    # setup_vpn
+    install_governor
+
+    reboot_and_quit 3
+}
+
+
+reboot_and_quit () {
+    warn "Your machine will reboot now, to load new kernel and base system…"
+    if [ "FreeBSD" = "${SYSTEM_NAME}" ]; then
+        mkdir -p /usr/local/bin
+        printf "%s\n%s\n%s\n" '#!/bin/sh' "sleep ${1:-5}" 'reboot' > /usr/local/bin/reboot_delayed
+        ${CHMOD_BIN} 755 /usr/local/bin/reboot_delayed
+        ${DAEMON_BIN} /usr/local/bin/reboot_delayed
+        exit
+    else
+        reboot && exit
+    fi
+}
