@@ -2,6 +2,7 @@ default_shell="/Software/Zsh/exports/zsh"
 homedir="/var/www"
 homedir_root="/User"
 php_version="Php71"
+openvpn_servicedir="/Services/Openvpn"
 
 default_network="172.16.3"
 default_network_device="em0"
