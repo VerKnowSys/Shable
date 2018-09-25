@@ -1,3 +1,7 @@
 default_shell="/Software/Zsh/exports/zsh"
 homedir="${HOME}"
 homedir_root="/var/root"
+
+php_version="Php71"
+
+default_network_device="en0"

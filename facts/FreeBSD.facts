@@ -1,6 +1,9 @@
 default_shell="/Software/Zsh/exports/zsh"
 homedir="/var/www"
 homedir_root="/User"
+php_version="Php71"
+
+default_network_device="em0"
 
 ZFS_BIN="/sbin/zfs"
 FETCH_BIN="/usr/bin/fetch"
