@@ -50,11 +50,16 @@ main () {
     install_software
 
     # dedicated backend specific tasks:
+    install_governor
+
     setup_network_options
     setup_vpn_nat
-    setup_openvpn
+
     install_openvpn_launchers
-    install_governor
+    setup_openvpn
+
+    install_unbound_launchers
+    setup_unbound
 
     reboot_and_quit 3
 }
