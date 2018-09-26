@@ -61,6 +61,29 @@ setup_vpn_nat () {
 }
 
 
+install_unbound_launchers () {
+    mkdir -p /usr/local/bin
+
+    template \
+        src="dns/startdns" \
+        dest="/usr/local/bin/startdns" \
+        mode="755" \
+        unbound_softwaredir="${unbound_softwaredir}" \
+        unbound_servicedir="${unbound_servicedir}"
+
+    template \
+        src="dns/watchdns" \
+        dest="/usr/local/bin/watchdns" \
+        mode="755" \
+        unbound_softwaredir="${unbound_softwaredir}" \
+        unbound_servicedir="${unbound_servicedir}"
+
+    lineinfile \
+        src="/etc/crontab" \
+        line="'* * * * * root /usr/local/bin/watchdns'"
+}
+
+
 setup_unbound () {
     ${default_shell} -c "${sofin_bin} i Unbound"
 
@@ -69,8 +92,11 @@ setup_unbound () {
         src="dns/unbound.conf" \
         dest="${unbound_servicedir}/service.conf" \
         mode="0640" \
-        default_subnet="${default_subnet}"
+        default_subnet="${default_subnet}" \
+        unbound_servicedir="${unbound_servicedir}"
 
+    note "Starting Unbound"
+    /usr/local/bin/startdns
 }
 
 
