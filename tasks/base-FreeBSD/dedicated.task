@@ -59,3 +59,21 @@ setup_vpn_nat () {
     note "Restarting PF"
     service pf restart
 }
+
+
+setup_unbound () {
+    ${default_shell} -c "${sofin_bin} i Unbound"
+
+    note "Installing Unbound configuration"
+    template \
+        src="dns/unbound.conf" \
+        dest="${unbound_servicedir}/service.conf" \
+        mode="0640" \
+        default_subnet="${default_subnet}"
+
+}
+
+
+# setup_nginx () {
+#     ${default_shell} -c "${sofin_bin} i Nginx"
+# }
