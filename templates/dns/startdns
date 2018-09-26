@@ -1,3 +1,4 @@
 #!/bin/sh
 
-{{ unbound_softwaredir }}/exports/unbound -c {{ unbound_servicedir }}/service.conf
+{{ unbound_softwaredir }}/exports/unbound-checkconf && \
+    {{ unbound_softwaredir }}/exports/unbound -c {{ unbound_servicedir }}/service.conf
