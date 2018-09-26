@@ -1,0 +1,3 @@
+#!/bin/sh
+
+{{ unbound_softwaredir }}/exports/unbound -c {{ unbound_servicedir }}/service.conf
