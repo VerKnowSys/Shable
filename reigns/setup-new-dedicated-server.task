@@ -6,19 +6,12 @@ only_as "root"
 only_for "FreeBSD"
 
 
-setup_bridge_and_vlan0 () {
-    lineinfile \
-        src="/etc/rc.conf.local" \
-        line="'ifconfig_vlan0=\"inet ${default_network}.1 netmask 255.255.0.0\"'"
-
+setup_network_options () {
     note "Enabling IP forwarding"
     ${SED_BIN} -i '' -e \
         's|^net.inet.ip.forwarding.*$|net.inet.ip.forwarding=1|' \
         /etc/sysctl.conf
-
-    #     ${SED_BIN} -i '' -e \
-    #         's|^ifconfig_bridge0.*$|ifconfig_bridge0="addm em0 addm vlan0 up"' \
-    #         /etc/rc.conf.local
+    ${SYSCTL_BIN} net.inet.ip.forwarding=1
 }
 
 
@@ -57,7 +50,7 @@ main () {
     install_software
 
     # dedicated backend specific tasks:
-    setup_bridge_and_vlan0
+    setup_network_options
     setup_vpn_nat
     setup_openvpn
     install_openvpn_launchers
