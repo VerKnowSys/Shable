@@ -27,7 +27,7 @@ POSIX compliant system with `/bin/sh` at least compatible with BSD-4x version fr
 * `SKIP_ENV_VALIDATION` - if set - skip binaries availability validation (useful for host setup tasks).
 
 
-## Envrionemnt variables set by bin/reign while running:
+## Environment variables set by bin/reign while running:
 
 * `REMOTE` - contains remote host name.
 
