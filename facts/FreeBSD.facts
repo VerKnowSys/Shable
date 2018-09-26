@@ -3,8 +3,13 @@ homedir="/var/www"
 homedir_root="/User"
 php_version="Php71"
 openvpn_servicedir="/Services/Openvpn"
+openvpn_softwaredir="/Software/Openvpn"
 
 default_network="172.16.3"
+default_vpn_router="172.16.1.1"
+default_bridge_device="bridge0"
+default_vpn_device="tap0"
+default_vlan_device="vlan0"
 default_network_device="em0"
 
 ZFS_BIN="/sbin/zfs"
