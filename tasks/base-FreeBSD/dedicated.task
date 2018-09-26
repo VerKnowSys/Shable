@@ -95,6 +95,9 @@ setup_unbound () {
         default_subnet="${default_subnet}" \
         unbound_servicedir="${unbound_servicedir}"
 
+    ${RM_BIN} "/Services/Unbound/etc/unbound/unbound.conf"
+    ${LN_BIN} -s "${unbound_servicedir}/service.conf" "${unbound_servicedir}/etc/unbound/unbound.conf"
+
     note "Starting Unbound"
     /usr/local/bin/startdns
 }
