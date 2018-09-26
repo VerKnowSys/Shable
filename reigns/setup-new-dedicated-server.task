@@ -6,23 +6,19 @@ only_as "root"
 only_for "FreeBSD"
 
 
-# setup_bridge () {
-#     "${IFCONFIG_BIN}" bridge0 >/dev/null 2>&1 || \
-#         "${IFCONFIG_BIN}" bridge0 create
+setup_bridge_and_vlan0 () {
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'ifconfig_vlan0=\"inet ${default_network}.1 netmask 255.255.0.0\"'"
 
-#     lineinfile \
-#         src="/etc/rc.conf.local" \
-#         line="'cloned_interfaces=\"bridge0\"'"
+    ${SED_BIN} -i '' -e \
+        's|^cloned_interfaces.*$|cloned_interfaces="vlan0 bridge0"|' \
+        /etc/rc.conf.local
 
-#      "${IFCONFIG_BIN}" bridge0 addm "${default_network_device}" 2>/dev/null
-# }
-
-
-# setup_vpn () {
-#     # NOTE: We'd like to have default route set to: ${default_network}.1
-
-#     printf "123"
-# }
+    #     ${SED_BIN} -i '' -e \
+    #         's|^ifconfig_bridge0.*$|ifconfig_bridge0="addm em0 addm vlan0 up"' \
+    #         /etc/rc.conf.local
+}
 
 
 install_governor () {
@@ -55,8 +51,7 @@ main () {
     install_software
 
     # dedicated backend specific tasks:
-    # setup_bridge
-
+    setup_bridge_and_vlan0
     setup_openvpn
     install_governor
 
