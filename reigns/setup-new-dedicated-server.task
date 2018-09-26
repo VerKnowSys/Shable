@@ -35,7 +35,12 @@ main () {
         default_network_device="${default_network_device}" \
         default_www_user="${default_www_user}" \
         remote_vpn_server="${remote_vpn_server}" \
-        openvpn_servicedir="${openvpn_servicedir}"
+        remote_ip="${ip}" \
+        openvpn_servicedir="${openvpn_servicedir}" \
+        vpn_network="${vpn_network:-${default_network}}" \
+        default_vlan_device="${default_vlan_device}" \
+        default_vpn_device="${default_vpn_device}" \
+        default_bridge_device="${default_bridge_device}"
 
     # Make sure VPN keys are available before we invoke setup process:
     for k in crt key; do
@@ -52,7 +57,9 @@ main () {
 
     # dedicated backend specific tasks:
     setup_bridge_and_vlan0
+    setup_vpn_nat
     setup_openvpn
+    install_openvpn_launchers
     install_governor
 
     reboot_and_quit 3
