@@ -16,3 +16,18 @@ setup_openvpn () {
             dest="${openvpn_servicedir}/${_file}"
     done
 }
+
+
+setup_vpn_nat () {
+    note "Installing PF-NAT for network: $(distn "${vpn_network}")"
+    template \
+        src="vpn/pf.conf" \
+        dest="/etc/pf.conf" \
+        mode="0644" \
+        vpn_network="${vpn_network:-${default_network}}" \
+        default_network_device="${default_network_device}" \
+        ip="${ip}"
+
+    note "Restarting PF"
+    service pf restart
+}
