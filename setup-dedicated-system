@@ -21,8 +21,6 @@ add_ssh_known_host "${ip}"
 # handle interrupts - to avoid mess under ~/.ssh/config
 trap "remove_last_ssh_conf_entry" INT TERM
 
-note "Setting up new base system on host: $(distn "${_host}"), ip: $(distn "${ip}"), internal ip: $(distn "${remote_vpn_server}")"
-
 # call setup-new-server reign, run as superuser, skip validation of unavailable binaries in pre-base-system:
 RUN_AS=root \
 SKIP_ENV_VALIDATION=YES \
