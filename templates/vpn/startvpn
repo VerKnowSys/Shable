@@ -1,0 +1,26 @@
+#!/bin/sh
+
+failure () {
+    echo "Openvpn init failed. Network not reachable?"
+    exit 1
+}
+
+# destroy {{ default_vlan_device }} with default route for local network:
+ifconfig {{ default_vlan_device }} destroy
+
+{{ openvpn_softwaredir }}/exports/openvpn \
+  --config {{ openvpn_servicedir }}/service.conf \
+  --daemon openvpn \
+  --writepid {{ openvpn_servicedir }}/service.pid
+
+# wait for new route to be estabilished:
+sleep 5
+
+# add vpn {{ default_vpn_device }} to common bridge:
+ifconfig {{ default_bridge_device }} addm {{ default_vpn_device }} up
+
+# create {{ default_vlan_device }} with default route from {{ default_vpn_device }}:
+ifconfig {{ default_vlan_device }} create
+
+# add {{ default_vlan_device }} back to common bridge:
+ifconfig {{ default_bridge_device }} addm {{ default_vlan_device }} up

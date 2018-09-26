@@ -18,6 +18,34 @@ setup_openvpn () {
 }
 
 
+install_openvpn_launchers () {
+    mkdir -p /usr/local/bin
+
+    template \
+        src="vpn/startvpn" \
+        dest="/usr/local/bin/startvpn" \
+        mode="755" \
+        openvpn_softwaredir="${openvpn_softwaredir}" \
+        openvpn_servicedir="${openvpn_servicedir}" \
+        default_vlan_device="${default_vlan_device}" \
+        default_vpn_device="${default_vpn_device}" \
+        default_bridge_device="${default_bridge_device}"
+
+    template \
+        src="vpn/watchvpn" \
+        dest="/usr/local/bin/watchvpn" \
+        mode="755" \
+        openvpn_softwaredir="${openvpn_softwaredir}" \
+        openvpn_servicedir="${openvpn_servicedir}" \
+        default_vpn_router="${default_vpn_router}" \
+        default_vpn_device="${default_vpn_device}"
+
+    lineinfile \
+        src="/etc/crontab" \
+        line="'* * * * * root /usr/local/bin/watchvpn'"
+}
+
+
 setup_vpn_nat () {
     note "Installing PF-NAT for network: $(distn "${vpn_network}")"
     template \
