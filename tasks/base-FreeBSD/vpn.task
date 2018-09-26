@@ -49,7 +49,7 @@ install_openvpn_launchers () {
 setup_vpn_nat () {
     note "Installing PF-NAT for network: $(distn "${vpn_network}")"
     template \
-        src="vpn/pf.conf" \
+        src="firewall/pf.conf" \
         dest="/etc/pf.conf" \
         mode="0644" \
         vpn_network="${vpn_network:-${default_network}}" \
