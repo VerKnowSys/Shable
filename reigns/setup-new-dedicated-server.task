@@ -11,9 +11,10 @@ setup_bridge_and_vlan0 () {
         src="/etc/rc.conf.local" \
         line="'ifconfig_vlan0=\"inet ${default_network}.1 netmask 255.255.0.0\"'"
 
+    note "Enabling IP forwarding"
     ${SED_BIN} -i '' -e \
-        's|^cloned_interfaces.*$|cloned_interfaces="vlan0 bridge0"|' \
-        /etc/rc.conf.local
+        's|^net.inet.ip.forwarding.*$|net.inet.ip.forwarding=1|' \
+        /etc/sysctl.conf
 
     #     ${SED_BIN} -i '' -e \
     #         's|^ifconfig_bridge0.*$|ifconfig_bridge0="addm em0 addm vlan0 up"' \
