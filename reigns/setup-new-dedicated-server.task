@@ -67,6 +67,9 @@ main () {
     install_unbound_launchers
     setup_unbound
 
+    install_nginx_launchers
+    setup_nginx
+
     reboot_and_quit 3
 }
 

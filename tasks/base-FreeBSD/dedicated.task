@@ -104,6 +104,39 @@ setup_unbound () {
 }
 
 
-# setup_nginx () {
-#     ${default_shell} -c "${sofin_bin} i Nginx"
-# }
+install_nginx_launchers () {
+    mkdir -p /usr/local/bin
+
+    template \
+        src="web/startnginx" \
+        dest="/usr/local/bin/startnginx" \
+        mode="755" \
+        nginx_softwaredir="${nginx_softwaredir}" \
+        nginx_servicedir="${nginx_servicedir}"
+
+    template \
+        src="web/watchnginx" \
+        dest="/usr/local/bin/watchnginx" \
+        mode="755" \
+        nginx_softwaredir="${nginx_softwaredir}" \
+        nginx_servicedir="${nginx_servicedir}"
+
+    lineinfile \
+        src="/etc/crontab" \
+        line="'* * * * * root /usr/local/bin/watchnginx'"
+}
+
+
+setup_nginx () {
+    ${default_shell} -c "${sofin_bin} i Nginx"
+
+    note "Installing Nginx configuration"
+    template \
+        src="web/nginx.conf" \
+        dest="${nginx_servicedir}/service.conf" \
+        mode="0640" \
+        nginx_servicedir="${unbound_servicedir}"
+
+    note "Starting Nginx proxy"
+    /usr/local/bin/startnginx
+}
