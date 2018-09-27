@@ -1,4 +1,12 @@
 #!/bin/sh
 
-{{ unbound_softwaredir }}/exports/unbound-checkconf && \
+restart_unbound () {
+    echo "Stopping Unbound"
+    kill -TERM "$(cat "{{ unbound_servicedir }}/service.pid")" 2>/dev/null
+    sleep 1
+    echo "Starting Unbound"
     {{ unbound_softwaredir }}/exports/unbound -c {{ unbound_servicedir }}/service.conf
+}
+
+{{ unbound_softwaredir }}/exports/unbound-checkconf && \
+    restart_unbound
