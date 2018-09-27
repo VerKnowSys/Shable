@@ -4,11 +4,11 @@ set +e
 
 
 restart_unbound () {
-    _pid="$(cat {{ unbound_servicedir }}/service.pid 2>/dev/null)"
+    _pid="$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)"
     if [ -n "${_pid}" ]; then
         echo "Found Unbound pid: ${_pid}"
-        kill -TERM ${_pid} 2>/dev/null
-        kill -KILL ${_pid} 2>/dev/null
+        kill -TERM "${_pid}" 2>/dev/null
+        kill -KILL "${_pid}" 2>/dev/null
         killall -KILL unbound 2>/dev/null
     else
         killall -TERM unbound 2>/dev/null
