@@ -6,7 +6,12 @@ only_as "root"
 only_for "FreeBSD"
 
 
-setup_network_options () {
+setup_network () {
+    note "Configuring router address: $(distn "${default_network}.1") on device: $(distn "${default_bridge_device}")"
+    ${SED_BIN} -i '' -e \
+        "s|^ifconfig_bridge0_aliases.*$|ifconfig_bridge0_aliases=\"inet ${default_network}.1/16\"|" \
+        /etc/rc.conf.local
+
     note "Enabling IP forwarding"
     ${SED_BIN} -i '' -e \
         's|^net.inet.ip.forwarding.*$|net.inet.ip.forwarding=1|' \
@@ -52,7 +57,7 @@ main () {
     # dedicated backend specific tasks:
     install_governor
 
-    setup_network_options
+    setup_network
     setup_vpn_nat
 
     install_openvpn_launchers
