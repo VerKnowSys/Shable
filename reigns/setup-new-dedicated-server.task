@@ -23,6 +23,7 @@ setup_network () {
 install_governor () {
     ${CP_BIN} /Projects/svdOS/gvr /tmp/gvr_tmp
     ${SED_BIN} -i '' -e "s|__JAIL_ROUTER_NETWORK|${default_network}|" /tmp/gvr_tmp
+    ${SED_BIN} -i '' -e "s|__JAIL_SHARED_DOMAIN|${default_jails_domain}|" /tmp/gvr_tmp
     ${MV_BIN} /tmp/gvr_tmp /usr/bin/gvr
     ${CHMOD_BIN} 750 /usr/bin/gvr
 }
