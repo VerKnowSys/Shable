@@ -25,7 +25,7 @@ create_homedir_dataset () {
         -o devices="off" \
         -o utf8only="on" \
         -o mountpoint="${homedir}" \
-        "zroot${homedir}"
+        "zroot${homedir}" 2>/dev/null
 
     ${ZFS_BIN} set dedup="on" "zroot${homedir}"
     ${ZFS_BIN} set setuid="off" "zroot${homedir}"
@@ -47,12 +47,12 @@ create_www_user_software_dataset () {
     ${ZFS_BIN} create \
         -o devices="off" \
         -o utf8only="on" \
-        "zroot/Software"
+        "zroot/Software" 2>/dev/null
 
     ${ZFS_BIN} create \
         -o devices="off" \
         -o utf8only="on" \
-        "zroot/Software/${default_www_user}"
+        "zroot/Software/${default_www_user}" 2>/dev/null
 
     ${ZFS_BIN} allow \
         -u "${default_www_user}" \
@@ -63,7 +63,7 @@ create_www_user_software_dataset () {
 
 create_local_dataset () {
     note "Preparing $(distn "zroot/usr/local") dataset."
-    ${ZFS_BIN} create -o mountpoint=/usr/local zroot/usr/local
+    ${ZFS_BIN} create -o mountpoint=/usr/local zroot/usr/local 2>/dev/null
     mkdir -p /usr/local/bin /usr/local/etc/rc.d
     ${CHOWN_BIN} -R "${default_www_user}:${default_www_user}" /usr/local
 }
