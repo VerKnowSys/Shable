@@ -65,10 +65,11 @@ main () {
 
     # base tasks:
     setup_base_system
+    configure_root_user
+    generate_audit_utils
 
     # dedicated backend specific tasks:
     install_base_system_software
-    install_software
     install_jail_governor
 
     setup_dedicated_system_config
