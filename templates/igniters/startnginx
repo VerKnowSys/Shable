@@ -1,16 +1,26 @@
 #!/bin/sh
 
+
 restart_nginx () {
-    echo "Stopping Nginx"
-    kill -INT "$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)" 2>/dev/null
-    sleep 1
-    kill -TERM "$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)" 2>/dev/null
-    sleep 2
-    kill -KILL "$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)" 2>/dev/null
-    sleep 2
+    _pid="$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        echo "Nginx pid(s): ${_pid}"
+        for _apid in ${_pid}; do # support multiple pids!
+            kill -INT "${_apid}" 2>/dev/null
+            kill -TERM "${_apid}" 2>/dev/null
+            sleep 5
+            kill -KILL "${_apid}" 2>/dev/null
+        done
+    else
+        echo "No pid file - nothing to kill."
+    fi
+    rm -f "{{ nginx_servicedir }}/service.pid"
+
     echo "Starting Nginx"
     "{{ nginx_softwaredir }}/exports/nginx"
 }
 
+
+# main():
 "{{ nginx_softwaredir }}/exports/nginx" -t && \
     restart_nginx
