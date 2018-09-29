@@ -68,9 +68,9 @@ install_base_system_software () {
                     ${ZFS_BIN} destroy -r "${default_zpool}${software_dir}/root/Git"
                     lz4cat "${cache_dir}/Git-${default_git_version}${default_zfsx_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${software_dir}/root/Git"
 
-                    ${GREP_BIN} -F "/Software/Zsh/exports/zsh" /etc/shells || \
-                        echo "/Software/Zsh/exports/zsh" >> /etc/shells
-                    ${CHSH_BIN} -s "/Software/Zsh/exports/zsh" root
+                    ${GREP_BIN} -F "${default_shell}" /etc/shells || \
+                        echo "${default_shell}" >> /etc/shells
+                    ${CHSH_BIN} -s "${default_shell}" root
                     ;;
 
                 User)
