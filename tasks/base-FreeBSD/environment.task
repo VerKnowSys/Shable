@@ -134,6 +134,14 @@ generate_default_rc () {
         src="/etc/rc.conf.local" \
         line="'cron_oomprotect=YES'"
 
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'pf_enable=YES'"
+
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'pf_oomprotect=YES'"
+
     note "Installing system control configuration: $(distn "/etc/sysctl.conf")"
     template \
         src="base-${SYSTEM_NAME}/sysctl.conf" \
