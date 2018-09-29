@@ -39,8 +39,9 @@ install_openvpn_launchers () {
         default_vpn_router="${default_vpn_router}" \
         default_vpn_device="${default_vpn_device}"
 
+    touch "/etc/cron.d/openvpn-supervisor"
     lineinfile \
-        src="/etc/crontab" \
+        src="/etc/cron.d/openvpn-supervisor" \
         line="'* * * * * root /usr/local/bin/watchvpn'"
 }
 
@@ -75,8 +76,9 @@ install_unbound_launchers () {
         unbound_softwaredir="${unbound_softwaredir}" \
         unbound_servicedir="${unbound_servicedir}"
 
+    touch "/etc/cron.d/unbound-supervisor"
     lineinfile \
-        src="/etc/crontab" \
+        src="/etc/cron.d/unbound-supervisor" \
         line="'* * * * * root /usr/local/bin/watchdns'"
 }
 
@@ -117,8 +119,9 @@ install_nginx_launchers () {
         nginx_softwaredir="${nginx_softwaredir}" \
         nginx_servicedir="${nginx_servicedir}"
 
+    touch "/etc/cron.d/nginx-supervisor"
     lineinfile \
-        src="/etc/crontab" \
+        src="/etc/cron.d/nginx-supervisor" \
         line="'* * * * * root /usr/local/bin/watchnginx'"
 }
 
