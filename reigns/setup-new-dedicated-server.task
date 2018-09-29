@@ -28,16 +28,17 @@ main () {
 
     note "Setting up new dedicated system on host: $(distn "${_host}"), External IP: $(distn "${ip}"), remote VPN server: $(distn "${remote_vpn_server}"), default VPN network: $(distn "${default_network}")"
 
+    # Build rc.conf.local from scratch:
+    ${RM_BIN} -f "/etc/rc.conf.local"
+
     # base tasks:
     setup_base_system
+    setup_dedicated_system_config
     generate_audit_utils
 
     # dedicated backend specific tasks:
     setup_base_datasets_and_core_software
     configure_root_user
-
-    # Dedicated machine specific settings:
-    setup_dedicated_system_config
 
     # Install gvr to /usr/bin:
     install_jail_governor
@@ -49,9 +50,6 @@ main () {
     install_openvpn_igniters
     install_unbound_igniters
     install_nginx_igniters
-
-    # For dedicated server we'd like to use etc/rc.production.conf template from svdOS repo (installed by `svdup` script):
-    ${RM_BIN} -f /etc/rc.conf.local
 
     # When base system configuration is ready, invoke svdup commit system modifications and install fres stable ServeD image:
     install_system_image
