@@ -63,6 +63,9 @@ main () {
 
     note "Setting up new dedicated system on host: $(distn "${_host}"), External IP: $(distn "${ip}"), remote VPN server: $(distn "${remote_vpn_server}"), default VPN network: $(distn "${default_network}")"
 
+    # For dedicated server we'd like to use etc/rc.production.conf template from svdOS repo (installed by `svdup` script)
+    ${RM_BIN} -f /etc/rc.conf.local
+
     # base tasks:
     setup_base_system
     install_software
