@@ -21,6 +21,11 @@ restart_nginx () {
 }
 
 
+test_nginx () {
+    "{{ nginx_softwaredir }}/exports/nginx" -t
+}
+
+
 # main():
-"{{ nginx_softwaredir }}/exports/nginx" -t && \
+test_nginx && \
     restart_nginx

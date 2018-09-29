@@ -18,6 +18,11 @@ restart_unbound () {
 }
 
 
+test_unbound () {
+    "{{ unbound_softwaredir }}/exports/unbound-checkconf"
+}
+
+
 # main():
-"{{ unbound_softwaredir }}/exports/unbound-checkconf" && \
+test_unbound && \
     restart_unbound
