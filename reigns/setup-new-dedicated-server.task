@@ -74,14 +74,10 @@ main () {
     setup_dedicated_system_config
     setup_vpn_nat
 
+    # Install software igniters:
     install_openvpn_igniters
-    setup_openvpn
-
     install_unbound_igniters
-    setup_unbound
-
     install_nginx_igniters
-    setup_nginx
 
     # For dedicated server we'd like to use etc/rc.production.conf template from svdOS repo (installed by `svdup` script):
     ${RM_BIN} -f /etc/rc.conf.local
@@ -93,6 +89,11 @@ main () {
     install_sofin_software
     install_dedicated_software
     install_jail_governor
+
+    # Setup configuration override for installed software:
+    setup_openvpn
+    setup_unbound
+    setup_nginx
 
     # Automatically reboot host system after installation:
     gracefully_quit_and_reboot 3
