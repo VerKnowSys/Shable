@@ -1,34 +1,14 @@
 #!/bin/sh
 
 
-restart_nginx () {
-    _pid="$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)"
-    if [ -n "${_pid}" ]; then
-        echo "Nginx pid(s): ${_pid}"
-        for _apid in ${_pid}; do # support multiple pids!
-            kill -INT "${_apid}" 2>/dev/null
-            sleep 1
-            kill -TERM "${_apid}" 2>/dev/null
-            sleep 2
-            kill -KILL "${_apid}" 2>/dev/null
-        done
-    else
-        echo "No pid file - nothing to kill. Old pid file will be removed."
-    fi
-    rm -f "{{ nginx_servicedir }}/service.pid"
-
-    /usr/local/bin/startnginx
-}
-
-
 check_nginx () {
     _pid="$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)"
     if [ -z "${_pid}" ]; then
         rm -f "{{ nginx_servicedir }}/service.pid"
-        restart_nginx
+        /usr/local/bin/startnginx
     else
         kill -0 "${_pid}" || \
-            restart_nginx
+            /usr/local/bin/startnginx
     fi
 }
 
