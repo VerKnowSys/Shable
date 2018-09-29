@@ -71,7 +71,10 @@ main () {
     setup_base_datasets_and_core_software
     configure_root_user
 
+    # Dedicated machine specific settings:
     setup_dedicated_system_config
+
+    # Packet Filter NAT configuration:
     setup_vpn_nat
 
     # Install software igniters:
@@ -82,7 +85,7 @@ main () {
     # For dedicated server we'd like to use etc/rc.production.conf template from svdOS repo (installed by `svdup` script):
     ${RM_BIN} -f /etc/rc.conf.local
 
-    # When base system configuration is ready, invoke svdup commit system modifications and install most recent stable ServeD:
+    # When base system configuration is ready, invoke svdup commit system modifications and install fres stable ServeD image:
     install_system_image
 
     # Install other standard software:
