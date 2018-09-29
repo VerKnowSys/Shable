@@ -1,7 +1,7 @@
 #!/bin/sh
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
-for _service in openvpn ntpd sshd syslogd syslog-ng redis-server filebeat nginx unbound cron; do
+for _service in openvpn ntpd sshd syslogd syslog-ng filebeat nginx unbound cron; do
     for _pid in $(pgrep "${_service}" 2>/dev/null); do
         if [ -n "${_pid}" ]; then
             protect -i -d -p "${_pid}"
