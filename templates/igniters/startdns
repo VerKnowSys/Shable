@@ -2,10 +2,15 @@
 
 restart_unbound () {
     echo "Stopping Unbound"
+    kill -INT "$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)" 2>/dev/null
+    sleep 1
     kill -TERM "$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)" 2>/dev/null
     sleep 1
+    kill -KILL "$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)" 2>/dev/null
+
     echo "Starting Unbound"
-    "{{ unbound_softwaredir }}/exports/unbound" -c "{{ unbound_servicedir }}/service.conf"
+    "{{ unbound_softwaredir }}/exports/unbound" -c \
+        "{{ unbound_servicedir }}/service.conf"
 }
 
 "{{ unbound_softwaredir }}/exports/unbound-checkconf" && \
