@@ -15,3 +15,75 @@ setup_base_system () {
     generate_default_rc
     install_daily_periodic_tasks
 }
+
+
+# This function was borrowed from `svdup` script for advanced dedicated system preparation:
+install_base_system_software () {
+    note "Fetching prebuilt LZ4 utilities"
+    ${FETCH_BIN} --no-verify-peer "${lz4_bin_resource}" -o /usr/bin/lz4
+    ${CHMOD_BIN} 755 /usr/bin/lz4
+    ${LN_BIN} -fs /usr/bin/lz4 /usr/bin/lz4cat
+
+    mkdir -p "${cache_dir}"
+    note "Configuring datasets, installing base software, setting HOME to ${HOME_DIR}, Zsh as default shell"
+    for _zfsdataset in User Services Software; do
+        ${ZFS_BIN} list "${default_zpool}/${_zfsdataset}" >/dev/null 2>&1
+        if [ "${?}" != "0" ]; then
+            ${ZFS_BIN} create \
+                -o mountpoint=none \
+                -o casesensitivity=sensitive \
+                -o readonly=off \
+                -o utf8only=on \
+                -o dedup=off \
+                -o checksum=fletcher4 \
+                -o atime=off \
+                -o aclmode=discard \
+                -o exec=on \
+                -o compression=lz4 \
+                "${default_zpool}/${_zfsdataset}" && \
+                note "Created origin base: ${default_zpool}/${_zfsdataset}"
+        fi
+
+        ${ZFS_BIN} list "${default_zpool}/${_zfsdataset}/root" >/dev/null 2>&1
+        if [ "${?}" != "0" ]; then
+            # fetch origin!
+            ${FETCH_BIN} -o \
+                "${cache_dir}/${_zfsdataset}-${default_origin_snapshot}.zfsx" \
+                "${default_origins_resource}/${_zfsdataset}-${default_origin_snapshot}.zfsx"
+            lz4cat "${cache_dir}/${_zfsdataset}-${default_origin_snapshot}.zfsx" | ${ZFS_BIN} receive -v "${default_zpool}/${_zfsdataset}/root@${default_origin_snapshot}"
+            ${ZFS_BIN} set mountpoint="/${_zfsdataset}" "${default_zpool}/${_zfsdataset}/root"
+
+            case "${_zfsdataset}" in
+                Services)
+                    ${FETCH_BIN} -o "${cache_dir}/Zsh-${default_zfsp_ext}" "${default_binary_resource}/Common/Zsh-${default_zsh_version}-${SYSTEM_NAME}${default_zfsp_ext}" && lz4cat "${cache_dir}/Zsh-${default_zfsp_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${services_dir}/root/Zsh"
+                    ${FETCH_BIN} -o "${cache_dir}/Git-${default_zfsp_ext}" "${default_binary_resource}/Common/Git-${default_git_version}-${SYSTEM_NAME}${default_zfsp_ext}" && lz4cat "${cache_dir}/Git-${default_zfsp_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${services_dir}/root/Git"
+                    ;;
+
+                Software)
+                    ${FETCH_BIN} -o "${cache_dir}/Zsh-${default_zsh_version}${default_zfsx_ext}" "${default_binary_resource}/${PROD_OS_BASE}/Zsh-${default_zsh_version}-${PROD_OS_BASE}${default_zfsx_ext}"
+                    ${ZFS_BIN} destroy -r "${default_zpool}${software_dir}/root/Zsh"
+                    lz4cat "${cache_dir}/Zsh-${default_zsh_version}${default_zfsx_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${software_dir}/root/Zsh"
+
+                    ${FETCH_BIN} -o "${cache_dir}/Git-${default_git_version}${default_zfsx_ext}" "${default_binary_resource}/${PROD_OS_BASE}/Git-${default_git_version}-${PROD_OS_BASE}${default_zfsx_ext}"
+                    ${ZFS_BIN} destroy -r "${default_zpool}${software_dir}/root/Git"
+                    lz4cat "${cache_dir}/Git-${default_git_version}${default_zfsx_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${software_dir}/root/Git"
+
+                    ${GREP_BIN} -F "/Software/Zsh/exports/zsh" /etc/shells || \
+                        echo "/Software/Zsh/exports/zsh" >> /etc/shells
+                    ${CHSH_BIN} -s "/Software/Zsh/exports/zsh" root
+                    ;;
+
+                User)
+                    _new_home_mounted="$(${ZFS_BIN} get -H -o value mounted "${default_zpool}/${_new_home_mounted}/root" 2>/dev/null)"
+                    if [ "yes" != "${_new_home_mounted}" ]; then
+                        ${ZFS_BIN} mount "${default_zpool}/${_zfsdataset}/root"
+                        test -d "/root/.ssh" && \
+                            ${CP_BIN} -rf "/root/.ssh" "/${_zfsdataset}/"
+                    fi
+                    ${PW_BIN} user mod root -d "/${_zfsdataset}"
+                    ${PW_BIN} user mod toor -d "/${_zfsdataset}"
+                    ;;
+            esac
+        fi
+    done
+}

@@ -72,6 +72,7 @@ main () {
 
     # dedicated backend specific tasks:
     install_governor
+    install_base_system_software
 
     setup_network
     setup_vpn_nat
