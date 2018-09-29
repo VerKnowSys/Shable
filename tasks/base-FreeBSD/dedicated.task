@@ -27,7 +27,6 @@ install_openvpn_launchers () {
         mode="755" \
         openvpn_softwaredir="${openvpn_softwaredir}" \
         openvpn_servicedir="${openvpn_servicedir}" \
-        default_vlan_device="${default_vlan_device}" \
         default_vpn_device="${default_vpn_device}" \
         default_bridge_device="${default_bridge_device}"
 

@@ -48,7 +48,6 @@ main () {
         remote_ip="${ip}" \
         openvpn_servicedir="${openvpn_servicedir}" \
         vpn_network="${vpn_network:-${default_network}}" \
-        default_vlan_device="${default_vlan_device}" \
         default_vpn_device="${default_vpn_device}" \
         default_bridge_device="${default_bridge_device}"
 

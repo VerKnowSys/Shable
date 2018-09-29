@@ -15,7 +15,6 @@ default_network="172.16.3"
 default_vpn_router="172.16.1.1"
 default_bridge_device="bridge0"
 default_vpn_device="tap0"
-default_vlan_device="vlan0"
 default_network_device="em0"
 
 default_zfs_allowed_commands="xattr,atime,casesensitivity,checksum,copies,logbias,primarycache,secondarycache,snapdir,userused,dedup,mountpoint,canmount,userprop,create,destroy,snapshot,rollback,clone,promote,rename,mount,send,receive,reservation,readonly"
