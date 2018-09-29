@@ -17,7 +17,7 @@ setup_dedicated_system_config () {
         "s|^vfs.zfs.arc_max.*$|vfs.zfs.arc_max=${default_arc_size_max}|" \
         /etc/sysctl.conf
 
-    note "Enabling IP forwarding"
+    note "Enabling IP forwarding feature for IPv4"
     ${SED_BIN} -i '' -e \
         's|^net.inet.ip.forwarding.*$|net.inet.ip.forwarding=1|' \
         /etc/sysctl.conf
@@ -91,6 +91,7 @@ main () {
 
     # Install other standard software:
     install_sofin_software
+    install_dedicated_software
     install_jail_governor
 
     # Automatically reboot host system after installation:

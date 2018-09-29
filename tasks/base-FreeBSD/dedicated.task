@@ -1,5 +1,9 @@
+install_dedicated_software () {
+    ${default_shell} -c "${sofin_bin} i Openvpn Nginx Unbound"
+}
+
+
 setup_openvpn () {
-    ${default_shell} -c "${sofin_bin} i Openvpn"
     note "Installing OpenVPN configuration"
     template \
         src="vpn/openvpn.conf" \
@@ -47,7 +51,7 @@ install_openvpn_igniters () {
 
 
 setup_vpn_nat () {
-    note "Installing PF-NAT for network: $(distn "${vpn_network}")"
+    note "Installing PF-NAT for network: $(distn "${vpn_network:-${default_network}}")"
     template \
         src="firewall/pf.conf" \
         dest="/etc/pf.conf" \
@@ -84,8 +88,6 @@ install_unbound_igniters () {
 
 
 setup_unbound () {
-    ${default_shell} -c "${sofin_bin} i Unbound"
-
     note "Installing Unbound configuration"
     template \
         src="dns/unbound.conf" \
@@ -127,8 +129,6 @@ install_nginx_igniters () {
 
 
 setup_nginx () {
-    ${default_shell} -c "${sofin_bin} i Nginx"
-
     note "Installing Nginx configuration"
     template \
         src="web/nginx.conf" \
