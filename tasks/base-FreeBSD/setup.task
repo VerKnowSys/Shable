@@ -61,11 +61,11 @@ setup_base_datasets_and_core_software () {
 
                 Software)
                     ${FETCH_BIN} -o "${cache_dir}/Zsh-${default_zsh_version}${default_zfsx_ext}" "${default_binary_resource}/${default_os_tripple}/Zsh-${default_zsh_version}-${default_os_tripple}${default_zfsx_ext}"
-                    ${ZFS_BIN} destroy -r "${default_zpool}${software_dir}/root/Zsh"
+                    ${ZFS_BIN} destroy -r "${default_zpool}${software_dir}/root/Zsh" 2>/dev/null
                     lz4cat "${cache_dir}/Zsh-${default_zsh_version}${default_zfsx_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${software_dir}/root/Zsh"
 
                     ${FETCH_BIN} -o "${cache_dir}/Git-${default_git_version}${default_zfsx_ext}" "${default_binary_resource}/${default_os_tripple}/Git-${default_git_version}-${default_os_tripple}${default_zfsx_ext}"
-                    ${ZFS_BIN} destroy -r "${default_zpool}${software_dir}/root/Git"
+                    ${ZFS_BIN} destroy -r "${default_zpool}${software_dir}/root/Git" 2>/dev/null
                     lz4cat "${cache_dir}/Git-${default_git_version}${default_zfsx_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${software_dir}/root/Git"
 
                     ${GREP_BIN} -F "${default_shell}" /etc/shells || \
