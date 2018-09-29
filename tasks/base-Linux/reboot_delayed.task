@@ -1,0 +1,5 @@
+gracefully_quit_and_reboot () {
+    warn "Your machine will reboot now, to load new kernel…"
+    nohup reboot &
+    exit
+}
