@@ -8,9 +8,11 @@ restart_openvpn () {
     _pid="$(cat "{{ openvpn_servicedir }}/service.pid" 2>/dev/null)"
     if [ -n "${_pid}" ]; then
         echo "Found Openvpn pid: ${_pid}"
+        kill -INT "${_pid}" 2>/dev/null
+        sleep 1
         kill -TERM "${_pid}" 2>/dev/null
+        sleep 2
         kill -KILL "${_pid}" 2>/dev/null
-        killall -KILL openvpn 2>/dev/null
     else
         # Allowed, since we use a single OpenVPN connection per server backend:
         killall -TERM openvpn 2>/dev/null
