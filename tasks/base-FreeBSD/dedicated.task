@@ -143,19 +143,23 @@ setup_nginx () {
 
 setup_dedicated_system_config () {
     note "Configuring port ACLs (allow regular user to bind ports: 80 and 443)"
-    ${SED_BIN} -i '' -e \
-        "s|^security.mac.portacl.rules.*$|security.mac.portacl.rules=gid:0:tcp:80,gid:0:tcp:443|" \
-        /etc/sysctl.conf
+    lineinfile \
+        src="/etc/sysctl.conf" \
+        line="security.mac.portacl.rules=gid:0:tcp:80,gid:0:tcp:443"
 
     note "Configuring max memory to be used by ARC to $(distn "${default_arc_size_max}") bytes"
-    ${SED_BIN} -i '' -e \
-        "s|^vfs.zfs.arc_max.*$|vfs.zfs.arc_max=${default_arc_size_max}|" \
-        /etc/sysctl.conf
+    lineinfile \
+        src="/etc/sysctl.conf" \
+        line="vfs.zfs.arc_min=${default_arc_size_max}"
+
+    lineinfile \
+        src="/etc/sysctl.conf" \
+        line="vfs.zfs.arc_max=${default_arc_size_max}"
 
     note "Enabling IP forwarding feature for IPv4"
-    ${SED_BIN} -i '' -e \
-        's|^net.inet.ip.forwarding.*$|net.inet.ip.forwarding=1|' \
-        /etc/sysctl.conf
+    lineinfile \
+        src="/etc/sysctl.conf" \
+        line="net.inet.ip.forwarding=1"
 
     note "Configuring router address: $(distn "${default_network}.1") on device: $(distn "${default_bridge_device}")"
     lineinfile \
