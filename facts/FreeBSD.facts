@@ -3,7 +3,13 @@ homedir="/var/www"
 homedir_root="/User"
 php_version="Php71"
 
+# Some base versions of used software:
+default_zsh_version="5.4.2"
+default_git_version="2.12.3"
+
 # Default Software(+ro) and Services(+rw) datasets:
+shared_dir="/Shared"
+cache_dir="${shared_dir}/Cache"
 services_dir="/Services"
 software_dir="/Software"
 openvpn_servicedir="${services_dir}/Openvpn"
@@ -32,7 +38,13 @@ default_network_device="em0"
 default_bridge_device="bridge0"
 
 # Default allowed ZFS-dataset commands:
+default_zpool="zroot"
+default_origin_snapshot="origin"
+default_zfsx_ext=".zfsx"
+default_zfsp_ext=".zfsp"
+default_origins_resource="https://raw.githubusercontent.com/VerKnowSys/sofin/master/share/sofin/origins"
 default_zfs_allowed_commands="xattr,atime,casesensitivity,checksum,copies,logbias,primarycache,secondarycache,snapdir,userused,dedup,mountpoint,canmount,userprop,create,destroy,snapshot,rollback,clone,promote,rename,mount,send,receive,reservation,readonly"
+lz4_bin_resource="https://raw.githubusercontent.com/VerKnowSys/svdOS/master/usr/bin/lz4"
 
 # FreeBSD-specific utilities provided by base system:
 ZFS_BIN="/sbin/zfs"
