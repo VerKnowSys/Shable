@@ -90,6 +90,9 @@ main () {
     # When base system configuration is ready, invoke svdup commit system modifications and install most recent stable ServeD:
     install_system_image
 
+    # Install other standard software:
+    install_sofin_software
+
     # Automatically reboot host system after installation:
     gracefully_quit_and_reboot 3
 }
