@@ -1,3 +1,4 @@
+default_system_shell="/bin/sh"
 default_shell="/Software/Zsh/exports/zsh"
 homedir="/var/www"
 homedir_root="/User"

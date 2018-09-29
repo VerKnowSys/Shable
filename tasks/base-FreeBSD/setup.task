@@ -81,7 +81,7 @@ install_base_system_software () {
                             ${CP_BIN} -rf "/root/.ssh" "/${_zfsdataset}/"
                     fi
                     ${PW_BIN} user mod root -d "/${_zfsdataset}"
-                    ${PW_BIN} user mod toor -d "/${_zfsdataset}"
+                    ${PW_BIN} user mod toor -d "${default_system_shell}"
                     ;;
             esac
         fi
