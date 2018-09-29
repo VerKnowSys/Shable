@@ -1,3 +1,4 @@
+default_os_tripple="${SYSTEM_NAME}-11.0-amd64"
 default_system_shell="/bin/sh"
 default_shell="/Software/Zsh/exports/zsh"
 homedir="/var/www"
