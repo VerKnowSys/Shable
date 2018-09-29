@@ -12,9 +12,9 @@ setup_dedicated_system_config () {
         "s|^security.mac.portacl.rules.*$|security.mac.portacl.rules=gid:0:tcp:80,gid:0:tcp:443|" \
         /etc/sysctl.conf
 
-    note "Configuring max memory to be used by ARC to 4GiB"
+    note "Configuring max memory to be used by ARC to $(distn "${default_arc_size_max}") bytes"
     ${SED_BIN} -i '' -e \
-        "s|^vfs.zfs.arc_max.*$|vfs.zfs.arc_max=4071008936|" \
+        "s|^vfs.zfs.arc_max.*$|vfs.zfs.arc_max=${default_arc_size_max}|" \
         /etc/sysctl.conf
 
     note "Enabling IP forwarding"
