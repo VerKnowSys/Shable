@@ -18,7 +18,7 @@ setup_openvpn () {
 }
 
 
-install_openvpn_launchers () {
+install_openvpn_igniters () {
     mkdir -p /usr/local/bin
 
     template \
@@ -59,7 +59,7 @@ setup_vpn_nat () {
 }
 
 
-install_unbound_launchers () {
+install_unbound_igniters () {
     mkdir -p /usr/local/bin
 
     template \
@@ -102,7 +102,7 @@ setup_unbound () {
 }
 
 
-install_nginx_launchers () {
+install_nginx_igniters () {
     mkdir -p /usr/local/bin
 
     template \

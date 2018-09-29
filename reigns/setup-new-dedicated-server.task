@@ -73,13 +73,13 @@ main () {
     setup_network
     setup_vpn_nat
 
-    install_openvpn_launchers
+    install_openvpn_igniters
     setup_openvpn
 
-    install_unbound_launchers
+    install_unbound_igniters
     setup_unbound
 
-    install_nginx_launchers
+    install_nginx_igniters
     setup_nginx
 
     reboot_and_quit 3
