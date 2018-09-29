@@ -35,7 +35,7 @@ create_homedir_dataset () {
     # Allow ZFS ops by regular user on dataset: zroot/var/www
     ${ZFS_BIN} allow \
         -u "${default_www_user}" \
-        xattr,atime,casesensitivity,checksum,copies,logbias,primarycache,secondarycache,snapdir,userused,dedup,mountpoint,canmount,userprop,create,destroy,snapshot,rollback,clone,promote,rename,mount,send,receive,reservation,readonly \
+        "${default_zfs_allowed_commands}" \
         "zroot${homedir}"
 }
 
@@ -56,7 +56,7 @@ create_www_user_software_dataset () {
 
     ${ZFS_BIN} allow \
         -u "${default_www_user}" \
-        xattr,atime,casesensitivity,checksum,copies,logbias,primarycache,secondarycache,snapdir,userused,dedup,mountpoint,canmount,userprop,create,destroy,snapshot,rollback,clone,promote,rename,mount,send,receive,reservation,readonly \
+        "${default_zfs_allowed_commands}" \
         "zroot/Software/${default_www_user}"
 }
 
