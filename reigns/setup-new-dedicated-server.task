@@ -6,7 +6,7 @@ only_as "root"
 only_for "FreeBSD"
 
 
-setup_network () {
+setup_dedicated_system_config () {
     note "Configuring port ACLs (allow regular user to bind ports: 80 and 443)"
     ${SED_BIN} -i '' -e \
         "s|^security.mac.portacl.rules.*$|security.mac.portacl.rules=gid:0:tcp:80,gid:0:tcp:443|" \
@@ -71,7 +71,7 @@ main () {
     install_software
     install_jail_governor
 
-    setup_network
+    setup_dedicated_system_config
     setup_vpn_nat
 
     install_openvpn_igniters
