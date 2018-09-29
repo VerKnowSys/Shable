@@ -5,24 +5,35 @@ failure () {
     exit 1
 }
 
-# destroy {{ default_vlan_device }} with default route for local network:
-# ifconfig {{ default_vlan_device }} destroy
 
-{{ openvpn_softwaredir }}/exports/openvpn \
-  --config {{ openvpn_servicedir }}/service.conf \
-  --daemon openvpn \
-  --writepid {{ openvpn_servicedir }}/service.pid
+restart_openvpn () {
+    _pid="$(cat {{ openvpn_servicedir }}/service.pid 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        echo "Found Openvpn pid: ${_pid}"
+        kill -TERM ${_pid} 2>/dev/null
+        kill -KILL ${_pid} 2>/dev/null
+        killall -KILL openvpn 2>/dev/null
+    else
+        killall -TERM openvpn 2>/dev/null
+        killall -KILL openvpn 2>/dev/null
+    fi
+    echo "Stopping OpenVPN"
+    sleep 1
+    ifconfig {{ default_vpn_device }} destroy 2>/dev/null
 
-# wait for new route to be estabilished:
-sleep 5
+    echo "Starting OpenVPN"
+    {{ openvpn_softwaredir }}/exports/openvpn \
+      --config {{ openvpn_servicedir }}/service.conf \
+      --daemon openvpn \
+      --writepid {{ openvpn_servicedir }}/service.pid
 
-# add vpn {{ default_vpn_device }} to common bridge:
-ifconfig {{ default_bridge_device }} addm {{ default_vpn_device }} up
+    # wait for new route to be estabilished:
+    sleep 5
 
-# create {{ default_vlan_device }} with default route from {{ default_vpn_device }}:
-# ifconfig {{ default_vlan_device }} create
+    ifconfig {{ default_bridge_device }} addm {{ default_vpn_device }} up
+    ifconfig {{ default_bridge_device }} up
+}
 
-# add {{ default_vlan_device }} back to common bridge:
-# ifconfig {{ default_bridge_device }} addm {{ default_vlan_device }} up
 
-ifconfig {{ default_bridge_device }} up
+# main():
+restart_openvpn || failure
