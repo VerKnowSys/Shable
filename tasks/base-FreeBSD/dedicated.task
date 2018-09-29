@@ -139,3 +139,45 @@ setup_nginx () {
     note "Starting Nginx proxy"
     /usr/local/bin/startnginx
 }
+
+
+setup_dedicated_system_config () {
+    note "Configuring port ACLs (allow regular user to bind ports: 80 and 443)"
+    ${SED_BIN} -i '' -e \
+        "s|^security.mac.portacl.rules.*$|security.mac.portacl.rules=gid:0:tcp:80,gid:0:tcp:443|" \
+        /etc/sysctl.conf
+
+    note "Configuring max memory to be used by ARC to $(distn "${default_arc_size_max}") bytes"
+    ${SED_BIN} -i '' -e \
+        "s|^vfs.zfs.arc_max.*$|vfs.zfs.arc_max=${default_arc_size_max}|" \
+        /etc/sysctl.conf
+
+    note "Enabling IP forwarding feature for IPv4"
+    ${SED_BIN} -i '' -e \
+        's|^net.inet.ip.forwarding.*$|net.inet.ip.forwarding=1|' \
+        /etc/sysctl.conf
+
+    note "Configuring router address: $(distn "${default_network}.1") on device: $(distn "${default_bridge_device}")"
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'cloned_interfaces=\"${default_bridge_device}\"'"
+
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'ifconfig_bridge0_aliases=\"inet ${default_network}.1/16\"'"
+}
+
+
+install_jail_governor () {
+    note "Installing default Jail governor - $(distn "gvr")"
+    _timestamp="$(${DATE_BIN} +%s 2>/dev/null)"
+    _tmpfile="/tmp/gvr-${_timestamp}.tmpl"
+    _destfile="/usr/bin/gvr"
+    ${FETCH_BIN} --no-verify-peer "${gvr_https_source}" -o "${_tmpfile}"
+    ${SED_BIN} -i '' -e "s|__JAIL_ROUTER_NETWORK|${default_network}|" "${_tmpfile}"
+    ${SED_BIN} -i '' -e "s|__JAIL_SHARED_DOMAIN|${default_jails_domain}|" "${_tmpfile}"
+    ${MV_BIN} "${_tmpfile}" "${_destfile}"
+    ${CHMOD_BIN} 750 "${_destfile}"
+    unset _timestamp _destfile _tmpfile
+}
+
