@@ -63,15 +63,12 @@ main () {
 
     note "Setting up new dedicated system on host: $(distn "${_host}"), External IP: $(distn "${ip}"), remote VPN server: $(distn "${remote_vpn_server}"), default VPN network: $(distn "${default_network}")"
 
-    # For dedicated server we'd like to use etc/rc.production.conf template from svdOS repo (installed by `svdup` script)
-    ${RM_BIN} -f /etc/rc.conf.local
-
     # base tasks:
     setup_base_system
-    install_software
 
     # dedicated backend specific tasks:
     install_base_system_software
+    install_software
     install_jail_governor
 
     setup_network
@@ -86,7 +83,10 @@ main () {
     install_nginx_igniters
     setup_nginx
 
-    # When base system configuration is ready, install most recent snapshot of stable ServeD build:
+    # For dedicated server we'd like to use etc/rc.production.conf template from svdOS repo (installed by `svdup` script):
+    ${RM_BIN} -f /etc/rc.conf.local
+
+    # When base system configuration is ready, invoke svdup commit system modifications and install most recent stable ServeD:
     install_system_image
 
     # Automatically reboot host system after installation:
