@@ -1,5 +1,5 @@
 install_dedicated_software () {
-    ${default_shell} -c "${sofin_bin} i Openvpn Nginx Unbound"
+    ${default_shell} -c "${sofin_bin} i Openvpn Unbound"
 }
 
 
