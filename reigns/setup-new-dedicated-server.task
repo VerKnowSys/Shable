@@ -33,7 +33,7 @@ setup_network () {
 }
 
 
-install_governor () {
+install_jail_governor () {
     ${CP_BIN} /Projects/svdOS/gvr /tmp/gvr_tmp
     ${SED_BIN} -i '' -e "s|__JAIL_ROUTER_NETWORK|${default_network}|" /tmp/gvr_tmp
     ${SED_BIN} -i '' -e "s|__JAIL_SHARED_DOMAIN|${default_jails_domain}|" /tmp/gvr_tmp
@@ -71,8 +71,8 @@ main () {
     install_software
 
     # dedicated backend specific tasks:
-    install_governor
     install_base_system_software
+    install_jail_governor
 
     setup_network
     setup_vpn_nat
