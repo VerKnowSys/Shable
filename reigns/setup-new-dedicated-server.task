@@ -34,7 +34,7 @@ setup_dedicated_system_config () {
 
 
 install_jail_governor () {
-    note "Installing jail governor"
+    note "Installing default Jail governor - $(distn "gvr")"
     _timestamp="$(${DATE_BIN} +%s 2>/dev/null)"
     _tmpfile="/tmp/gvr-${_timestamp}.tmpl"
     _destfile="/usr/bin/gvr"
@@ -79,6 +79,9 @@ main () {
     # Dedicated machine specific settings:
     setup_dedicated_system_config
 
+    # Install gvr to /usr/bin:
+    install_jail_governor
+
     # Packet Filter NAT configuration:
     setup_vpn_nat
 
@@ -96,7 +99,6 @@ main () {
     # Install other standard software:
     install_sofin_software
     install_dedicated_software
-    install_jail_governor
 
     # Setup configuration override for installed software:
     setup_openvpn
