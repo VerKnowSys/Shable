@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set +e
-
 
 restart_unbound () {
     _pid="$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)"
@@ -19,5 +17,12 @@ restart_unbound () {
 }
 
 
-# main()
-drill "google.com" @127.0.0.1 >/dev/null || restart_unbound
+chech_unbound () {
+    # DNS check using local DNS:
+    drill "google.com" @127.0.0.1 >/dev/null || \
+        restart_unbound
+}
+
+
+# main():
+chech_unbound

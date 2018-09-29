@@ -24,16 +24,14 @@ restart_openvpn () {
     echo "Starting OpenVPN"
     "{{ openvpn_softwaredir }}/exports/openvpn" \
       --config "{{ openvpn_servicedir }}/service.conf" \
-      --daemon "openvpn" \
-      --writepid "{{ openvpn_servicedir }}/service.pid"
-
-    # wait for new route to be estabilished:
-    sleep 5
-
-    ifconfig "{{ default_bridge_device }}" addm "{{ default_vpn_device }}" up
-    ifconfig "{{ default_bridge_device }}" up
+      --writepid "{{ openvpn_servicedir }}/service.pid" \
+      --daemon "openvpn" && \
+        sleep 5 && \
+        ifconfig "{{ default_bridge_device }}" addm "{{ default_vpn_device }}" up && \
+        ifconfig "{{ default_bridge_device }}" up
 }
 
 
 # main():
-restart_openvpn || failure
+restart_openvpn || \
+    failure

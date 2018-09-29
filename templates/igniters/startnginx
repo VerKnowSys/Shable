@@ -2,13 +2,15 @@
 
 restart_nginx () {
     echo "Stopping Nginx"
+    kill -INT "$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)" 2>/dev/null
+    sleep 1
     kill -TERM "$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)" 2>/dev/null
     sleep 2
     kill -KILL "$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)" 2>/dev/null
-    sleep 3
+    sleep 2
     echo "Starting Nginx"
-    {{ nginx_softwaredir }}/exports/nginx
+    "{{ nginx_softwaredir }}/exports/nginx"
 }
 
-{{ nginx_softwaredir }}/exports/nginx -t && \
+"{{ nginx_softwaredir }}/exports/nginx" -t && \
     restart_nginx

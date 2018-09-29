@@ -1,0 +1,35 @@
+#!/bin/sh
+
+
+restart_nginx () {
+    _pid="$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        echo "Found Nginx pid: ${_pid}"
+        kill -TERM "${_pid}" 2>/dev/null
+        kill -KILL "${_pid}" 2>/dev/null
+        killall -KILL nginx 2>/dev/null
+        sleep 5
+    else
+        echo "No pid file - nothing to kill."
+        # XXX: this shouldn't kill all nginxes…
+        # killall -TERM nginx 2>/dev/null
+        # killall -KILL nginx 2>/dev/null
+    fi
+    /usr/local/bin/startnginx
+}
+
+
+check_nginx () {
+    _pid="$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -z "${_pid}" ]; then
+        rm -f "{{ nginx_servicedir }}/service.pid"
+        restart_nginx
+    else
+        kill -0 "${_pid}" || \
+            restart_nginx
+    fi
+}
+
+
+# main():
+check_nginx

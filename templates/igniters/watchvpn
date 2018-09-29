@@ -1,0 +1,32 @@
+#!/bin/sh
+
+
+_vpn_router="{{ default_vpn_router }}"
+
+
+restart_openvpn () {
+    _pid="$(cat "{{ openvpn_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        echo "Found Openvpn pid: ${_pid}"
+        kill -TERM "${_pid}" 2>/dev/null
+        kill -KILL "${_pid}" 2>/dev/null
+        killall -KILL openvpn 2>/dev/null
+    else
+        # Allowed, since we use a single OpenVPN connection per server backend:
+        killall -TERM openvpn 2>/dev/null
+        killall -KILL openvpn 2>/dev/null
+    fi
+    sleep 2
+    ifconfig "{{ default_vpn_device }}" destroy 2>/dev/null
+    /usr/local/bin/startvpn
+}
+
+
+check_openvpn () {
+    ping -t3 -c1 "${_vpn_router}" >/dev/null 2>&1 || \
+        restart_openvpn
+}
+
+
+# main():
+check_openvpn
