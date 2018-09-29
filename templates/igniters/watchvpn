@@ -20,6 +20,7 @@ restart_openvpn () {
     fi
     sleep 2
     ifconfig "{{ default_vpn_device }}" destroy 2>/dev/null
+
     /usr/local/bin/startvpn
 }
 
