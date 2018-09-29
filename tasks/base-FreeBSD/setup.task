@@ -70,7 +70,12 @@ install_base_system_software () {
 
                     ${GREP_BIN} -F "${default_shell}" /etc/shells || \
                         echo "${default_shell}" >> /etc/shells
+
+                    note "Setting default Shell to: $(distn "${default_shell}")"
                     ${CHSH_BIN} -s "${default_shell}" root
+
+                    # NOTE: always have option to access server backend even when default Zsh is corrupted or unavailable:
+                    ${CHSH_BIN} -s "${default_system_shell}" toor
                     ;;
 
                 User)
@@ -81,7 +86,7 @@ install_base_system_software () {
                             ${CP_BIN} -rf "/root/.ssh" "/${_zfsdataset}/"
                     fi
                     ${PW_BIN} user mod root -d "/${_zfsdataset}"
-                    ${PW_BIN} user mod toor -d "${default_system_shell}"
+                    ${PW_BIN} user mod toor -d "/${_zfsdataset}"
                     ;;
             esac
         fi
