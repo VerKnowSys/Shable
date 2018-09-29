@@ -55,9 +55,9 @@ main () {
         default_bridge_device="${default_bridge_device}"
 
     # Make sure VPN keys are available before we invoke setup process:
-    for k in crt key; do
-        if [ ! -f "templates/vpn/${REMOTE}.${k}" ]; then
-            error "Missing VPN file: $(diste "templates/vpn/${REMOTE}.${k}") - it's required to set up VPN client correctly! Please read $(distd "docs/generate-vpn-key.md")"
+    for _vpnfile in crt key; do
+        if [ ! -f "templates/vpn/${REMOTE}.${_vpnfile}" ]; then
+            error "Missing VPN file: $(diste "templates/vpn/${REMOTE}.${_vpnfile}") - it's required to set up VPN client correctly! Please read $(distd "docs/generate-vpn-key.md")"
         fi
     done
 
