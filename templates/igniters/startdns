@@ -2,16 +2,22 @@
 
 restart_unbound () {
     echo "Stopping Unbound"
-    kill -INT "$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)" 2>/dev/null
-    sleep 1
-    kill -TERM "$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)" 2>/dev/null
-    sleep 1
-    kill -KILL "$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)" 2>/dev/null
+    _pid="$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        echo "Unbound pid: ${_pid}"
+        kill -INT "${_pid}" 2>/dev/null
+        sleep 1
+        kill -TERM "${_pid}" 2>/dev/null
+        sleep 1
+        kill -KILL "${_pid}" 2>/dev/null
+    fi
 
     echo "Starting Unbound"
     "{{ unbound_softwaredir }}/exports/unbound" -c \
         "{{ unbound_servicedir }}/service.conf"
 }
 
+
+# main():
 "{{ unbound_softwaredir }}/exports/unbound-checkconf" && \
     restart_unbound
