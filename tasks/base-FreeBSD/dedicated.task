@@ -131,7 +131,7 @@ setup_nginx () {
 
     note "Installing Nginx configuration"
     template \
-        src="igniters/nginx.conf" \
+        src="web/nginx.conf" \
         dest="${nginx_servicedir}/service.conf" \
         mode="0640" \
         nginx_servicedir="${unbound_servicedir}"
