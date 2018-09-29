@@ -26,11 +26,11 @@ install_default_profile () {
 
 
 install_system_image () {
-    note "Upgrading FreeBSD to svdOS!"
+    note "ServeD: Installation in progress"
     ${FETCH_BIN} "${svdup_https_source}" || \
         error "Couldn't download svdup!"
 
-    note "Unmounting any swaps"
+    note "Unmounting all swaps"
     ${SWAPOFF_BIN} -a
 
     # NOTE: All changes made to /etc will be lost after invocation of this mechanism after first reboot:
