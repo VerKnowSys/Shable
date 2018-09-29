@@ -34,11 +34,16 @@ setup_dedicated_system_config () {
 
 
 install_jail_governor () {
-    ${CP_BIN} /Projects/svdOS/gvr /tmp/gvr_tmp
-    ${SED_BIN} -i '' -e "s|__JAIL_ROUTER_NETWORK|${default_network}|" /tmp/gvr_tmp
-    ${SED_BIN} -i '' -e "s|__JAIL_SHARED_DOMAIN|${default_jails_domain}|" /tmp/gvr_tmp
-    ${MV_BIN} /tmp/gvr_tmp /usr/bin/gvr
-    ${CHMOD_BIN} 750 /usr/bin/gvr
+    note "Installing jail governor"
+    _timestamp="$(${DATE_BIN} +%s 2>/dev/null)"
+    _tmpfile="/tmp/gvr-${_timestamp}.tmpl"
+    _destfile="/usr/bin/gvr"
+    ${FETCH_BIN} --no-verify-peer "${gvr_https_source}" -o "${_tmpfile}"
+    ${SED_BIN} -i '' -e "s|__JAIL_ROUTER_NETWORK|${default_network}|" "${_tmpfile}"
+    ${SED_BIN} -i '' -e "s|__JAIL_SHARED_DOMAIN|${default_jails_domain}|" "${_tmpfile}"
+    ${MV_BIN} "${_tmpfile}" "${_destfile}"
+    ${CHMOD_BIN} 750 "${_destfile}"
+    unset _timestamp _destfile _tmpfile
 }
 
 
