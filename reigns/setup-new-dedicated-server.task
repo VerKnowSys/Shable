@@ -12,9 +12,9 @@ setup_network () {
         "s|^security.mac.portacl.rules.*$|security.mac.portacl.rules=gid:0:tcp:80,gid:0:tcp:443|" \
         /etc/sysctl.conf
 
-    note "Configuring max memory to be used by ARC to 1GiB"
+    note "Configuring max memory to be used by ARC to 4GiB"
     ${SED_BIN} -i '' -e \
-        "s|^vfs.zfs.arc_max.*$|vfs.zfs.arc_max=1017752234|" \
+        "s|^vfs.zfs.arc_max.*$|vfs.zfs.arc_max=4071008936|" \
         /etc/sysctl.conf
 
     note "Configuring router address: $(distn "${default_network}.1") on device: $(distn "${default_bridge_device}")"
