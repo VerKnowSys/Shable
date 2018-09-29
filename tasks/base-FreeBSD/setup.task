@@ -55,18 +55,18 @@ install_base_system_software () {
 
             case "${_zfsdataset}" in
                 Services)
-                    ${FETCH_BIN} -o "${cache_dir}/Zsh-${default_zfsp_ext}" "${default_binary_resource}/Common/Zsh-${default_zsh_version}-${SYSTEM_NAME}${default_zfsp_ext}" && lz4cat "${cache_dir}/Zsh-${default_zfsp_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${services_dir}/root/Zsh"
-                    ${FETCH_BIN} -o "${cache_dir}/Git-${default_zfsp_ext}" "${default_binary_resource}/Common/Git-${default_git_version}-${SYSTEM_NAME}${default_zfsp_ext}" && lz4cat "${cache_dir}/Git-${default_zfsp_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${services_dir}/root/Git"
+                    ${FETCH_BIN} -o "${cache_dir}/Zsh-${default_zsh_version}${default_zfsp_ext}" "${default_binary_resource}/Common/Zsh-${default_zsh_version}-${SYSTEM_NAME}${default_zfsp_ext}" && lz4cat "${cache_dir}/Zsh-${default_zsh_version}${default_zfsp_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${services_dir}/root/Zsh"
+                    ${FETCH_BIN} -o "${cache_dir}/Git-${default_git_version}${default_zfsp_ext}" "${default_binary_resource}/Common/Git-${default_git_version}-${SYSTEM_NAME}${default_zfsp_ext}" && lz4cat "${cache_dir}/Git-${default_git_version}${default_zfsp_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${services_dir}/root/Git"
                     ;;
 
                 Software)
-                    ${FETCH_BIN} -o "${cache_dir}/Zsh-${default_zsh_version}${default_zfsx_ext}" "${default_binary_resource}/${default_os_tripple}/Zsh-${default_zsh_version}-${default_os_tripple}${default_zfsx_ext}"
+                    ${FETCH_BIN} -o "${cache_dir}/Zsh-${default_zsh_version}${default_zsh_version}${default_zfsx_ext}" "${default_binary_resource}/${default_os_tripple}/Zsh-${default_zsh_version}-${default_os_tripple}${default_zfsx_ext}"
                     ${ZFS_BIN} destroy -r "${default_zpool}${software_dir}/root/Zsh"
-                    lz4cat "${cache_dir}/Zsh-${default_zsh_version}${default_zfsx_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${software_dir}/root/Zsh"
+                    lz4cat "${cache_dir}/Zsh-${default_zsh_version}${default_zsh_version}${default_zfsx_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${software_dir}/root/Zsh"
 
-                    ${FETCH_BIN} -o "${cache_dir}/Git-${default_git_version}${default_zfsx_ext}" "${default_binary_resource}/${default_os_tripple}/Git-${default_git_version}-${default_os_tripple}${default_zfsx_ext}"
+                    ${FETCH_BIN} -o "${cache_dir}/Git-${default_git_version}${default_git_version}${default_zfsx_ext}" "${default_binary_resource}/${default_os_tripple}/Git-${default_git_version}-${default_os_tripple}${default_zfsx_ext}"
                     ${ZFS_BIN} destroy -r "${default_zpool}${software_dir}/root/Git"
-                    lz4cat "${cache_dir}/Git-${default_git_version}${default_zfsx_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${software_dir}/root/Git"
+                    lz4cat "${cache_dir}/Git-${default_git_version}${default_git_version}${default_zfsx_ext}" | ${ZFS_BIN} receive -v "${default_zpool}${software_dir}/root/Git"
 
                     ${GREP_BIN} -F "${default_shell}" /etc/shells || \
                         echo "${default_shell}" >> /etc/shells
