@@ -45,8 +45,8 @@ install_sofin_software () {
     # NOTE: disabled: Syslog-ng Doas Openvpn
 
     note "Installing software: $(distn "${_software_list}")"
-    ${default_shell} -c "${sofin_bin} up" 2>/dev/null
-    ${default_shell} -c "${sofin_bin} i ${_software_list}" 2>/dev/null
+    ${default_shell} -c "${sofin_bin} up"
+    ${default_shell} -c "${sofin_bin} i ${_software_list}"
 
     debug "Copying current definitions state for www user"
     ${CP_BIN} -r "${HOME}/.sofin" /var/www/
