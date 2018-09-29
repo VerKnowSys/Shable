@@ -71,18 +71,18 @@ create_local_dataset () {
 
 create_var_datasets () {
     note "Setting up additional ZFS datasets"
-    ${ZFS_BIN} create -o mountpoint="/var/cron" "zroot/var/cron"
-    ${ZFS_BIN} set readonly="off" "zroot/var/cron"
-    ${ZFS_BIN} create -o mountpoint="/var/at" "zroot/var/at"
-    ${ZFS_BIN} set readonly="off" "zroot/var/at"
-    ${ZFS_BIN} create -o mountpoint="/var/run" "zroot/var/run"
-    ${ZFS_BIN} set readonly="off" "zroot/var/run"
-    ${ZFS_BIN} create -o mountpoint="/var/db" "zroot/var/db"
-    ${ZFS_BIN} set readonly="off" "zroot/var/db"
-    ${ZFS_BIN} create -o mountpoint="/var/backups" "zroot/var/backups"
-    ${ZFS_BIN} set readonly="off" "zroot/var/backups"
-    ${ZFS_BIN} set readonly="off" "zroot/var/audit"
-    ${ZFS_BIN} set dedup="on" "zroot/var/audit"
-    ${ZFS_BIN} set compression="lz4" "zroot/var/audit"
+    ${ZFS_BIN} create -o mountpoint="/var/cron" "zroot/var/cron" 2>/dev/null
+    ${ZFS_BIN} set readonly="off" "zroot/var/cron" 2>/dev/null
+    ${ZFS_BIN} create -o mountpoint="/var/at" "zroot/var/at" 2>/dev/null
+    ${ZFS_BIN} set readonly="off" "zroot/var/at" 2>/dev/null
+    ${ZFS_BIN} create -o mountpoint="/var/run" "zroot/var/run" 2>/dev/null
+    ${ZFS_BIN} set readonly="off" "zroot/var/run" 2>/dev/null
+    ${ZFS_BIN} create -o mountpoint="/var/db" "zroot/var/db" 2>/dev/null
+    ${ZFS_BIN} set readonly="off" "zroot/var/db" 2>/dev/null
+    ${ZFS_BIN} create -o mountpoint="/var/backups" "zroot/var/backups" 2>/dev/null
+    ${ZFS_BIN} set readonly="off" "zroot/var/backups" 2>/dev/null
+    ${ZFS_BIN} set readonly="off" "zroot/var/audit" 2>/dev/null
+    ${ZFS_BIN} set dedup="on" "zroot/var/audit" 2>/dev/null
+    ${ZFS_BIN} set compression="lz4" "zroot/var/audit" 2>/dev/null
     mkdir -p "/var/db/zfsd/cases" "/var/db/entropy" "/var/cron/tabs" "/var/at/jobs" "/var/at/spool"
 }
