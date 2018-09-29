@@ -68,7 +68,7 @@ main () {
     generate_audit_utils
 
     # dedicated backend specific tasks:
-    install_base_system_software
+    setup_base_datasets_and_core_software
     configure_root_user
 
     setup_dedicated_system_config

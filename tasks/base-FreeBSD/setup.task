@@ -18,7 +18,7 @@ setup_base_system () {
 
 
 # This function was borrowed from `svdup` script for advanced dedicated system preparation:
-install_base_system_software () {
+setup_base_datasets_and_core_software () {
     note "Base system software preparation for OS: $(distn "${default_os_tripple}")"
     ${FETCH_BIN} --no-verify-peer "${lz4_bin_resource}" -o /usr/bin/lz4
     ${CHMOD_BIN} 755 /usr/bin/lz4
