@@ -13,6 +13,7 @@ main () {
 
     # base tasks:
     setup_base_system
+    install_system_image
     install_software
 
     gracefully_quit_and_reboot 3

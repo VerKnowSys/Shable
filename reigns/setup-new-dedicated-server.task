@@ -85,5 +85,9 @@ main () {
     install_nginx_igniters
     setup_nginx
 
+    # When base system configuration is ready, install most recent snapshot of stable ServeD build:
+    install_system_image
+
+    # Automatically reboot host system after installation:
     gracefully_quit_and_reboot 3
 }
