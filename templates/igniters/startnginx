@@ -11,8 +11,6 @@ restart_nginx () {
             sleep 5
             kill -KILL "${_apid}" 2>/dev/null
         done
-    else
-        echo "No pid file - nothing to kill."
     fi
     rm -f "{{ nginx_servicedir }}/service.pid"
 
