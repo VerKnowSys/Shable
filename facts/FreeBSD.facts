@@ -3,22 +3,38 @@ homedir="/var/www"
 homedir_root="/User"
 php_version="Php71"
 
-openvpn_servicedir="/Services/Openvpn"
-openvpn_softwaredir="/Software/Openvpn"
-unbound_servicedir="/Services/Unbound"
-unbound_softwaredir="/Software/Unbound"
-nginx_servicedir="/Services/Nginx"
-nginx_softwaredir="/Software/Nginx"
+# Default Software(+ro) and Services(+rw) datasets:
+services_dir="/Services"
+software_dir="/Software"
+openvpn_servicedir="${services_dir}/Openvpn"
+openvpn_softwaredir="${software_dir}/Openvpn"
+unbound_servicedir="${services_dir}/Unbound"
+unbound_softwaredir="${software_dir}/Unbound"
+nginx_servicedir="${services_dir}/Nginx"
+nginx_softwaredir="${software_dir}/Nginx"
 
+# Default local 172.16.0.0/16 network (accessible via OpenVPN):
 default_subnet="172.16"
+
+# Default subnet for local jails: 172.16.3.2-254
 default_network="172.16.3"
+
+# Local address of OpenVPN server (used by "watchvpn" cron task to check network availability):
 default_vpn_router="172.16.1.1"
-default_bridge_device="bridge0"
+
+# Default tap device used by OpenVPN:
 default_vpn_device="tap0"
+
+# Default network device name (one with routable external IP):
 default_network_device="em0"
 
+# Bridge that will also act as NAT:
+default_bridge_device="bridge0"
+
+# Default allowed ZFS-dataset commands:
 default_zfs_allowed_commands="xattr,atime,casesensitivity,checksum,copies,logbias,primarycache,secondarycache,snapdir,userused,dedup,mountpoint,canmount,userprop,create,destroy,snapshot,rollback,clone,promote,rename,mount,send,receive,reservation,readonly"
 
+# FreeBSD-specific utilities provided by base system:
 ZFS_BIN="/sbin/zfs"
 FETCH_BIN="/usr/bin/fetch"
 CHSH_BIN="/usr/bin/chsh"
