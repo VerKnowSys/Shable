@@ -25,7 +25,7 @@ setup_openvpn () {
 install_common_igniter () {
     template \
         src="igniters/common.igni" \
-        dest="/usr/local/bin/common.igni" \
+        dest="${igniters_dir}/common.igni" \
         mode="644"
 }
 
@@ -33,7 +33,7 @@ install_common_igniter () {
 install_openvpn_igniters () {
     template \
         src="igniters/vpn.igni" \
-        dest="/usr/local/bin/vpn.igni" \
+        dest="${igniters_dir}/vpn.igni" \
         mode="755" \
         openvpn_softwaredir="${openvpn_softwaredir}" \
         openvpn_servicedir="${openvpn_servicedir}" \
@@ -44,7 +44,7 @@ install_openvpn_igniters () {
     touch "/etc/cron.d/vpn-watch"
     lineinfile \
         src="/etc/cron.d/vpn-watch" \
-        line="'* * * * * root /usr/local/bin/vpn.igni watch'"
+        line="'* * * * * root ${igniters_dir}/vpn.igni watch'"
 }
 
 
@@ -64,7 +64,7 @@ setup_vpn_nat () {
 install_unbound_igniters () {
     template \
         src="igniters/dns.igni" \
-        dest="/usr/local/bin/dns.igni" \
+        dest="${igniters_dir}/dns.igni" \
         mode="755" \
         unbound_softwaredir="${unbound_softwaredir}" \
         unbound_servicedir="${unbound_servicedir}"
@@ -72,7 +72,7 @@ install_unbound_igniters () {
     touch "/etc/cron.d/dns-watch"
     lineinfile \
         src="/etc/cron.d/dns-watch" \
-        line="'* * * * * root /usr/local/bin/dns.igni watch'"
+        line="'* * * * * root ${igniters_dir}/dns.igni watch'"
 }
 
 
@@ -89,14 +89,14 @@ setup_unbound () {
     ${LN_BIN} -s "${unbound_servicedir}/service.conf" "${unbound_servicedir}/etc/unbound/unbound.conf"
 
     note "Starting DNS server"
-    /usr/local/bin/dns.igni ignite
+    ${igniters_dir}/dns.igni ignite
 }
 
 
 install_nginx_igniters () {
     template \
         src="igniters/nginx.igni" \
-        dest="/usr/local/bin/nginx.igni" \
+        dest="${igniters_dir}/nginx.igni" \
         mode="755" \
         nginx_softwaredir="${nginx_softwaredir}" \
         nginx_servicedir="${nginx_servicedir}"
@@ -104,7 +104,7 @@ install_nginx_igniters () {
     touch "/etc/cron.d/nginx-watch"
     lineinfile \
         src="/etc/cron.d/nginx-watch" \
-        line="'* * * * * root /usr/local/bin/nginx.igni watch'"
+        line="'* * * * * root ${igniters_dir}/nginx.igni watch'"
 }
 
 
@@ -117,7 +117,7 @@ setup_nginx () {
         nginx_servicedir="${unbound_servicedir}"
 
     note "Starting Web proxy server: Nginx"
-    /usr/local/bin/nginx.igni ignite
+    ${igniters_dir}/nginx.igni ignite
 }
 
 
