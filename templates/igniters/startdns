@@ -1,28 +1,70 @@
 #!/bin/sh
 
-reload_or_restart_unbound () {
+
+start_service () {
+    echo "Starting DNS server"
+    eval "{{ unbound_softwaredir }}/exports/unbound -c {{ unbound_servicedir }}/service.conf" && \
+        return 0
+}
+
+
+stop_service () {
+    _killpid="${1}"
+    if [ -z "${_killpid}" ]; then
+        echo "Failure: Empty PID for Unbound!"
+        return 1
+    fi
+    echo "Stopping Unbound: ${_killpid}"
+    for _indx in $(seq 1 15); do # ~15s timeout
+        kill -TERM "${_killpid}" 2>/dev/null
+        sleep 1
+        kill -0 "${_killpid}" 2>/dev/null || \
+            break
+    done
+    ${RM_BIN} -f "{{ unbound_servicedir }}/service.pid"
+    unset _indx _killpid
+    return 0
+}
+
+
+restart_service () {
+    _pid="$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        stop_service "${_pid}" && \
+            start_service
+    else
+        start_service
+    fi
+    unset _pid
+    return 0
+}
+
+
+reload_service () {
     _pid="$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)"
     if [ -n "${_pid}" ]; then
         # If "pid is alive" trick with -0 signal:
         kill -0 "${_pid}" 2>/dev/null
         if [ "0" = "${?}" ]; then # if "0" => pid is alive
-            echo "Reloading Unbound with pid: ${_pid}"
+            echo "Reloading Unbound (HUP)"
             kill -HUP "${_pid}" 2>/dev/null
-            sleep 1
         else
-            echo "Starting Unbound"
-            "{{ unbound_softwaredir }}/exports/unbound" -c \
-                "{{ unbound_servicedir }}/service.conf"
+            echo "Reloading Unbound failed - service is dead!"
+            return 1
         fi
     fi
+    unset _pid
+    return 0
 }
 
 
-test_unbound () {
-    "{{ unbound_softwaredir }}/exports/unbound-checkconf"
+test_service () {
+    eval "{{ unbound_softwaredir }}/exports/unbound-checkconf" && \
+        return 0
 }
 
 
 # main():
-test_unbound && \
-    reload_or_restart_unbound
+test_service && \
+    restart_service
+
