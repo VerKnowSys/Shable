@@ -2,7 +2,7 @@
 
 
 # Load common.igni with common tasks:
-. /usr/local/bin/common.igni
+. /Shared/Igniters/common.igni
 
 
 test_service () {
