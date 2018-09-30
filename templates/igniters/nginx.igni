@@ -6,7 +6,7 @@
 
 
 start_service () {
-    echo "Starting Nginx"
+    echo "service: Starting Nginx"
     eval "{{ nginx_softwaredir }}/exports/nginx"
 }
 
@@ -30,7 +30,7 @@ status_service () {
 stop_service () {
     _pid="$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)"
     if [ -n "${_pid}" ]; then
-        echo "Stopping Nginx pid(s): ${_pid}"
+        echo "service: Stopping Nginx pid(s): ${_pid}"
         for _apid in ${_pid}; do # support multiple pids!
             {
                 kill -INT "${_apid}";
@@ -59,14 +59,14 @@ reload_service () {
         kill -0 "${_pid}" 2>/dev/null
         if [ "0" = "${?}" ]; then
             {
-                echo "Reloading Nginx";
+                echo "service: Reloading Nginx";
                 kill -HUP "${_pid}";
                 sleep 2;
                 "{{ nginx_softwaredir }}/exports/nginx" -s reload;
                 sleep 1;
             } 2>/dev/null
         else
-            echo "Failed to reload Nginx - service is DEAD!"
+            echo "service: Failed to reload Nginx - service is DEAD!"
             return 1
         fi
     fi
@@ -92,8 +92,7 @@ watch_service () {
 
 
 ignite_service () {
-    test_service && \
-        restart_service
+    restart_service
 }
 
 

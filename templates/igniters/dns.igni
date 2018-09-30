@@ -6,7 +6,7 @@
 
 
 start_service () {
-    echo "Starting DNS server"
+    echo "service: Starting DNS server"
     eval "{{ unbound_softwaredir }}/exports/unbound -c {{ unbound_servicedir }}/service.conf" && \
         return 0
 }
@@ -18,7 +18,7 @@ stop_service () {
         # Empty PID usually => service is "down".
         return 0
     fi
-    echo "Stopping Unbound: ${_killpid}"
+    echo "service: Stopping Unbound: ${_killpid}"
     for _indx in $(seq 1 15); do # ~15s timeout
         {
             kill -TERM "${_killpid}";
@@ -51,10 +51,10 @@ reload_service () {
         # If "pid is alive" trick with -0 signal:
         kill -0 "${_pid}" 2>/dev/null
         if [ "0" = "${?}" ]; then # if "0" => pid is alive
-            echo "Reloading Unbound (HUP)"
+            echo "service: Reloading Unbound (HUP)"
             kill -HUP "${_pid}" 2>/dev/null
         else
-            echo "Reloading Unbound failed - service is dead!"
+            echo "service: Reloading Unbound failed - service is dead!"
             return 1
         fi
     fi
