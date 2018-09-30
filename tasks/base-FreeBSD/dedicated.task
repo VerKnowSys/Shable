@@ -38,11 +38,12 @@ install_openvpn_igniters () {
         openvpn_softwaredir="${openvpn_softwaredir}" \
         openvpn_servicedir="${openvpn_servicedir}" \
         default_vpn_device="${default_vpn_device}" \
-        default_bridge_device="${default_bridge_device}"
+        default_bridge_device="${default_bridge_device}" \
+        default_vpn_router="${default_vpn_router}"
 
-    touch "/etc/cron.d/openvpn-supervisor"
+    touch "/etc/cron.d/vpn-watch"
     lineinfile \
-        src="/etc/cron.d/openvpn-supervisor" \
+        src="/etc/cron.d/vpn-watch" \
         line="'* * * * * root /usr/local/bin/vpn.igni watch'"
 }
 
@@ -68,9 +69,9 @@ install_unbound_igniters () {
         unbound_softwaredir="${unbound_softwaredir}" \
         unbound_servicedir="${unbound_servicedir}"
 
-    touch "/etc/cron.d/unbound-supervisor"
+    touch "/etc/cron.d/dns-watch"
     lineinfile \
-        src="/etc/cron.d/unbound-supervisor" \
+        src="/etc/cron.d/dns-watch" \
         line="'* * * * * root /usr/local/bin/dns.igni watch'"
 }
 
@@ -84,7 +85,7 @@ setup_unbound () {
         default_subnet="${default_subnet}" \
         unbound_servicedir="${unbound_servicedir}"
 
-    ${RM_BIN} "/Services/Unbound/etc/unbound/unbound.conf"
+    ${RM_BIN} -f "/Services/Unbound/etc/unbound/unbound.conf"
     ${LN_BIN} -s "${unbound_servicedir}/service.conf" "${unbound_servicedir}/etc/unbound/unbound.conf"
 
     note "Starting DNS server"
@@ -100,9 +101,9 @@ install_nginx_igniters () {
         nginx_softwaredir="${nginx_softwaredir}" \
         nginx_servicedir="${nginx_servicedir}"
 
-    touch "/etc/cron.d/nginx-supervisor"
+    touch "/etc/cron.d/nginx-watch"
     lineinfile \
-        src="/etc/cron.d/nginx-supervisor" \
+        src="/etc/cron.d/nginx-watch" \
         line="'* * * * * root /usr/local/bin/nginx.igni watch'"
 }
 
