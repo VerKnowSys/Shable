@@ -45,7 +45,7 @@ install_sofin_software () {
     _software_list="Rsync Nginx ${php_version} Redis Mc Vim Tmux Curl Libressl Atop Zip Geoipupdate Nano Python27"
     # NOTE: disabled: Syslog-ng Doas Openvpn
 
-    note "Updating software defititions: $(distn "${_software_list}")"
+    note "Updating software defititions"
     ${default_shell} -c "${sofin_bin} update"
 
     note "Installing software: $(distn "${_software_list}")"
