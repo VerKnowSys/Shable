@@ -57,6 +57,9 @@ reload_service () {
             echo "service: Reloading Unbound failed - service is dead!"
             return 1
         fi
+    else
+        echo "service: Reloading Unbound failed - service is dead!"
+        return 1
     fi
     return 0
 }
@@ -73,6 +76,9 @@ status_service () {
             echo "service: Unbound is DEAD"
             return 1
         fi
+    else
+        echo "service: Unbound is DEAD"
+        return 1
     fi
     return 1
 }

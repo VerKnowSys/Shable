@@ -22,8 +22,10 @@ status_service () {
             echo "service: Nginx is DEAD"
             return 1
         fi
+    else
+        echo "service: Nginx is DEAD"
+        return 1
     fi
-    return 1
 }
 
 
@@ -40,6 +42,9 @@ stop_service () {
                 kill -KILL "${_apid}";
             } 2>/dev/null
         done
+    else
+        echo "service: Nginx is not started!"
+        return 1
     fi
     rm -f "{{ nginx_servicedir }}/service.pid"
     return 0
@@ -47,9 +52,14 @@ stop_service () {
 
 
 restart_service () {
-    test_service && \
-        stop_service && \
+    _pid="$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        stop_service "${_pid}" && \
             start_service
+    else
+        start_service
+    fi
+    return 0
 }
 
 
