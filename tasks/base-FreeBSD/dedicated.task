@@ -22,31 +22,28 @@ setup_openvpn () {
 }
 
 
-install_openvpn_igniters () {
-    mkdir -p /usr/local/bin
-
+install_common_igniter () {
     template \
-        src="igniters/startvpn" \
-        dest="/usr/local/bin/startvpn" \
+        src="igniters/common.igni" \
+        dest="/usr/local/bin/common.igni" \
+        mode="644"
+}
+
+
+install_openvpn_igniters () {
+    template \
+        src="igniters/vpn.igni" \
+        dest="/usr/local/bin/vpn.igni" \
         mode="755" \
         openvpn_softwaredir="${openvpn_softwaredir}" \
         openvpn_servicedir="${openvpn_servicedir}" \
         default_vpn_device="${default_vpn_device}" \
         default_bridge_device="${default_bridge_device}"
 
-    template \
-        src="igniters/watchvpn" \
-        dest="/usr/local/bin/watchvpn" \
-        mode="755" \
-        openvpn_softwaredir="${openvpn_softwaredir}" \
-        openvpn_servicedir="${openvpn_servicedir}" \
-        default_vpn_router="${default_vpn_router}" \
-        default_vpn_device="${default_vpn_device}"
-
     touch "/etc/cron.d/openvpn-supervisor"
     lineinfile \
         src="/etc/cron.d/openvpn-supervisor" \
-        line="'* * * * * root /usr/local/bin/watchvpn'"
+        line="'* * * * * root /usr/local/bin/vpn.igni watch'"
 }
 
 
