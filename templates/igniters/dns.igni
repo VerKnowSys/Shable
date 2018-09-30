@@ -7,7 +7,7 @@
 
 start_service () {
     echo "service: Starting DNS server"
-    eval "{{ unbound_softwaredir }}/exports/unbound -c {{ unbound_servicedir }}/service.conf" && \
+    eval "{{ unbound_softwaredir }}/exports/unbound" && \
         return 0
 }
 
