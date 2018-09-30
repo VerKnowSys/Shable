@@ -19,7 +19,45 @@ setup_openvpn () {
             src="vpn/${_file}" \
             dest="${openvpn_servicedir}/${_file}"
     done
+
+    note "Starting OpenVPN server"
+    "${igniters_dir}/vpn.igni" ignite
 }
+
+
+setup_watches () {
+    note "Configuring crontab for basic service supervision…"
+    touch \
+        "/etc/cron.d/dns-watch" \
+        "/etc/cron.d/vpn-watch" \
+        "/etc/cron.d/nginx-watch"
+
+    lineinfile \
+        src="/etc/cron.d/dns-watch" \
+        line="'* * * * * root ${igniters_dir}/dns.igni watch'"
+
+    lineinfile \
+        src="/etc/cron.d/vpn-watch" \
+        line="'* * * * * root ${igniters_dir}/vpn.igni watch'"
+
+    lineinfile \
+        src="/etc/cron.d/nginx-watch" \
+        line="'* * * * * root ${igniters_dir}/nginx.igni watch'"
+}
+
+
+setup_vpn_nat () {
+    note "Installing PF-NAT for network: $(distn "${vpn_network:-${default_network}}")"
+    template \
+        src="firewall/pf.conf" \
+        dest="/etc/pf.conf" \
+        mode="0644" \
+        vpn_network="${vpn_network:-${default_network}}" \
+        default_network_device="${default_network_device}" \
+        default_bridge_device="${default_bridge_device}" \
+        ip="${ip}"
+}
+
 
 
 install_common_igniter () {
@@ -40,24 +78,6 @@ install_openvpn_igniters () {
         default_vpn_device="${default_vpn_device}" \
         default_bridge_device="${default_bridge_device}" \
         default_vpn_router="${default_vpn_router}"
-
-    touch "/etc/cron.d/vpn-watch"
-    lineinfile \
-        src="/etc/cron.d/vpn-watch" \
-        line="'* * * * * root ${igniters_dir}/vpn.igni watch'"
-}
-
-
-setup_vpn_nat () {
-    note "Installing PF-NAT for network: $(distn "${vpn_network:-${default_network}}")"
-    template \
-        src="firewall/pf.conf" \
-        dest="/etc/pf.conf" \
-        mode="0644" \
-        vpn_network="${vpn_network:-${default_network}}" \
-        default_network_device="${default_network_device}" \
-        default_bridge_device="${default_bridge_device}" \
-        ip="${ip}"
 }
 
 
@@ -68,11 +88,16 @@ install_unbound_igniters () {
         mode="755" \
         unbound_softwaredir="${unbound_softwaredir}" \
         unbound_servicedir="${unbound_servicedir}"
+}
 
-    touch "/etc/cron.d/dns-watch"
-    lineinfile \
-        src="/etc/cron.d/dns-watch" \
-        line="'* * * * * root ${igniters_dir}/dns.igni watch'"
+
+install_nginx_igniters () {
+    template \
+        src="igniters/nginx.igni" \
+        dest="${igniters_dir}/nginx.igni" \
+        mode="755" \
+        nginx_softwaredir="${nginx_softwaredir}" \
+        nginx_servicedir="${nginx_servicedir}"
 }
 
 
@@ -89,22 +114,7 @@ setup_unbound () {
     ${LN_BIN} -s "${unbound_servicedir}/service.conf" "${unbound_servicedir}/etc/unbound/unbound.conf"
 
     note "Starting DNS server"
-    ${igniters_dir}/dns.igni ignite
-}
-
-
-install_nginx_igniters () {
-    template \
-        src="igniters/nginx.igni" \
-        dest="${igniters_dir}/nginx.igni" \
-        mode="755" \
-        nginx_softwaredir="${nginx_softwaredir}" \
-        nginx_servicedir="${nginx_servicedir}"
-
-    touch "/etc/cron.d/nginx-watch"
-    lineinfile \
-        src="/etc/cron.d/nginx-watch" \
-        line="'* * * * * root ${igniters_dir}/nginx.igni watch'"
+    "${igniters_dir}/dns.igni" ignite
 }
 
 
@@ -117,7 +127,7 @@ setup_nginx () {
         nginx_servicedir="${unbound_servicedir}"
 
     note "Starting Web proxy server: Nginx"
-    ${igniters_dir}/nginx.igni ignite
+    "${igniters_dir}/nginx.igni" ignite
 }
 
 
