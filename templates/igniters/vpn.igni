@@ -48,7 +48,7 @@ reload_service () {
         # If "pid is alive" trick with -0 signal:
         kill -0 "${_pid}" 2>/dev/null
         if [ "0" = "${?}" ]; then # if "0" => pid is alive
-            echo "service: Reloading OpenVPN (HUP)"
+            echo "service: Reloading OpenVPN, pid: ${_pid}"
             kill -HUP "${_pid}" 2>/dev/null
         else
             echo "service: Failed reloading OpenVPN - service is dead!"
