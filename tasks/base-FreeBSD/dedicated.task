@@ -3,28 +3,6 @@ install_dedicated_software () {
 }
 
 
-setup_openvpn () {
-    note "Installing OpenVPN configuration"
-    template \
-        src="vpn/openvpn.conf" \
-        dest="${openvpn_servicedir}/service.conf" \
-        mode="0640" \
-        client="${REMOTE}" \
-        remote_vpn_server="${remote_vpn_server}" \
-        openvpn_servicedir="${openvpn_servicedir}"
-
-    note "Installing OpenVPN server side certificates for client: ${REMOTE}"
-    for _file in "ca.crt" "${REMOTE}.key" "${REMOTE}.crt"; do
-        template \
-            src="vpn/${_file}" \
-            dest="${openvpn_servicedir}/${_file}"
-    done
-
-    note "Starting OpenVPN server"
-    "${igniters_dir}/vpn.igni" ignite
-}
-
-
 setup_watches () {
     note "Configuring crontab for basic service supervision…"
     touch \
@@ -101,6 +79,27 @@ install_nginx_igniters () {
 }
 
 
+setup_openvpn () {
+    note "Installing OpenVPN configuration"
+    template \
+        src="vpn/openvpn.conf" \
+        dest="${openvpn_servicedir}/service.conf" \
+        mode="0640" \
+        client="${REMOTE}" \
+        remote_vpn_server="${remote_vpn_server}" \
+        openvpn_servicedir="${openvpn_servicedir}"
+
+    note "Installing OpenVPN server side certificates for client: ${REMOTE}"
+    for _file in "ca.crt" "${REMOTE}.key" "${REMOTE}.crt"; do
+        template \
+            src="vpn/${_file}" \
+            dest="${openvpn_servicedir}/${_file}"
+    done
+    # note "Starting OpenVPN server"
+    # "${igniters_dir}/vpn.igni" ignite
+}
+
+
 setup_unbound () {
     note "Configuring Unbound"
     template \
@@ -112,9 +111,8 @@ setup_unbound () {
 
     ${RM_BIN} -f "/Services/Unbound/etc/unbound/unbound.conf"
     ${LN_BIN} -s "${unbound_servicedir}/service.conf" "${unbound_servicedir}/etc/unbound/unbound.conf"
-
-    note "Starting DNS server"
-    "${igniters_dir}/dns.igni" ignite
+    # note "Starting DNS server"
+    # "${igniters_dir}/dns.igni" ignite
 }
 
 
@@ -125,9 +123,8 @@ setup_nginx () {
         dest="${nginx_servicedir}/service.conf" \
         mode="0640" \
         nginx_servicedir="${unbound_servicedir}"
-
-    note "Starting Web proxy server: Nginx"
-    "${igniters_dir}/nginx.igni" ignite
+    # note "Starting Web proxy server: Nginx"
+    # "${igniters_dir}/nginx.igni" ignite
 }
 
 
