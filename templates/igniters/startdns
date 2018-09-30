@@ -22,7 +22,7 @@ stop_service () {
             kill -0 "${_killpid}" || break;
         } 2>/dev/null
     done
-    ${RM_BIN} -f "{{ unbound_servicedir }}/service.pid"
+    rm -f "{{ unbound_servicedir }}/service.pid"
     unset _indx _killpid
     return 0
 }
