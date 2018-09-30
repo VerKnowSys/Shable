@@ -1,20 +1,20 @@
 #!/bin/sh
 
-restart_unbound () {
-    echo "Stopping Unbound"
+reload_or_restart_unbound () {
     _pid="$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)"
     if [ -n "${_pid}" ]; then
-        echo "Unbound pid: ${_pid}"
-        kill -INT "${_pid}" 2>/dev/null
-        sleep 1
-        kill -TERM "${_pid}" 2>/dev/null
-        sleep 1
-        kill -KILL "${_pid}" 2>/dev/null
+        # If "pid is alive" trick with -0 signal:
+        kill -0 "${_pid}" 2>/dev/null
+        if [ "0" = "${?}" ]; then # if "0" => pid is alive
+            echo "Reloading Unbound with pid: ${_pid}"
+            kill -HUP "${_pid}" 2>/dev/null
+            sleep 1
+        else
+            echo "Starting Unbound"
+            "{{ unbound_softwaredir }}/exports/unbound" -c \
+                "{{ unbound_servicedir }}/service.conf"
+        fi
     fi
-
-    echo "Starting Unbound"
-    "{{ unbound_softwaredir }}/exports/unbound" -c \
-        "{{ unbound_servicedir }}/service.conf"
 }
 
 
@@ -25,4 +25,4 @@ test_unbound () {
 
 # main():
 test_unbound && \
-    restart_unbound
+    reload_or_restart_unbound
