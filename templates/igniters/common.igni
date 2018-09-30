@@ -1,0 +1,46 @@
+#!/bin/sh
+
+
+init_service () {
+    case "${1}" in
+        start)
+            start_service
+            ;;
+
+        stop)
+            stop_service
+            ;;
+
+        restart)
+            restart_service
+            ;;
+
+        reload)
+            reload_service
+            ;;
+
+        status)
+            status_service
+            ;;
+
+        test)
+            test_service
+            ;;
+
+        watch)
+            watch_service
+            ;;
+
+        ignite)
+            ignite_service
+            ;;
+
+        *)
+            echo "Usage:"
+            echo "      ${0} [ start | stop } restart | reload | status | test | watch | ignite ] Service"
+            echo
+            return 1
+            ;;
+    esac
+}
+
