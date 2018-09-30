@@ -1,6 +1,10 @@
 #!/bin/sh
 
 
+# Load common.igni with common tasks:
+. /usr/local/bin/common.igni
+
+
 test_service () {
     printf "%s\n" "I test service"
 }
@@ -39,3 +43,8 @@ watch_service () {
 ignite_service () {
     printf "%s\n" "I restart/ reload service on demand"
 }
+
+
+# Initialize service:
+init_service "${@}"
+
