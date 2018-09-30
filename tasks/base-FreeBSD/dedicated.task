@@ -148,6 +148,24 @@ setup_dedicated_system_config () {
         src="/etc/sysctl.conf" \
         line="net.inet.ip.forwarding=1"
 
+    # NOTE: maybe one day we'll need ipv6?
+    # note "Enabling IP forwarding feature for IPv6"
+    # lineinfile \
+    #     src="/etc/sysctl.conf" \
+    #     line="'net.inet6.ip6.forwarding=1'"
+    # lineinfile \
+    #     src="/etc/rc.conf.local" \
+    #     line="'ipv6_defaultrouter=${default_ipv6_router}'"
+    # lineinfile \
+    #     src="/etc/rc.conf.local" \
+    #     line="'ipv6_gateway_enable=\"YES\"'"
+    # lineinfile \
+    #     src="/etc/rc.conf.local" \
+    #     line="'rtadvd_enable=\"YES\"'"
+    # lineinfile \
+    #     src="/etc/rc.conf.local" \
+    #     line="'rtadvd_interfaces=\"${default_network_device}\"'"
+
     note "Configuring router address: $(distn "${default_network}.1") on device: $(distn "${default_bridge_device}")"
     lineinfile \
         src="/etc/rc.conf.local" \

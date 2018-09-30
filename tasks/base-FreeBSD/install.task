@@ -48,7 +48,7 @@ install_sofin_software () {
     note "Updating software defititions"
     ${default_shell} -c "${sofin_bin} update"
 
-    note "Installing software: $(distn "${_software_list}")"
+    note "Installing software bundles"
     ${default_shell} -c "${sofin_bin} install ${_software_list}"
 
     debug "Copying current definitions state for www user"
