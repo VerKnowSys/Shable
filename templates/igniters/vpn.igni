@@ -83,7 +83,7 @@ test_service () {
 watch_service () {
     _vpn_router="{{ default_vpn_router }}"
     ping -t3 -c1 "${_vpn_router}" >/dev/null 2>&1 || \
-        /usr/local/bin/vpn.igni watch
+        restart_service
 }
 
 
