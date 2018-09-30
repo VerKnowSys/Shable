@@ -16,10 +16,11 @@ stop_service () {
     fi
     echo "Stopping Unbound: ${_killpid}"
     for _indx in $(seq 1 15); do # ~15s timeout
-        kill -TERM "${_killpid}" 2>/dev/null
-        sleep 1
-        kill -0 "${_killpid}" 2>/dev/null || \
-            break
+        {
+            kill -TERM "${_killpid}";
+            sleep 1;
+            kill -0 "${_killpid}" || break;
+        } 2>/dev/null
     done
     ${RM_BIN} -f "{{ unbound_servicedir }}/service.pid"
     unset _indx _killpid
