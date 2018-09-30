@@ -1,4 +1,6 @@
-default_os_tripple="${SYSTEM_NAME}-11.0-amd64"
+prod_os_version="11.0"
+prod_os_arch="amd64"
+default_os_tripple="${SYSTEM_NAME}-${prod_os_version}-${prod_os_arch}"
 default_system_shell="/bin/sh"
 default_shell="/Software/Zsh/exports/zsh"
 homedir="/var/www"
