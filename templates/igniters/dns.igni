@@ -11,8 +11,8 @@ start_service () {
 stop_service () {
     _killpid="${1}"
     if [ -z "${_killpid}" ]; then
-        echo "Failure: Empty PID for Unbound!"
-        return 1
+        # Empty PID usually => service is "down".
+        return 0
     fi
     echo "Stopping Unbound: ${_killpid}"
     for _indx in $(seq 1 15); do # ~15s timeout
@@ -20,6 +20,7 @@ stop_service () {
             kill -TERM "${_killpid}";
             sleep 1;
             kill -0 "${_killpid}" || break;
+            sleep 1;
         } 2>/dev/null
     done
     rm -f "{{ unbound_servicedir }}/service.pid"
@@ -36,7 +37,6 @@ restart_service () {
     else
         start_service
     fi
-    unset _pid
     return 0
 }
 
@@ -54,8 +54,23 @@ reload_service () {
             return 1
         fi
     fi
-    unset _pid
     return 0
+}
+
+
+status_service () {
+    _pid="$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        kill -0 "${_pid}" 2>/dev/null
+        if [ "0" = "${?}" ]; then
+            echo "service: Unbound is ALIVE, pid: ${_pid}"
+            return 0
+        else
+            echo "service: Unbound is DEAD"
+            return 1
+        fi
+    fi
+    return 1
 }
 
 
@@ -65,7 +80,60 @@ test_service () {
 }
 
 
-# main():
-test_service && \
-    restart_service
+watch_service () {
+    # test config, check local DNS:
+    test_service && \
+        drill "google.com" @127.0.0.1 >/dev/null || \
+            restart_service
+}
 
+
+# ignite_service(): Equivalent of main() function for services.
+#           Here ignite_service() restarts service on each call:
+ignite_service () {
+    test_service && \
+        restart_service
+}
+
+
+
+case "${1}" in
+    start)
+        start_service
+        ;;
+
+    stop)
+        stop_service
+        ;;
+
+    restart)
+        restart_service
+        ;;
+
+    reload)
+        reload_service
+        ;;
+
+    status)
+        status_service
+        ;;
+
+    test)
+        test_service
+        ;;
+
+    watch)
+        watch_service
+        ;;
+
+    ignite)
+        ignite_service
+        ;;
+
+    *)
+        echo "Usage:"
+        echo "      ${0} [ start | stop } restart | reload | status | test | watch | ignite ] Service"
+        echo
+        return 1
+        ;;
+esac

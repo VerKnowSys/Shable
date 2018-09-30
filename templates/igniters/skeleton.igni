@@ -1,0 +1,41 @@
+#!/bin/sh
+
+
+test_service () {
+    printf "%s\n" "I test service"
+}
+
+
+reload_service () {
+    printf "%s\n" "I reload service"
+}
+
+
+start_service () {
+    printf "%s\n" "I start service"
+}
+
+
+status_service () {
+    printf "%s\n" "I show service status"
+}
+
+
+stop_service () {
+    printf "%s\n" "I stop service"
+}
+
+
+restart_service () {
+    printf "%s\n" "I restart service"
+}
+
+
+watch_service () {
+    printf "%s\n" "I watch service"
+}
+
+
+ignite_service () {
+    printf "%s\n" "I restart/ reload service on demand"
+}

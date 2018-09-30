@@ -67,15 +67,8 @@ install_unbound_igniters () {
     mkdir -p /usr/local/bin
 
     template \
-        src="igniters/startdns" \
-        dest="/usr/local/bin/startdns" \
-        mode="755" \
-        unbound_softwaredir="${unbound_softwaredir}" \
-        unbound_servicedir="${unbound_servicedir}"
-
-    template \
-        src="igniters/watchdns" \
-        dest="/usr/local/bin/watchdns" \
+        src="igniters/dns.igni" \
+        dest="/usr/local/bin/dns.igni" \
         mode="755" \
         unbound_softwaredir="${unbound_softwaredir}" \
         unbound_servicedir="${unbound_servicedir}"
@@ -83,12 +76,12 @@ install_unbound_igniters () {
     touch "/etc/cron.d/unbound-supervisor"
     lineinfile \
         src="/etc/cron.d/unbound-supervisor" \
-        line="'* * * * * root /usr/local/bin/watchdns'"
+        line="'* * * * * root /usr/local/bin/dns.igni watch'"
 }
 
 
 setup_unbound () {
-    note "Installing Unbound configuration"
+    note "Configuring Unbound"
     template \
         src="dns/unbound.conf" \
         dest="${unbound_servicedir}/service.conf" \
@@ -99,8 +92,8 @@ setup_unbound () {
     ${RM_BIN} "/Services/Unbound/etc/unbound/unbound.conf"
     ${LN_BIN} -s "${unbound_servicedir}/service.conf" "${unbound_servicedir}/etc/unbound/unbound.conf"
 
-    note "Starting Unbound"
-    /usr/local/bin/startdns
+    note "Starting DNS server"
+    /usr/local/bin/dns.igni ignite
 }
 
 
@@ -108,15 +101,8 @@ install_nginx_igniters () {
     mkdir -p /usr/local/bin
 
     template \
-        src="igniters/startnginx" \
-        dest="/usr/local/bin/startnginx" \
-        mode="755" \
-        nginx_softwaredir="${nginx_softwaredir}" \
-        nginx_servicedir="${nginx_servicedir}"
-
-    template \
-        src="igniters/watchnginx" \
-        dest="/usr/local/bin/watchnginx" \
+        src="igniters/nginx.igni" \
+        dest="/usr/local/bin/nginx.igni" \
         mode="755" \
         nginx_softwaredir="${nginx_softwaredir}" \
         nginx_servicedir="${nginx_servicedir}"
@@ -124,7 +110,7 @@ install_nginx_igniters () {
     touch "/etc/cron.d/nginx-supervisor"
     lineinfile \
         src="/etc/cron.d/nginx-supervisor" \
-        line="'* * * * * root /usr/local/bin/watchnginx'"
+        line="'* * * * * root /usr/local/bin/nginx.igni watch'"
 }
 
 
@@ -136,8 +122,8 @@ setup_nginx () {
         mode="0640" \
         nginx_servicedir="${unbound_servicedir}"
 
-    note "Starting Nginx proxy"
-    /usr/local/bin/startnginx
+    note "Starting Web and proxy server: Nginx"
+    /usr/local/bin/nginx.igni ignite
 }
 
 

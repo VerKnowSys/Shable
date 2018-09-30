@@ -1,0 +1,135 @@
+#!/bin/sh
+
+
+start_service () {
+    echo "Starting Nginx"
+    eval "{{ nginx_softwaredir }}/exports/nginx"
+}
+
+
+status_service () {
+    _pid="$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        kill -0 "${_pid}" 2>/dev/null
+        if [ "0" = "${?}" ]; then
+            echo "service: Nginx is ALIVE, pid: ${_pid}"
+            return 0
+        else
+            echo "service: Nginx is DEAD"
+            return 1
+        fi
+    fi
+    return 1
+}
+
+
+stop_service () {
+    _pid="$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        echo "Stopping Nginx pid(s): ${_pid}"
+        for _apid in ${_pid}; do # support multiple pids!
+            {
+                kill -INT "${_apid}";
+                sleep 1;
+                kill -TERM "${_apid}";
+                sleep 3;
+                kill -KILL "${_apid}";
+            } 2>/dev/null
+        done
+    fi
+    rm -f "{{ nginx_servicedir }}/service.pid"
+    return 0
+}
+
+
+restart_service () {
+    test_service && \
+        stop_service && \
+            start_service
+}
+
+
+reload_service () {
+    _pid="$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        kill -0 "${_pid}" 2>/dev/null
+        if [ "0" = "${?}" ]; then
+            {
+                echo "Reloading Nginx";
+                kill -HUP "${_pid}";
+                sleep 2;
+                "{{ nginx_softwaredir }}/exports/nginx" -s reload;
+                sleep 1;
+            } 2>/dev/null
+        else
+            echo "Failed to reload Nginx - service is DEAD!"
+            return 1
+        fi
+    fi
+    return 0
+}
+
+
+test_service () {
+    "{{ nginx_softwaredir }}/exports/nginx" -t
+}
+
+
+watch_service () {
+    _pid="$(cat "{{ nginx_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -z "${_pid}" ]; then
+        rm -f "{{ nginx_servicedir }}/service.pid"
+        restart_service
+    else
+        kill -0 "${_pid}" || \
+            restart_service
+    fi
+}
+
+
+ignite_service () {
+    test_service && \
+        restart_service
+}
+
+
+case "${1}" in
+    start)
+        start_service
+        ;;
+
+    stop)
+        stop_service
+        ;;
+
+    restart)
+        restart_service
+        ;;
+
+    reload)
+        reload_service
+        ;;
+
+    status)
+        status_service
+        ;;
+
+    test)
+        test_service
+        ;;
+
+    watch)
+        watch_service
+        ;;
+
+    ignite)
+        ignite_service
+        ;;
+
+    *)
+        echo "Usage:"
+        echo "      ${0} [ start | stop } restart | reload | status | test | watch | ignite ] Service"
+        echo
+        return 1
+        ;;
+esac
