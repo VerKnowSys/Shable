@@ -47,6 +47,8 @@ main () {
     setup_vpn_nat
 
     # Install software igniters:
+    mkdir -p /usr/local/bin
+    install_common_igniter
     install_openvpn_igniters
     install_unbound_igniters
     install_nginx_igniters

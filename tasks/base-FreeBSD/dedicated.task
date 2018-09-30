@@ -61,8 +61,6 @@ setup_vpn_nat () {
 
 
 install_unbound_igniters () {
-    mkdir -p /usr/local/bin
-
     template \
         src="igniters/dns.igni" \
         dest="/usr/local/bin/dns.igni" \
@@ -95,8 +93,6 @@ setup_unbound () {
 
 
 install_nginx_igniters () {
-    mkdir -p /usr/local/bin
-
     template \
         src="igniters/nginx.igni" \
         dest="/usr/local/bin/nginx.igni" \
@@ -119,7 +115,7 @@ setup_nginx () {
         mode="0640" \
         nginx_servicedir="${unbound_servicedir}"
 
-    note "Starting Web and proxy server: Nginx"
+    note "Starting Web proxy server: Nginx"
     /usr/local/bin/nginx.igni ignite
 }
 
