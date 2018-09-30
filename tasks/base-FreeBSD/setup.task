@@ -71,10 +71,11 @@ setup_base_datasets_and_core_software () {
                     ${GREP_BIN} -F "${default_shell}" /etc/shells || \
                         echo "${default_shell}" >> /etc/shells
 
-                    note "Setting default Shell to: $(distn "${default_shell}")"
+                    note "Setting default Shell to: $(distn "${default_shell}") for superuser: $(distn "root")"
                     ${CHSH_BIN} -s "${default_shell}" root
 
                     # NOTE: always have option to access server backend even when default Zsh is corrupted or unavailable:
+                    note "Setting default Shell to: $(distn "${default_system_shell}") for superuser: $(distn "toor")"
                     ${CHSH_BIN} -s "${default_system_shell}" toor
                     ;;
 
