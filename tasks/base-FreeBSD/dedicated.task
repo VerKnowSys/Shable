@@ -109,8 +109,6 @@ setup_unbound () {
         default_subnet="${default_subnet}" \
         unbound_servicedir="${unbound_servicedir}"
 
-    ${RM_BIN} -f "/Services/Unbound/etc/unbound/unbound.conf"
-    ${LN_BIN} -s "${unbound_servicedir}/service.conf" "${unbound_servicedir}/etc/unbound/unbound.conf"
     # note "Starting DNS server"
     # "${igniters_dir}/dns.igni" ignite
 }
