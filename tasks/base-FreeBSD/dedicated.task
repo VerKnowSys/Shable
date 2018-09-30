@@ -95,8 +95,6 @@ setup_openvpn () {
             src="vpn/${_file}" \
             dest="${openvpn_servicedir}/${_file}"
     done
-    # note "Starting OpenVPN server"
-    # "${igniters_dir}/vpn.igni" ignite
 }
 
 
@@ -108,9 +106,6 @@ setup_unbound () {
         mode="0640" \
         default_subnet="${default_subnet}" \
         unbound_servicedir="${unbound_servicedir}"
-
-    # note "Starting DNS server"
-    # "${igniters_dir}/dns.igni" ignite
 }
 
 
@@ -121,8 +116,19 @@ setup_nginx () {
         dest="${nginx_servicedir}/service.conf" \
         mode="0640" \
         nginx_servicedir="${unbound_servicedir}"
-    # note "Starting Web proxy server: Nginx"
-    # "${igniters_dir}/nginx.igni" ignite
+}
+
+
+# NOTE: function unused for now:
+launch_core_services () {
+    note "Starting OpenVPN server"
+    "${igniters_dir}/vpn.igni" ignite
+
+    note "Starting DNS server"
+    "${igniters_dir}/dns.igni" ignite
+
+    note "Starting Web proxy server: Nginx"
+    "${igniters_dir}/nginx.igni" ignite
 }
 
 
