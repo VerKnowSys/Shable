@@ -1,0 +1,103 @@
+#!/bin/sh
+
+
+# Load common.igni with common tasks:
+. /usr/local/bin/common.igni
+
+
+start_service () {
+    echo "service: Starting OpenVPN"
+    "{{ openvpn_softwaredir }}/exports/openvpn" \
+      --config "{{ openvpn_servicedir }}/service.conf" \
+      --writepid "{{ openvpn_servicedir }}/service.pid" \
+      --daemon "openvpn" && \
+        sleep 5 && \
+        ifconfig "{{ default_bridge_device }}" addm "{{ default_vpn_device }}" up && \
+        ifconfig "{{ default_bridge_device }}" up
+}
+
+
+stop_service () {
+    echo "service: Stopping OpenVPN"
+    _pid="$(cat "{{ openvpn_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        {
+            echo "service: Openvpn pid: ${_pid}";
+            kill -INT "${_pid}";
+            sleep 1;
+            kill -TERM "${_pid}";
+            sleep 2;
+            kill -KILL "${_pid}";
+        } 2>/dev/null
+    else
+        # This is allowed, only because we use a single OpenVPN instance per backend:
+        {
+            killall -TERM openvpn;
+            killall -KILL openvpn;
+            sleep 2;
+        } 2>/dev/null
+    fi
+    sleep 1
+    ifconfig "{{ default_vpn_device }}" destroy 2>/dev/null
+}
+
+
+reload_service () {
+    _pid="$(cat "{{ openvpn_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        # If "pid is alive" trick with -0 signal:
+        kill -0 "${_pid}" 2>/dev/null
+        if [ "0" = "${?}" ]; then # if "0" => pid is alive
+            echo "service: Reloading OpenVPN (HUP)"
+            kill -HUP "${_pid}" 2>/dev/null
+        else
+            echo "service: Failed reloading OpenVPN - service is dead!"
+            return 1
+        fi
+    fi
+    return 0
+}
+
+
+status_service () {
+    _pid="$(cat "{{ openvpn_servicedir }}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        kill -0 "${_pid}" 2>/dev/null
+        if [ "0" = "${?}" ]; then
+            echo "service: OpenVPN is ALIVE, pid: ${_pid}"
+            return 0
+        else
+            echo "service: OpenVPN is DEAD"
+            return 1
+        fi
+    fi
+    return 1
+}
+
+
+test_service () {
+    test -f "{{ openvpn_servicedir }}/service.conf"
+}
+
+
+watch_service () {
+    _vpn_router="{{ default_vpn_router }}"
+    ping -t3 -c1 "${_vpn_router}" >/dev/null 2>&1 || \
+        /usr/local/bin/vpn.igni watch
+}
+
+
+restart_service () {
+    test_service && \
+        stop_service && \
+            start_service
+}
+
+
+ignite_service () {
+    restart_service
+}
+
+
+# Initialize service:
+init_service "${@}"
