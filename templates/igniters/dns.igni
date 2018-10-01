@@ -93,8 +93,9 @@ test_service () {
 watch_service () {
     # test config, check local DNS:
     test_service && \
-        drill "google.com" @127.0.0.1 >/dev/null || \
-            restart_service
+        drill "google.com" \
+              "@{{ default_network }}.1" >/dev/null \
+        || restart_service
 }
 
 

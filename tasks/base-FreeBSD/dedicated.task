@@ -65,7 +65,8 @@ install_unbound_igniters () {
         dest="${igniters_dir}/dns.igni" \
         mode="755" \
         unbound_softwaredir="${unbound_softwaredir}" \
-        unbound_servicedir="${unbound_servicedir}"
+        unbound_servicedir="${unbound_servicedir}" \
+        default_network="${default_network}"
 }
 
 
