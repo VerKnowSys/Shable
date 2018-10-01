@@ -5,111 +5,27 @@
 . /Shared/Igniters/common.igni
 
 
-start_service () {
-    echo "service: Starting DNS server"
-    eval "{{ unbound_softwaredir }}/exports/unbound" && \
-        return 0
-}
-
-
-stop_service () {
-    _killpid="${1}"
-    if [ -z "${_killpid}" ]; then
-        # Empty PID usually => service is "down".
-        echo "service: Unbound not started!"
-        return 1
-    fi
-    echo "service: Stopping Unbound: ${_killpid}"
-    for _indx in $(seq 1 15); do # ~15s timeout
-        {
-            kill -TERM "${_killpid}";
-            sleep 1;
-            kill -0 "${_killpid}" || break;
-            sleep 1;
-        } 2>/dev/null
-    done
-    rm -f "{{ unbound_servicedir }}/service.pid"
-    unset _indx _killpid
-    return 0
-}
-
-
-restart_service () {
-    _pid="$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)"
-    if [ -n "${_pid}" ]; then
-        {
-            stop_service "${_pid}";
-            start_service;
-        }
-    else
-        start_service
-    fi
-}
-
-
-reload_service () {
-    _pid="$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)"
-    if [ -n "${_pid}" ]; then
-        # If "pid is alive" trick with -0 signal:
-        kill -0 "${_pid}" 2>/dev/null
-        if [ "0" = "${?}" ]; then # if "0" => pid is alive
-            # TODO: disabled reload since it's useless for Unbound:
-            # echo "service: Reloading Unbound (HUP)"
-            # kill -HUP "${_pid}" 2>/dev/null
-            restart_service
-        else
-            echo "service: Reloading Unbound failed - service is dead!"
-            return 1
-        fi
-    else
-        echo "service: Reloading Unbound failed - service is dead!"
-        return 1
-    fi
-}
-
-
-status_service () {
-    _pid="$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)"
-    if [ -n "${_pid}" ]; then
-        kill -0 "${_pid}" 2>/dev/null
-        if [ "0" = "${?}" ]; then
-            echo "service: Unbound is ALIVE, pid: ${_pid}"
-            return 0
-        else
-            echo "service: Unbound is DEAD"
-            return 1
-        fi
-    else
-        echo "service: Unbound is DEAD"
-        return 1
-    fi
-}
-
-
-test_service () {
-    eval "{{ unbound_softwaredir }}/exports/unbound-checkconf" && \
-        return 0
-}
-
-
-watch_service () {
-    validate_service () {
+# Override function with own wattch for zone resolve:
+watch () {
+    zone_resolve_test () {
         drill "google.com" \
               "@{{ default_network }}.1" >/dev/null \
-        || restart_service
+        || /Shared/Igniters/dns.igni restart
     }
+
     # test config, check local DNS:
-    test_service && \
-        validate_service
-}
-
-
-# ignite_service(): Equivalent of main() function for services.
-#           Here ignite_service() restarts service on each call:
-ignite_service () {
-    watch_service
+    test \
+        "Unbound" \
+        "'{{ unbound_softwaredir }}/exports/unbound-checkconf'" \
+    && \
+        zone_resolve_test
 }
 
 
 # Initialize service:
-init_service "${@}"
+ignite \
+    name="Unbound" \
+    action="${1:-status}" \
+    start_cmd="'{{ unbound_softwaredir }}/exports/unbound'" \
+    test_cmd="'{{ unbound_softwaredir }}/exports/unbound-checkconf'" \
+    reload_cmd="'/Shared/Igniters/dns.igni restart'"
