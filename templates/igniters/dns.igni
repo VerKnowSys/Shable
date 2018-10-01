@@ -14,10 +14,7 @@ watch () {
     }
 
     # test config, check local DNS:
-    test \
-        "Unbound" \
-        "'{{ unbound_softwaredir }}/exports/unbound-checkconf'" \
-    && \
+    /Shared/Igniters/dns.igni test && \
         zone_resolve_test
 }
 
@@ -26,6 +23,6 @@ watch () {
 ignite \
     name="Unbound" \
     action="${1:-status}" \
-    start_cmd="'{{ unbound_softwaredir }}/exports/unbound'" \
-    test_cmd="'{{ unbound_softwaredir }}/exports/unbound-checkconf'" \
-    reload_cmd="'/Shared/Igniters/dns.igni restart'"
+    start_cmd="'{{ unbound_softwaredir }}/exports/unbound -c {{ unbound_servicedir }}/service.conf'" \
+    test_cmd="'{{ unbound_softwaredir }}/exports/unbound-checkconf -c {{ unbound_servicedir }}/service.conf'" \
+    reload_cmd="'/Shared/Igniters/dns.igni restart'" # TODO: XXX: restarting since it's faster than HUP which causes troubles
