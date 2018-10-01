@@ -1,46 +1,198 @@
 #!/bin/sh
 
 
-init_service () {
-    case "${1}" in
+SERVICES_DIR="/Services"
+
+
+expect_bundle () {
+    if [ -z "${1}" ]; then
+        echo "No software bundle name given as first arument!"
+        return 1
+    fi
+    return 0
+}
+
+
+# Stolen from Sofin:
+to_iter () {
+    printf "%s\n" "${@}" | tr ' ' '\n' 2>/dev/null
+}
+
+
+# Stolen from Sofin:
+debug () {
+    if [ -n "${*}" ] && [ -n "${DEBUG}" ]; then
+        printf "#%b%s%b\n" "\033[38;5;97m" "${@}" "\033[39m" >&2
+    fi
+    return 0
+}
+
+
+start () {
+    _bundle="${1}"
+    expect_bundle "${_bundle}"
+    shift
+    _commands="'${@}'"
+    if [ -z "${_commands}" ]; then
+        echo "Error: No commands (start_cmd) given to ignite()!"
+        return 1
+    fi
+    _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
+    kill -0 "${_pid}" 2>/dev/null
+    if [ "0" = "${?}" ]; then
+        echo "service: ${_bundle} already running! Pid: ${_pid}"
+        return 0
+    else
+        echo "service: Starting: ${_bundle}"
+        ${SHELL} -c "eval '${_commands}'" && \
+            return 0
+    fi
+}
+
+
+stop () {
+    deathnote "${*}"
+}
+
+
+status () {
+    _bundle="${1}"
+    expect_bundle "${_bundle}"
+    _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        kill -0 "${_pid}" 2>/dev/null
+        if [ "0" = "${?}" ]; then
+            echo "service: ${_bundle} is ALIVE, pid(s): ${_pid}"
+            return 0
+        else
+            echo "service: ${_bundle} is DEAD"
+            return 1
+        fi
+    else
+        echo "service: ${_bundle} is DEAD"
+        return 1
+    fi
+}
+
+
+reload () {
+    _bundle="${1}"
+    expect_bundle "${_bundle}"
+    shift
+    _commands="'${@}'"
+    _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        kill -0 "${_pid}" 2>/dev/null
+        if [ "0" = "${?}" ]; then
+            echo "service: Reloading: ${_bundle}"
+            kill -HUP "${_pid}" 2>/dev/null
+            sleep 2
+            if [ -n "${_commands}" ] && [ "''" != "${_commands}" ]; then
+                debug "service: Post-reload commands: ${_commands}"
+                ${SHELL} -c "eval '${_commands}'"
+                sleep 1
+            fi
+        else
+            echo "service: Failed to reload ${_bundle} - service is DEAD!"
+            return 1
+        fi
+    fi
+    return 0
+}
+
+
+deathnote () {
+    _bundle="${1}"
+    expect_bundle "${_bundle}"
+    _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
+    if [ -n "${_pid}" ]; then
+        echo "service: Stopping ${_bundle} pid(s): ${_pid}"
+        for _apid in $(to_iter "${_pid}"); do
+            {
+                kill -CONT "${_apid}";
+                kill -INT "${_apid}";
+                sleep 1;
+                kill -TERM "${_apid}";
+                sleep 1;
+                kill -KILL "${_apid}";
+                sleep 2;
+            } 2>/dev/null
+        done
+    else
+        echo "service: ${_bundle} is not started!"
+        return 1
+    fi
+    rm -f "${SERVICES_DIR}/${_bundle}/service.pid"
+    return 0
+}
+
+
+test () {
+    _bundle="${1}"
+    expect_bundle "${_bundle}"
+    shift
+    _commands="'${@}'"
+    if [ -z "${_commands}" ]; then
+        echo "service: No commands, no-op."
+        return 0
+    fi
+    ${SHELL} -c "eval '${_commands}'"
+}
+
+
+watch () {
+    _bundle="${1}"
+    expect_bundle "${_bundle}"
+    _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
+    if [ -z "${_pid}" ]; then
+        restart "${_bundle}"
+    else
+        kill -0 "${_pid}" || \
+            restart "${_bundle}"
+    fi
+}
+
+
+ignite () {
+    _args="${*}"
+    eval "${_args}" >/dev/null 2>/dev/null
+    debug "service: ignite(): service: ${name}, action: ${action} (args: ${_args})"
+    case "${action}" in
         start)
-            start_service
-            ;;
-
-        stop)
-            stop_service
-            ;;
-
-        restart)
-            restart_service
-            ;;
-
-        reload)
-            reload_service
-            ;;
-
-        status)
-            status_service
+            start "${name}" "${start_cmd}"
             ;;
 
         test)
-            test_service
+            test "${name}" "${test_cmd}"
+            ;;
+
+        reload)
+            reload "${name}" "${reload_cmd}"
+            ;;
+
+        stop)
+            stop "${name}" # "${stop_cmd}"
+            ;;
+
+        restart)
+            stop "${name}" # "${stop_cmd}"
+            start "${name}" "${start_cmd}"
+            ;;
+
+        status)
+            status "${name}" # "${status_cmd}"
             ;;
 
         watch)
-            watch_service
-            ;;
-
-        ignite)
-            ignite_service
+            watch "${name}" # "${watch_cmd}"
             ;;
 
         *)
             echo "Usage:"
-            echo "      ${0} [ start | stop } restart | reload | status | test | watch | ignite ] Service"
+            echo "      ${0} [ start | stop } restart | reload | status | test | watch ]"
             echo
             return 1
             ;;
     esac
+    return 0
 }
-
