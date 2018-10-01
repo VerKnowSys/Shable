@@ -91,11 +91,14 @@ test_service () {
 
 
 watch_service () {
-    # test config, check local DNS:
-    test_service && \
+    validate_service () {
         drill "google.com" \
               "@{{ default_network }}.1" >/dev/null \
         || restart_service
+    }
+    # test config, check local DNS:
+    test_service && \
+        validate_service
 }
 
 
