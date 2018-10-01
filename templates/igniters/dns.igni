@@ -51,8 +51,10 @@ reload_service () {
         # If "pid is alive" trick with -0 signal:
         kill -0 "${_pid}" 2>/dev/null
         if [ "0" = "${?}" ]; then # if "0" => pid is alive
-            echo "service: Reloading Unbound (HUP)"
-            kill -HUP "${_pid}" 2>/dev/null
+            # TODO: disabled reload since it's useless for Unbound:
+            # echo "service: Reloading Unbound (HUP)"
+            # kill -HUP "${_pid}" 2>/dev/null
+            restart_service
         else
             echo "service: Reloading Unbound failed - service is dead!"
             return 1
