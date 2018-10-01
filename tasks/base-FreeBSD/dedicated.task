@@ -105,7 +105,9 @@ setup_unbound () {
         dest="${unbound_servicedir}/service.conf" \
         mode="0640" \
         default_subnet="${default_subnet}" \
-        unbound_servicedir="${unbound_servicedir}"
+        unbound_servicedir="${unbound_servicedir}" \
+        default_jails_domain="${default_jails_domain}" \
+        default_network="${default_network}"
 }
 
 
