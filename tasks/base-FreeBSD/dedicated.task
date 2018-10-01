@@ -107,7 +107,8 @@ setup_unbound () {
         default_subnet="${default_subnet}" \
         unbound_servicedir="${unbound_servicedir}" \
         default_jails_domain="${default_jails_domain}" \
-        default_network="${default_network}"
+        default_network="${default_network}" \
+        default_dns_dir="${shared_dir}/DNS"
 }
 
 
