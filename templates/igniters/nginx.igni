@@ -59,7 +59,6 @@ restart_service () {
     else
         start_service
     fi
-    return 0
 }
 
 

@@ -31,11 +31,8 @@ stop_service () {
         } 2>/dev/null
     else
         # This is allowed, only because we use a single OpenVPN instance per backend:
-        {
-            killall -TERM openvpn;
-            killall -KILL openvpn;
-            sleep 2;
-        } 2>/dev/null
+        echo "service: OpenVPN not started!"
+        return 1
     fi
     sleep 2
     ifconfig "{{ default_vpn_device }}" destroy 2>/dev/null
@@ -102,7 +99,6 @@ restart_service () {
     else
         start_service
     fi
-    return 0
 }
 
 

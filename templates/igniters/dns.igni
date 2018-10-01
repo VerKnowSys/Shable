@@ -16,7 +16,8 @@ stop_service () {
     _killpid="${1}"
     if [ -z "${_killpid}" ]; then
         # Empty PID usually => service is "down".
-        return 0
+        echo "service: Unbound not started!"
+        return 1
     fi
     echo "service: Stopping Unbound: ${_killpid}"
     for _indx in $(seq 1 15); do # ~15s timeout
@@ -36,12 +37,13 @@ stop_service () {
 restart_service () {
     _pid="$(cat "{{ unbound_servicedir }}/service.pid" 2>/dev/null)"
     if [ -n "${_pid}" ]; then
-        stop_service "${_pid}" && \
-            start_service
+        {
+            stop_service "${_pid}";
+            start_service;
+        }
     else
         start_service
     fi
-    return 0
 }
 
 
@@ -63,7 +65,6 @@ reload_service () {
         echo "service: Reloading Unbound failed - service is dead!"
         return 1
     fi
-    return 0
 }
 
 
@@ -82,7 +83,6 @@ status_service () {
         echo "service: Unbound is DEAD"
         return 1
     fi
-    return 1
 }
 
 
