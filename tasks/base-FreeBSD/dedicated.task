@@ -93,7 +93,8 @@ setup_openvpn () {
     for _file in "ca.crt" "${REMOTE}.key" "${REMOTE}.crt"; do
         template \
             src="vpn/${_file}" \
-            dest="${openvpn_servicedir}/${_file}"
+            dest="${openvpn_servicedir}/${_file}" \
+            mode="600"
     done
 }
 
