@@ -5,107 +5,22 @@
 . /Shared/Igniters/common.igni
 
 
-start_service () {
-    echo "service: Starting OpenVPN"
-    "{{ openvpn_softwaredir }}/exports/openvpn" \
-      --config "{{ openvpn_servicedir }}/service.conf" \
-      --writepid "{{ openvpn_servicedir }}/service.pid" \
-      --daemon "openvpn" && \
-        sleep 5 && \
-        ifconfig "{{ default_bridge_device }}" addm "{{ default_vpn_device }}" up && \
-        ifconfig "{{ default_bridge_device }}" up
-}
-
-
-stop_service () {
-    echo "service: Stopping OpenVPN"
-    _pid="$(cat "{{ openvpn_servicedir }}/service.pid" 2>/dev/null)"
-    if [ -n "${_pid}" ]; then
-        {
-            echo "service: Openvpn pid: ${_pid}";
-            kill -INT "${_pid}";
-            sleep 1;
-            kill -TERM "${_pid}";
-            sleep 2;
-            kill -KILL "${_pid}";
-        } 2>/dev/null
-    else
-        # This is allowed, only because we use a single OpenVPN instance per backend:
-        echo "service: OpenVPN not started!"
-        return 1
-    fi
-    sleep 2
+stop () {
+    deathnote "Openvpn"
     ifconfig "{{ default_vpn_device }}" destroy 2>/dev/null
     sleep 1
-    return 0
 }
 
 
-reload_service () {
-    _pid="$(cat "{{ openvpn_servicedir }}/service.pid" 2>/dev/null)"
-    if [ -n "${_pid}" ]; then
-        # If "pid is alive" trick with -0 signal:
-        kill -0 "${_pid}" 2>/dev/null
-        if [ "0" = "${?}" ]; then # if "0" => pid is alive
-            echo "service: Reloading OpenVPN, pid: ${_pid}"
-            kill -HUP "${_pid}" 2>/dev/null
-        else
-            echo "service: Failed reloading OpenVPN - service is dead!"
-            return 1
-        fi
-    else
-        echo "service: Failed reloading OpenVPN - service is dead!"
-        return 1
-    fi
-    return 0
-}
-
-
-status_service () {
-    _pid="$(cat "{{ openvpn_servicedir }}/service.pid" 2>/dev/null)"
-    if [ -n "${_pid}" ]; then
-        kill -0 "${_pid}" 2>/dev/null
-        if [ "0" = "${?}" ]; then
-            echo "service: OpenVPN is ALIVE, pid: ${_pid}"
-            return 0
-        else
-            echo "service: OpenVPN is DEAD"
-            return 1
-        fi
-    else
-        echo "service: OpenVPN is DEAD"
-    fi
-    return 1
-}
-
-
-test_service () {
-    test -f "{{ openvpn_servicedir }}/service.conf"
-}
-
-
-watch_service () {
-    _vpn_router="{{ default_vpn_router }}"
-    ping -t3 -c1 "${_vpn_router}" >/dev/null 2>&1 || \
-        restart_service
-}
-
-
-restart_service () {
-    _pid="$(cat "{{ openvpn_servicedir }}/service.pid" 2>/dev/null)"
-    if [ -n "${_pid}" ]; then
-        stop_service "${_pid}" && \
-            start_service
-    else
-        start_service
-    fi
-}
-
-
-ignite_service () {
-    watch_service
+# Override watch function:
+watch () {
+    ping -t3 -c1 "{{ default_vpn_router }}" >/dev/null 2>&1 || \
+        /Shared/Igniters/vpn.igni restart
 }
 
 
 # Initialize service:
-init_service "${@}"
+ignite \
+    name="Openvpn" \
+    action="${1:-status}" \
+    start_cmd="'{{ openvpn_softwaredir }}/exports/openvpn --config {{ openvpn_servicedir }}/service.conf --writepid {{ openvpn_servicedir }}/service.pid --daemon openvpn && sleep 5 && ifconfig {{ default_bridge_device }} addm {{ default_vpn_device }} up && ifconfig {{ default_bridge_device }} up'"
