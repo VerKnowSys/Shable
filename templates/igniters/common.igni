@@ -140,30 +140,13 @@ test () {
 }
 
 
-watch () {
-    _bundle="${1}"
-    expect_bundle "${_bundle}"
-    _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
-    if [ -z "${_pid}" ]; then
-        restart "${_bundle}"
-    else
-        kill -0 "${_pid}" || \
-            restart "${_bundle}"
-    fi
-}
-
-
 ignite () {
     _args="${*}"
     eval "${_args}" >/dev/null 2>/dev/null
     debug "service: ignite(): service: ${name}, action: ${action} (args: ${_args})"
     case "${action}" in
         start)
-            start "${name}" "${start_cmd}"
-            ;;
-
-        test)
-            test "${name}" "${test_cmd}"
+            start "${name}" "$start_cmd}"
             ;;
 
         reload)
@@ -183,8 +166,20 @@ ignite () {
             status "${name}" # "${status_cmd}"
             ;;
 
+        test)
+            test "${name}" "${test_cmd}"
+            ;;
+
         watch)
-            watch "${name}" # "${watch_cmd}"
+            _bundle="${name}"
+            expect_bundle "${_bundle}"
+            _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
+            if [ -z "${_pid}" ]; then
+                start "${_bundle}" "${start_cmd}"
+            else
+                kill -0 "${_pid}" || \
+                    start "${_bundle}" "${start_cmd}"
+            fi
             ;;
 
         *)
