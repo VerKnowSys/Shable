@@ -84,7 +84,7 @@ setup_openvpn () {
     template \
         src="vpn/openvpn.conf" \
         dest="${openvpn_servicedir}/service.conf" \
-        mode="0640" \
+        mode="0644" \
         client="${REMOTE}" \
         remote_vpn_server="${remote_vpn_server}" \
         openvpn_servicedir="${openvpn_servicedir}"
@@ -104,7 +104,7 @@ setup_unbound () {
     template \
         src="dns/unbound.conf" \
         dest="${unbound_servicedir}/service.conf" \
-        mode="0640" \
+        mode="0644" \
         default_subnet="${default_subnet}" \
         unbound_servicedir="${unbound_servicedir}" \
         default_jails_domain="${default_jails_domain}" \
@@ -118,7 +118,7 @@ setup_nginx () {
     template \
         src="web/nginx.conf" \
         dest="${nginx_servicedir}/service.conf" \
-        mode="0640" \
+        mode="0644" \
         nginx_servicedir="${unbound_servicedir}"
 }
 
