@@ -127,13 +127,13 @@ setup_nginx () {
 # NOTE: function unused for now:
 launch_core_services () {
     note "Starting OpenVPN server"
-    "${igniters_dir}/vpn.igni" ignite
+    "${igniters_dir}/vpn.igni" restart
 
     note "Starting DNS server"
-    "${igniters_dir}/dns.igni" ignite
+    "${igniters_dir}/dns.igni" restart
 
     note "Starting Web proxy server: Nginx"
-    "${igniters_dir}/nginx.igni" ignite
+    "${igniters_dir}/nginx.igni" restart
 }
 
 
