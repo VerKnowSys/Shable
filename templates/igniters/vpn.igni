@@ -107,7 +107,7 @@ restart_service () {
 
 
 ignite_service () {
-    restart_service
+    watch_service
 }
 
 

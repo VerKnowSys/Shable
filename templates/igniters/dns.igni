@@ -101,8 +101,7 @@ watch_service () {
 # ignite_service(): Equivalent of main() function for services.
 #           Here ignite_service() restarts service on each call:
 ignite_service () {
-    test_service && \
-        restart_service
+    watch_service
 }
 
 
