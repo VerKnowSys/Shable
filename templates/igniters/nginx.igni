@@ -41,6 +41,7 @@ stop_service () {
                 sleep 3;
                 kill -KILL "${_apid}";
             } 2>/dev/null
+            kill -0 "${_apid}" || break
         done
     else
         echo "service: Nginx is not started!"
