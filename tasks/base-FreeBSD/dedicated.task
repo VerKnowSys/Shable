@@ -39,6 +39,7 @@ setup_vpn_nat () {
 
 
 install_common_igniter () {
+    note "Installing Service igniters…"
     template \
         src="igniters/common.igni" \
         dest="${igniters_dir}/common.igni" \
@@ -201,6 +202,7 @@ install_jail_governor () {
 
 
 install_igni_wrapper () {
+    note "Installing default Service igniter - $(distn "igni")"
     template \
         src="igniters/igni" \
         dest="/usr/bin/igni" \
