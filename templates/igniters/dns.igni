@@ -24,5 +24,5 @@ ignite \
     name="Unbound" \
     action="${1:-status}" \
     start_cmd="'{{ unbound_softwaredir }}/exports/unbound'" \
-    test_cmd="'{{ unbound_softwaredir }}/exports/unbound-checkconf -c {{ unbound_servicedir }}/service.conf'" \
+    test_cmd="'{{ unbound_softwaredir }}/exports/unbound-checkconf'" \
     reload_cmd="'/Shared/Igniters/dns.igni restart'" # TODO: XXX: restarting since it's faster than HUP which causes troubles
