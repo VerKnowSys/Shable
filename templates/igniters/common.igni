@@ -44,7 +44,7 @@ start () {
         return 0
     else
         echo "service: Starting: ${_bundle}"
-        ${SHELL} -c "eval \"${_commands}\"" && \
+        ${SHELL} -c "eval ${_commands}" && \
             return 0
     fi
 }
