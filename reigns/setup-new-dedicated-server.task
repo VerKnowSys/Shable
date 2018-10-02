@@ -40,8 +40,9 @@ main () {
     setup_base_datasets_and_core_software
     configure_root_user
 
-    # Install gvr to /usr/bin:
+    # Install gvr and igni to /usr/bin:
     install_jail_governor
+    install_igni_wrapper
 
     # Packet Filter NAT configuration:
     setup_vpn_nat

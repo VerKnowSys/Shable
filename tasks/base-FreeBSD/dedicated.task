@@ -199,3 +199,14 @@ install_jail_governor () {
     unset _timestamp _destfile _tmpfile
 }
 
+
+install_igni_wrapper () {
+    template \
+        src="igniters/igni" \
+        dest="/usr/bin/igni" \
+        mode="0755" \
+        vpn_network="${vpn_network:-${default_network}}" \
+        default_network_device="${default_network_device}" \
+        default_bridge_device="${default_bridge_device}" \
+        ip="${ip}"
+}
