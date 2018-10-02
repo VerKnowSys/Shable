@@ -15,7 +15,7 @@ stop () {
 # Override watch function:
 watch () {
     ping -t3 -c1 "{{ default_vpn_router }}" >/dev/null 2>&1 || \
-        /Shared/Igniters/vpn.igni restart
+        igni vpn restart
 }
 
 

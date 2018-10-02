@@ -11,5 +11,5 @@ ignite \
     action="${1:-status}" \
     start_cmd="'echo \"Softwarebundlename: yea this is cool!\"'" \
     test_cmd="'/Software/Softwarebundlename/exports/mybinaryd'" \
-    reload_cmd="'/Shared/Igniters/nginx.igni reload'" \
+    reload_cmd="'igni nginx reload'" \
     test_cmd="'/Services/Softwarebundlename/my-magic-shiny-test-script my arguments'"

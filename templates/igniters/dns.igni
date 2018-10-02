@@ -10,11 +10,11 @@ watch () {
     zone_resolve_test () {
         drill "google.com" \
               "@{{ default_network }}.1" >/dev/null \
-        || /Shared/Igniters/dns.igni restart
+        || igni dns restart
     }
 
     # test config, check local DNS:
-    /Shared/Igniters/dns.igni test && \
+    igni dns test && \
         zone_resolve_test
 }
 
@@ -25,4 +25,4 @@ ignite \
     action="${1:-status}" \
     start_cmd="'{{ unbound_softwaredir }}/exports/unbound'" \
     test_cmd="'{{ unbound_softwaredir }}/exports/unbound-checkconf'" \
-    reload_cmd="'/Shared/Igniters/dns.igni restart'" # TODO: XXX: restarting since it's faster than HUP which causes troubles
+    reload_cmd="'igni dns restart'" # TODO: XXX: restarting since it's faster than HUP which causes troubles
