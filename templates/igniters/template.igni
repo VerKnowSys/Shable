@@ -9,7 +9,7 @@
 ignite \
     name="Softwarebundlename" \
     action="${1:-status}" \
-    start_cmd="'echo \"yea this is cool!\"'" \
-    test_cmd="'{{ unbound_softwaredir }}/exports/unbound-checkconf'" \
+    start_cmd="'echo \"Softwarebundlename: yea this is cool!\"'" \
+    test_cmd="'/Software/Softwarebundlename/exports/mybinaryd'" \
     reload_cmd="'/Shared/Igniters/nginx.igni reload'" \
-    test_cmd="'./my-magic-shiny-test-framework my arguments'"
+    test_cmd="'/Services/Softwarebundlename/my-magic-shiny-test-script my arguments'"
