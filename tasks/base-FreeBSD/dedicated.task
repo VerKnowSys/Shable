@@ -48,7 +48,7 @@ install_common_igniter () {
 
 install_openvpn_igniters () {
     template \
-        src="igniters/vpn.igni" \
+        src="igniters/openvpn.igni" \
         dest="${igniters_dir}/vpn.igni" \
         mode="755" \
         openvpn_softwaredir="${openvpn_softwaredir}" \
@@ -61,7 +61,7 @@ install_openvpn_igniters () {
 
 install_unbound_igniters () {
     template \
-        src="igniters/dns.igni" \
+        src="igniters/unbound.igni" \
         dest="${igniters_dir}/dns.igni" \
         mode="755" \
         unbound_softwaredir="${unbound_softwaredir}" \
@@ -73,7 +73,7 @@ install_unbound_igniters () {
 install_nginx_igniters () {
     template \
         src="igniters/nginx.igni" \
-        dest="${igniters_dir}/nginx.igni" \
+        dest="${igniters_dir}/proxy.igni" \
         mode="755" \
         nginx_softwaredir="${nginx_softwaredir}" \
         nginx_servicedir="${nginx_servicedir}"
