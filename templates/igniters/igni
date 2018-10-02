@@ -1,0 +1,17 @@
+#!/bin/sh
+
+
+_ignite="/Shared/Igniters/${1}.igni"
+_action="${2}"
+
+if [ -x "${_ignite}" ]; then
+    if [ -n "${_action}" ]; then
+        exec "${_ignite}" "${_action}"
+    else
+        exec "${_ignite}"
+    fi
+else
+    echo "No such igniter file: ${_ignite}"
+    return 1
+fi
+
