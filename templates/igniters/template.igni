@@ -7,9 +7,9 @@
 
 # Initialize service:
 ignite \
-    name="Softwarebundlename" \
+    name="Template" \
     action="${1:-status}" \
-    start_cmd="'echo \"Softwarebundlename: yea this is cool!\"'" \
-    test_cmd="'/Software/Softwarebundlename/exports/mybinaryd'" \
-    reload_cmd="'igni nginx reload'" \
-    test_cmd="'/Services/Softwarebundlename/my-magic-shiny-test-script my arguments'"
+    start_cmd="'echo \"Template: yea this is cool!\"'" \
+    test_cmd="'/Software/Template/exports/mybinaryd'" \
+    reload_cmd="'igni template reload'" \
+    test_cmd="'/Services/Template/my-magic-shiny-test-script my arguments'"
