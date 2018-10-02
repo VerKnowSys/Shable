@@ -12,15 +12,15 @@ setup_watches () {
 
     lineinfile \
         src="/etc/cron.d/dns-watch" \
-        line="'* * * * * root ${igniters_dir}/dns.igni watch'"
+        line="'* * * * * root igni dns watch'"
 
     lineinfile \
         src="/etc/cron.d/vpn-watch" \
-        line="'* * * * * root ${igniters_dir}/vpn.igni watch'"
+        line="'* * * * * root igni vpn watch'"
 
     lineinfile \
-        src="/etc/cron.d/nginx-watch" \
-        line="'* * * * * root ${igniters_dir}/nginx.igni watch'"
+        src="/etc/cron.d/proxy-watch" \
+        line="'* * * * * root igni proxy watch'"
 }
 
 
@@ -127,13 +127,13 @@ setup_nginx () {
 # NOTE: function unused for now:
 launch_core_services () {
     note "Starting OpenVPN server"
-    "${igniters_dir}/vpn.igni" restart
+    igni "vpn" restart
 
     note "Starting DNS server"
-    "${igniters_dir}/dns.igni" restart
+    igni "dns" restart
 
     note "Starting Web proxy server: Nginx"
-    "${igniters_dir}/nginx.igni" restart
+    igni "proxy" restart
 }
 
 
