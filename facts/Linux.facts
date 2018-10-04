@@ -4,3 +4,11 @@ release="trusty"
 default_shell="/bin/bash"
 homedir="/var/www"
 homedir_root="/root"
+
+# service dirs for Debian/ Ubuntu:
+services_dir="/etc"
+software_dir="/usr/bin"
+openvpn_servicedir="${services_dir}/openvpn"
+openvpn_softwaredir="${software_dir}/openvpn"
+nginx_servicedir="${services_dir}/nginx"
+nginx_softwaredir="${software_dir}/nginx"
