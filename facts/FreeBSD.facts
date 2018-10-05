@@ -29,6 +29,8 @@ mariadb_servicedir="${services_dir}/Mariadb"
 mariadb_softwaredir="${software_dir}/Mariadb"
 geoipupdate_softwaredir="${software_dir}/Geoipupdate"
 geoipupdate_servicedir="${services_dir}/Geoipupdate"
+syslogng_softwaredir="${software_dir}/Syslog-ng"
+syslogng_servicedir="${services_dir}/Syslog-ng"
 
 # Pid files:
 nginx_pidfile="${services_dir}/Nginx/service.pid"
