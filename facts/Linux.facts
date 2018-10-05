@@ -7,10 +7,11 @@ homedir_root="/root"
 
 # service dirs for Debian/ Ubuntu:
 services_dir="/etc"
-software_dir="/usr/bin"
 openvpn_servicedir="${services_dir}/openvpn"
-openvpn_softwaredir="${software_dir}/openvpn"
 nginx_servicedir="${services_dir}/nginx"
-nginx_softwaredir="${software_dir}/nginx"
 zabbix_servicedir="${services_dir}/zabbix"
+
+software_dir="/usr"
+openvpn_softwaredir="${software_dir}"
+nginx_softwaredir="${software_dir}"
 zabbix_softwaredir="${software_dir}"
