@@ -26,6 +26,13 @@ nginx_softwaredir="${software_dir}/Nginx"
 zabbix_servicedir="${services_dir}/Zabbix-agent"
 zabbix_softwaredir="${software_dir}/Zabbix-agent"
 
+# Pid files:
+nginx_pidfile="${services_dir}/Nginx/service.pid"
+openvpn_pidfile="${services_dir}/Openvpn/service.pid"
+zabbix_pidfile="${services_dir}/Zabbix/service.pid"
+unbound_pidfile="${services_dir}/Unbound/service.pid"
+
+
 # Default local 172.16.0.0/16 network (accessible via OpenVPN):
 default_subnet="172.16"
 

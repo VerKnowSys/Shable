@@ -15,3 +15,10 @@ software_dir="/usr"
 openvpn_softwaredir="${software_dir}"
 nginx_softwaredir="${software_dir}"
 zabbix_softwaredir="${software_dir}"
+
+# Pid files:
+run_dir="/var/run"
+nginx_pidfile="${run_dir}/nginx.pid"
+openvpn_pidfile="${run_dir}/openvpn.pid"
+zabbix_pidfile="${run_dir}/zabbix.pid"
+unbound_pidfile="${run_dir}/unbound.pid"
