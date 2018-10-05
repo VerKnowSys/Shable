@@ -84,6 +84,9 @@ install_software () {
     # add-apt-repository --yes ppa:nginx/stable
     wget -q -O- http://nginx.org/keys/nginx_signing.key | apt-key add -
 
+    # Maxmind - GeoIP
+    add-apt-repository --yes ppa:maxmind/ppa
+
     note "Updating apt cache"
     aptitude update
 
@@ -115,6 +118,10 @@ install_software () {
         nginx \
         nginx-module-geoip
     DEBIAN_FRONTEND=noninteractive aptitude install -y bind9-host dnsutils
+    DEBIAN_FRONTEND=noninteractive aptitude --without-recommends install -y \
+        -o Dpkg::Options::="--force-confdef" \
+        -o Dpkg::Options::="--force-confold" \
+        "geoipupdate"
 
     note "Upgrading what's left to be upgraded on host"
     DEBIAN_FRONTEND=noninteractive aptitude --without-recommends -y \
