@@ -43,6 +43,13 @@ mariadb_logfile="${mariadb_servicedir}/error.log"
 mariadb_sockfile="/tmp/mysql.sock"
 geoip_sharedir="${geoipupdate_servicedir}"
 
+# Default FPM sockets:
+php72_socket="${services_dir}/Php72/service.sock"
+php71_socket="${services_dir}/Php71/service.sock"
+php70_socket="${services_dir}/Php70/service.sock"
+php56_socket="${services_dir}/Php56/service.sock"
+
+
 # Default local 172.16.0.0/16 network (accessible via OpenVPN):
 default_subnet="172.16"
 
