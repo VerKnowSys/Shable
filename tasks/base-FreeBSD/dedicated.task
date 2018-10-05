@@ -121,7 +121,8 @@ setup_nginx () {
         src="web/nginx.conf" \
         dest="${nginx_servicedir}/service.conf" \
         mode="0644" \
-        nginx_servicedir="${unbound_servicedir}"
+        nginx_servicedir="${unbound_servicedir}" \
+        geoip_sharedir="${geoip_sharedir}"
 }
 
 
