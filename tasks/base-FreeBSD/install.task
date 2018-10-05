@@ -25,7 +25,7 @@ install_system_image () {
 }
 
 
-install_sofin_software () {
+install_software_base () {
     _software_list="Rsync Mc Vim Tmux Curl Libressl Atop Zip Nano Syslog-ng Dmidecode"
 
     note "Updating software defititions"
@@ -41,7 +41,7 @@ install_sofin_software () {
 
 
 install_software () {
-    install_sofin_software
+    install_software_base
     generate_audit_utils
     configure_root_user
 }

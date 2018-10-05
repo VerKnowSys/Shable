@@ -54,7 +54,7 @@ main () {
     install_system_image
 
     # Install other standard software:
-    install_sofin_software
+    install_software_base
     install_dedicated_software
 
     # Install default software igniters:
