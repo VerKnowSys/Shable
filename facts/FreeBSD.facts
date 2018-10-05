@@ -36,6 +36,7 @@ unbound_pidfile="${services_dir}/Unbound/service.pid"
 mariadb_pidfile="${services_dir}/Mariadb/service.pid"
 mariadb_datadir="${services_dir}/Mariadb"
 mariadb_sharedir="${mariadb_softwaredir}/share/mysql"
+geoip_sharedir="${services_dir}/Geoipupdate"
 
 # Default local 172.16.0.0/16 network (accessible via OpenVPN):
 default_subnet="172.16"

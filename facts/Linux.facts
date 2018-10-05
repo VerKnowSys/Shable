@@ -13,6 +13,7 @@ zabbix_servicedir="${services_dir}/zabbix"
 mariadb_servicedir="${services_dir}/mysql"
 mariadb_datadir="/var/lib/mysql"
 mariadb_sharedir="/usr/share/mysql"
+geoip_sharedir="/usr/share/GeoIP"
 
 # software dirs for Debian/ Ubuntu:
 software_dir="/usr"
