@@ -10,15 +10,19 @@ services_dir="/etc"
 openvpn_servicedir="${services_dir}/openvpn"
 nginx_servicedir="${services_dir}/nginx"
 zabbix_servicedir="${services_dir}/zabbix"
+mariadb_servicedir="${services_dir}/mysql"
 
+# software dirs for Debian/ Ubuntu:
 software_dir="/usr"
 openvpn_softwaredir="${software_dir}"
 nginx_softwaredir="${software_dir}"
 zabbix_softwaredir="${software_dir}"
+mariadb_softwaredir="${software_dir}"
 
-# Pid files:
+# Pid files for Debian/ Ubuntu:
 run_dir="/var/run"
 nginx_pidfile="${run_dir}/nginx.pid"
-openvpn_pidfile="${run_dir}/openvpn.pid"
-zabbix_pidfile="${run_dir}/zabbix.pid"
+openvpn_pidfile="${run_dir}/openvpn/openvpn.pid"
+zabbix_pidfile="${run_dir}/zabbix/zabbix_agentd.pid"
 unbound_pidfile="${run_dir}/unbound.pid"
+mariadb_pidfile="${run_dir}/mysqld/mysqld.pid"
