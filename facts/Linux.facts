@@ -11,6 +11,8 @@ openvpn_servicedir="${services_dir}/openvpn"
 nginx_servicedir="${services_dir}/nginx"
 zabbix_servicedir="${services_dir}/zabbix"
 mariadb_servicedir="${services_dir}/mysql"
+mariadb_datadir="/var/lib/mysql"
+mariadb_sharedir="/usr/share/mysql"
 
 # software dirs for Debian/ Ubuntu:
 software_dir="/usr"
