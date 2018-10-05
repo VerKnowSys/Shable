@@ -13,6 +13,7 @@ zabbix_servicedir="${services_dir}/zabbix"
 mariadb_servicedir="${services_dir}/mysql"
 mariadb_datadir="/var/lib/mysql"
 mariadb_sharedir="/usr/share/mysql"
+geoipupdate_servicedir="${services_dir}"
 geoip_sharedir="/usr/share/GeoIP"
 
 # software dirs for Debian/ Ubuntu:
@@ -21,6 +22,7 @@ openvpn_softwaredir="${software_dir}"
 nginx_softwaredir="${software_dir}"
 zabbix_softwaredir="${software_dir}"
 mariadb_softwaredir="${software_dir}"
+geoipupdate_softwaredir="${software_dir}"
 
 # Pid files for Debian/ Ubuntu:
 run_dir="/var/run"
