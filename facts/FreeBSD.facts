@@ -23,6 +23,8 @@ unbound_servicedir="${services_dir}/Unbound"
 unbound_softwaredir="${software_dir}/Unbound"
 nginx_servicedir="${services_dir}/Nginx"
 nginx_softwaredir="${software_dir}/Nginx"
+zabbix_servicedir="${services_dir}/Zabbix-agent"
+zabbix_softwaredir="${software_dir}/Zabbix-agent"
 
 # Default local 172.16.0.0/16 network (accessible via OpenVPN):
 default_subnet="172.16"
