@@ -160,9 +160,8 @@ case "${SYSTEM_NAME}" in
         UUIDGEN_BIN="/bin/uuidgen"
         GIT_BIN="/Software/Git/exports/git"
         RSYNC_BIN="/Software/Rsync/exports/rsync"
+        MYSQL_BIN="/Software/Mariadb/exports/mysql"
         DRILL_BIN="/usr/bin/drill"
-
-        unset MYSQL_BIN
         unset DIG_BIN
         ;;
 
