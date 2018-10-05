@@ -13,6 +13,8 @@ zabbix_servicedir="${services_dir}/zabbix"
 mariadb_servicedir="${services_dir}/mysql"
 mariadb_datadir="/var/lib/mysql"
 mariadb_sharedir="/usr/share/mysql"
+mariadb_sockfile="/var/run/mysqld/mysqld.sock"
+mariadb_logfile="/var/log/mysql/error.log"
 geoipupdate_servicedir="${services_dir}"
 geoip_sharedir="/usr/share/GeoIP"
 
