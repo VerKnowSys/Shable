@@ -9,22 +9,6 @@ install_default_cacert () {
 }
 
 
-install_default_profile () {
-    note "Installing default profile and setting up environment for user: $(distn "${default_www_user}")"
-    template \
-        src="base-${SYSTEM_NAME}/sofin-enabled" \
-        dest="${homedir}/.sofin-enabled" \
-        php_version="${php_version}" \
-        owner="${default_www_user}"
-
-    template \
-        src="base-${SYSTEM_NAME}/profile" \
-        dest="${homedir}/.profile" \
-        php_version="${php_version}" \
-        owner="${default_www_user}"
-}
-
-
 install_system_image () {
     note "ServeD: Installation in progress"
     ${FETCH_BIN} "${svdup_https_source}" || \

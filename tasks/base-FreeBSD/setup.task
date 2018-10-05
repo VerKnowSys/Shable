@@ -3,7 +3,6 @@ setup_base_system () {
     setup_ttys_and_motd
 
     configure_www_user
-    install_default_profile
     install_default_cacert
 
     create_local_dataset
