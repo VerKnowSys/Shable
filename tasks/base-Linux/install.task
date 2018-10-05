@@ -130,5 +130,5 @@ install_software () {
         upgrade
 
     note "Get rid of critical errors thrown by syslog-ng to stdio"
-    ${SED_BIN} -i '/log { source(s_src); filter(f_crit); destination(d_console); };/ d' /etc/syslog-ng/syslog-ng.conf
+    ${SED_BIN} -i '/log { source(s_src); filter(f_crit); destination(d_console); };/ d' "${syslogng_servicedir}/syslog-ng.conf"
 }
