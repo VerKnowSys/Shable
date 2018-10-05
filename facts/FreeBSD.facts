@@ -39,9 +39,12 @@ unbound_pidfile="${services_dir}/Unbound/service.pid"
 mariadb_pidfile="${services_dir}/Mariadb/service.pid"
 mariadb_datadir="${services_dir}/Mariadb"
 mariadb_sharedir="${mariadb_softwaredir}/share/mysql"
-mariadb_logfile="${mariadb_servicedir}/error.log"
 mariadb_sockfile="/tmp/mysql.sock"
 geoip_sharedir="${geoipupdate_servicedir}"
+
+# Log files:
+mariadb_logdir="${mariadb_servicedir}"
+nginx_logdir="${nginx_servicedir}/logs"
 
 # Default FPM sockets:
 php72_socket="${services_dir}/Php72/service.sock"

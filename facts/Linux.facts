@@ -15,7 +15,6 @@ syslogng_servicedir="${services_dir}/syslog-ng"
 mariadb_datadir="/var/lib/mysql"
 mariadb_sharedir="/usr/share/mysql"
 mariadb_sockfile="/var/run/mysqld/mysqld.sock"
-mariadb_logfile="/var/log/mysql/error.log"
 geoipupdate_servicedir="${services_dir}"
 geoip_sharedir="/usr/share/GeoIP"
 
@@ -35,6 +34,11 @@ openvpn_pidfile="${run_dir}/openvpn/openvpn.pid"
 zabbix_pidfile="${run_dir}/zabbix/zabbix_agentd.pid"
 unbound_pidfile="${run_dir}/unbound.pid"
 mariadb_pidfile="${run_dir}/mysqld/mysqld.pid"
+
+# Log files:
+log_dir="/var/log"
+mariadb_logdir="${log_dir}/mysql"
+nginx_logdir="${log_dir}/nginx"
 
 # Default FPM sockets:
 php72_socket="/var/run/php/php7.2-fpm.sock"
