@@ -115,7 +115,7 @@ setup_unbound () {
 }
 
 
-setup_nginx () {
+setup_nginx_proxy () {
     note "Installing Nginx configuration"
     template \
         src="web/nginx.conf" \

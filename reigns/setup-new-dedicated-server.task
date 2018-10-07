@@ -66,7 +66,7 @@ main () {
     # Setup configuration override for installed software:
     setup_openvpn
     setup_unbound
-    setup_nginx
+    setup_nginx_proxy
 
     # Automatically reboot host system after installation:
     gracefully_quit_and_reboot 3
