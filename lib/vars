@@ -115,9 +115,9 @@ case "${SYSTEM_NAME}" in
             CURL_BIN="/usr/bin/curl"
         elif [ -x "/Software/Curl/exports/curl" ]; then
             CURL_BIN="/Software/Curl/exports/curl"
-        elif [ -x "/usr/bin/fetch" ]; then
-            # XXX: kinda hacky, but at least a fallback on some minimal BSD-like system:
-            CURL_BIN="/usr/bin/fetch"
+        else
+            # XXX: set fallback to first available under production OS:
+            CURL_BIN="/Software/Curl/exports/curl"
         fi
 
         if [ -x "/usr/bin/zfs" ]; then
