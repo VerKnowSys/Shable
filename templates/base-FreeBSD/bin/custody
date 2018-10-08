@@ -1,0 +1,25 @@
+#!/bin/sh
+
+PATH="/bin:/usr/bin:/sbin:/usr/sbin"
+_custody_path="/Shared/Custody"
+
+traverse_custody () {
+    for _full_entry in $(find "${_custody_path}" -type f -maxdepth 1 2>/dev/null); do
+        _ip="$(cat "${_full_entry}" 2>/dev/null)"
+        _name="${_full_entry##*/}" # basename()
+
+        if [ -n "${_ip}" ] && [ -n "${_name}" ]; then
+            echo "Handling entry: IP: ${_ip}, NAME: ${_name}, FULL_ENTRY: ${_full_entry}"
+            gvr create "${_name}" "${_ip}" && \
+                rm -f "${_full_entry}"
+        else
+            echo "Empty IP or NAME. Skipped entry: ${_full_entry}"
+        fi
+    done
+}
+
+echo "Entering endless loop"
+while true; do
+    traverse_custody
+    sleep 5
+done
