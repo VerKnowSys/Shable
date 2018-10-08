@@ -34,9 +34,13 @@ install_software_base () {
     note "Installing software bundles"
     ${default_shell} -c "${sofin_bin} install ${_software_list}"
 
-    debug "Copying current definitions state for www user"
-    ${CP_BIN} -r "${HOME}/.sofin" /var/www/
-    ${CHOWN_BIN} -R "${default_www_user}" "/var/www/.sofin"
+    case "${SYSTEM_NAME}" in
+        Linux)
+            debug "Copying current definitions state for www user"
+            ${CP_BIN} -r "${HOME}/.sofin" /var/www/
+            ${CHOWN_BIN} -R "${default_www_user}" "/var/www/.sofin"
+            ;;
+    esac
 }
 
 
