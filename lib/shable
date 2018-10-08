@@ -590,6 +590,22 @@ inventory_hosts () {
 
 
 #
+# Load all values for setup inventory:
+#
+# Params:
+#   1. setup inventory - a filename
+#   2. setup inventory - a group
+load_whole_inventory () {
+    _a_setup_inventory="${1:-inventory-setup}"
+    _a_setup_group="${2:-setup}"
+    for _inv in $(inventory_hosts "${_a_setup_inventory}"); do
+        inventory_read "${_a_setup_inventory}:${_a_setup_group}" "${_inv}"
+    done
+    unset _a_setup_inventory _inv
+}
+
+
+#
 # Simply put new fact to cached facts.
 #
 # Params:
