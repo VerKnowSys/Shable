@@ -146,7 +146,7 @@ ignite () {
     debug "service: ignite(): service: ${name}, action: ${action} (args: ${_args})"
     case "${action}" in
         start)
-            start "${name}" "$start_cmd}"
+            start "${name}" "${start_cmd}"
             ;;
 
         reload)
