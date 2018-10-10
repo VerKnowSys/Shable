@@ -37,11 +37,13 @@ else
         fi
 
         # Load inventory facts
+        debug "${SHABLE_NAME}: Load inventory: ${_inventory} for remote: ${REMOTE}"
         inventory_read "${_inventory}" "${REMOTE}"
 
         # Set fallback for empty value of REMOTE:
         if [ -z "${REMOTE}" ]; then
             REMOTE="${HOST:-${DEFAULT_HOST}}"
+            debug "${SHABLE_NAME}: Set value of REMOTE: ${REMOTE}"
         fi
 
         # Load reign task as last
@@ -57,13 +59,16 @@ else
 
         # call validation of required software defined in lib/vars (*_BIN):
         if [ -z "${SKIP_ENV_VALIDATION}" ]; then
+            debug "${SHABLE_NAME}: Invoke validate_env()"
             validate_env
         fi
 
         # call main() from reign task:
+        debug "${SHABLE_NAME}: Invoke main()"
         main
 
         # call cleanup of cached tasks (sensitive vault data):
+        debug "${SHABLE_NAME}: Invoke cleanup_fragile_facts()"
         cleanup_fragile_facts
     fi
 fi
