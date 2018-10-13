@@ -116,7 +116,7 @@ setup_unbound () {
 
 
 setup_nginx_proxy () {
-    note "Installing Nginx configuration"
+    note "Installing Nginx-proxy configuration"
     template \
         src="web/nginx.conf" \
         dest="${nginx_servicedir}/service.conf" \
