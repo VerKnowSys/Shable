@@ -57,6 +57,7 @@ main () {
     # Install other standard software:
     install_software_base
     install_dedicated_software
+    generate_and_fill_pools
 
     # Install default software igniters:
     install_common_igniter
