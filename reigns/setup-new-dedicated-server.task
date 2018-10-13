@@ -43,6 +43,7 @@ main () {
     # Install gvr and igni to /usr/bin:
     install_jail_governor
     install_igni_wrapper
+    install_jail_custody_watcher
 
     # Packet Filter NAT configuration:
     setup_vpn_nat

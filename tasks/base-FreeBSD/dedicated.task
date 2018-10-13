@@ -188,6 +188,15 @@ setup_dedicated_system_config () {
 }
 
 
+install_jail_custody_watcher () {
+    note "Installing jail $(distn "Custody") daemon…"
+    template \
+        src="igniters/custody" \
+        dest="/usr/bin/custody" \
+        mode="0755"
+}
+
+
 install_jail_governor () {
     note "Installing default Jail governor - $(distn "gvr")"
     _timestamp="$(${DATE_BIN} +%s 2>/dev/null)"
