@@ -40,10 +40,10 @@ start () {
     _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
     kill -0 "${_pid}" 2>/dev/null
     if [ "0" = "${?}" ]; then
-        echo "service: ${_bundle} already running! Pid: ${_pid}"
+        echo "igni: ${_bundle} already running! Pid: ${_pid}"
         return 0
     else
-        echo "service: Starting: ${_bundle}"
+        echo "igni: Starting: ${_bundle}"
         ${SHELL} -c "eval ${_commands}" && \
             return 0
     fi
@@ -62,14 +62,14 @@ status () {
     if [ -n "${_pid}" ]; then
         kill -0 "${_pid}" 2>/dev/null
         if [ "0" = "${?}" ]; then
-            echo "service: ${_bundle} is ALIVE, pid(s): ${_pid}"
+            echo "igni: ${_bundle} is ALIVE, pid(s): ${_pid}"
             return 0
         else
-            echo "service: ${_bundle} is DEAD"
+            echo "igni: ${_bundle} is DEAD"
             return 1
         fi
     else
-        echo "service: ${_bundle} is DEAD"
+        echo "igni: ${_bundle} is DEAD"
         return 1
     fi
 }
@@ -84,16 +84,16 @@ reload () {
     if [ -n "${_pid}" ]; then
         kill -0 "${_pid}" 2>/dev/null
         if [ "0" = "${?}" ]; then
-            echo "service: Reloading: ${_bundle}"
+            echo "igni: Reloading: ${_bundle}"
             kill -HUP "${_pid}" 2>/dev/null
             sleep 2
             if [ -n "${_commands}" ] && [ "''" != "${_commands}" ]; then
-                debug "service: Post-reload commands: ${_commands}"
+                debug "igni: Post-reload commands: ${_commands}"
                 ${SHELL} -c "eval '${_commands}'"
                 sleep 1
             fi
         else
-            echo "service: Failed to reload ${_bundle} - service is DEAD!"
+            echo "igni: Failed to reload ${_bundle} - service is DEAD!"
             return 1
         fi
     fi
@@ -106,7 +106,7 @@ deathnote () {
     expect_bundle "${_bundle}"
     _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
     if [ -n "${_pid}" ]; then
-        echo "service: Stopping ${_bundle} pid(s): ${_pid}"
+        echo "igni: Stopping ${_bundle} pid(s): ${_pid}"
         for _apid in $(to_iter "${_pid}"); do
             {
                 kill -CONT "${_apid}";
@@ -119,7 +119,7 @@ deathnote () {
             } 2>/dev/null
         done
     else
-        echo "service: ${_bundle} is not started!"
+        echo "igni: ${_bundle} is not started!"
         return 1
     fi
     rm -f "${SERVICES_DIR}/${_bundle}/service.pid"
@@ -133,7 +133,7 @@ test () {
     shift
     _commands="'${@}'"
     if [ -z "${_commands}" ]; then
-        echo "service: No commands, no-op."
+        echo "igni: No commands, no-op."
         return 0
     fi
     ${SHELL} -c "eval '${_commands}'"
@@ -143,7 +143,7 @@ test () {
 ignite () {
     _args="${*}"
     eval "${_args}" >/dev/null 2>/dev/null
-    debug "service: ignite(): service: ${name}, action: ${action} (args: ${_args})"
+    debug "igni: ignite(${name}), action: '${action}', (args: ${_args})"
     case "${action}" in
         start)
             start "${name}" "${start_cmd}"
