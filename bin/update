@@ -27,8 +27,7 @@ update_main_repo () {
     git pull \
         --jobs 4 \
         --quiet \
-        --recurse-submodules \
-        origin "${_branch}"
+        --recurse-submodules
 }
 
 
@@ -38,8 +37,8 @@ complete_success () {
 }
 
 
-update_shable_core_repo && \
-    update_main_repo && \
+update_main_repo && \
+    update_shable_core_repo && \
     complete_success
 
 error "$(diste "bin/update") has failed!"
