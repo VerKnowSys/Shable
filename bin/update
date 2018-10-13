@@ -1,7 +1,45 @@
 #!/bin/sh
 
-. lib/core
+. lib/shable
 
-git pull --recurse-submodules && \
-git submodule update --remote --recursive && \
-note "Updated Shable submodule and current sibling repository"
+_branch="${1:-master}"
+
+
+update_shable_core_repo () {
+    if [ -d "${PWD}/Shable" ]; then
+        note "Reset any potential changes in core $(distn "Shable") submodule…"
+        cd Shable >/dev/null
+        git reset --hard --quiet
+        cd ..
+
+        note "Fetch $(distn "Shable") repository…"
+        git submodule update \
+            --jobs 4 \
+            --remote \
+            --quiet \
+            --recursive
+    fi
+}
+
+
+update_main_repo () {
+    note "Fetch repository: $(distn "${PWD##*/}")…"
+    git pull \
+        --jobs 4 \
+        --quiet \
+        --recurse-submodules \
+        origin "${_branch}"
+}
+
+
+complete_success () {
+    note "Completed successfully!" && \
+    exit 0
+}
+
+
+update_shable_core_repo && \
+    update_main_repo && \
+    complete_success
+
+error "$(diste "bin/update") has failed!"
