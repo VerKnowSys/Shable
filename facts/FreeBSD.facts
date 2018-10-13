@@ -81,9 +81,9 @@ default_origins_resource="https://raw.githubusercontent.com/VerKnowSys/sofin/mas
 default_zfs_allowed_commands="xattr,atime,casesensitivity,checksum,copies,logbias,primarycache,secondarycache,snapdir,userused,dedup,mountpoint,canmount,userprop,create,destroy,snapshot,rollback,clone,promote,rename,mount,send,receive,reservation,readonly"
 lz4_bin_resource="https://raw.githubusercontent.com/VerKnowSys/svdOS/master/usr/bin/lz4"
 
-# 4GiB is default amount of RAM that can be used by ZFS adaptive cache (ARC):
+# 8GiB is default max amount of RAM that can be used by ZFS adaptive cache (ARC):
 default_arc_size_min="508876117"
-default_arc_size_max="4071008936"
+default_arc_size_max="8142017872"
 
 # FreeBSD-specific utilities provided by base system:
 ZFS_BIN="/sbin/zfs"
