@@ -194,6 +194,16 @@ install_jail_custody_watcher () {
         src="igniters/custody" \
         dest="/usr/bin/custody" \
         mode="0755"
+
+    note "Setting up $(distn "Custody") daemon…"
+    ${SED_BIN} -i '' -e \
+        's|return 0|echo Launch Custody daemon|' \
+        "/etc/rc.local"
+
+    note "Always start $(distn "Custody") on dedicated system…"
+    printf "\n\n%s\n%s\n" \
+        "nohup daemon -o /var/log/gvr-custody.log -R1 -P /var/run/custody.pid /usr/bin/custody" \
+        "return 0" >> "/etc/rc.local"
 }
 
 
