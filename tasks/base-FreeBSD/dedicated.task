@@ -157,10 +157,10 @@ setup_dedicated_system_config () {
         src="/etc/sysctl.conf" \
         line="vfs.zfs.arc_max=${default_arc_size_max}"
 
-    note "Enabling IP forwarding feature for IPv4"
-    lineinfile \
-        src="/etc/sysctl.conf" \
-        line="net.inet.ip.forwarding=1"
+    note "Enable $(distn "IPv4") packet forwarding feature"
+    ${SED_BIN} -i '' -e \
+        's|^net.inet.ip.forwarding.*$|net.inet.ip.forwarding = 1|' \
+        "/etc/sysctl.conf"
 
     # NOTE: maybe one day we'll need ipv6?
     # note "Enabling IP forwarding feature for IPv6"
