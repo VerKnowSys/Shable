@@ -4,7 +4,7 @@ install_dedicated_software () {
 
 
 setup_watches () {
-    note "Configuring crontab for basic service supervision…"
+    note "Configure crontab for basic service supervision…"
     touch \
         "/etc/cron.d/dns-watch" \
         "/etc/cron.d/vpn-watch" \
@@ -25,7 +25,7 @@ setup_watches () {
 
 
 setup_vpn_nat () {
-    note "Installing PF-NAT for network: $(distn "${vpn_network:-${default_network}}")"
+    note "Install PF-NAT for network: $(distn "${vpn_network:-${default_network}}")"
     template \
         src="firewall/pf.conf" \
         dest="/etc/pf.conf" \
@@ -39,7 +39,7 @@ setup_vpn_nat () {
 
 
 install_common_igniter () {
-    note "Installing Service igniters…"
+    note "Install Service igniters…"
     template \
         src="igniters/common.igni" \
         dest="${igniters_dir}/common.igni" \
@@ -82,7 +82,7 @@ install_nginx_igniters () {
 
 
 setup_openvpn () {
-    note "Installing OpenVPN configuration"
+    note "Install OpenVPN configuration"
     template \
         src="vpn/openvpn.conf" \
         dest="${openvpn_servicedir}/service.conf" \
@@ -91,7 +91,7 @@ setup_openvpn () {
         remote_vpn_server="${remote_vpn_server}" \
         openvpn_servicedir="${openvpn_servicedir}"
 
-    note "Installing OpenVPN server side certificates for client: ${REMOTE}"
+    note "Install OpenVPN server side certificates for client: ${REMOTE}"
     for _file in "ca.crt" "${REMOTE}.key" "${REMOTE}.crt"; do
         template \
             src="vpn/${_file}" \
@@ -102,7 +102,7 @@ setup_openvpn () {
 
 
 setup_unbound () {
-    note "Configuring Unbound"
+    note "Configure Unbound"
     template \
         src="dns/unbound.conf" \
         dest="${unbound_servicedir}/service.conf" \
@@ -116,7 +116,7 @@ setup_unbound () {
 
 
 setup_nginx_proxy () {
-    note "Installing Nginx-proxy configuration"
+    note "Install Nginx-proxy configuration"
     template \
         src="web/nginx.conf" \
         dest="${nginx_servicedir}/service.conf" \
@@ -128,19 +128,19 @@ setup_nginx_proxy () {
 
 # NOTE: function unused for now:
 launch_core_services () {
-    note "Starting OpenVPN server"
+    note "Start OpenVPN server"
     igni "vpn" restart
 
-    note "Starting DNS server"
+    note "Start DNS server"
     igni "dns" restart
 
-    note "Starting Web proxy server: Nginx"
+    note "Start Web proxy server: Nginx"
     igni "proxy" restart
 }
 
 
 setup_dedicated_system_config () {
-    note "Configuring port ACLs (allow regular user to bind ports: 80 and 443)"
+    note "Configure $(distn "port-ACLs") (by default the $(distn "worker") user can bind ports $(distn "<1024"))"
     lineinfile \
         src="/etc/sysctl.conf" \
         line="security.mac.portacl.rules=gid:0:tcp:80,gid:0:tcp:443"
@@ -180,7 +180,7 @@ setup_dedicated_system_config () {
     #     src="/etc/rc.conf.local" \
     #     line="'rtadvd_interfaces=\"${default_network_device}\"'"
 
-    note "Configuring router address: $(distn "${default_network}.1") on device: $(distn "${default_bridge_device}")"
+    note "Configure router address: $(distn "${default_network}.1") on device: $(distn "${default_bridge_device}")"
     lineinfile \
         src="/etc/rc.conf.local" \
         line="'cloned_interfaces=\"${default_bridge_device}\"'"
@@ -196,7 +196,7 @@ generate_and_fill_pools () {
     #       /Shared/NetIDs/  ->  1000 … 9999
     #       /Shared/IPs/     ->  ${default_network}.2 … ${default_network}.254
     #
-    note "Generating Pools: $(distn "/Shared/IPs") and $(distn "/Shared/NetIDs")"
+    note "Generate file-pools: $(distn "/Shared/IPs") and $(distn "/Shared/NetIDs")"
     for _pool_idx in $(${SEQ_BIN} 1000 9999 2>/dev/null); do
         ${TOUCH_BIN} "/Shared/NetIDs/id-${_pool_idx}"
     done
@@ -207,18 +207,18 @@ generate_and_fill_pools () {
 
 
 install_jail_custody_watcher () {
-    note "Installing jail $(distn "Custody") daemon…"
+    note "Install jail $(distn "Custody") daemon…"
     template \
         src="igniters/custody" \
         dest="/usr/bin/custody" \
         mode="0755"
 
-    note "Setting up $(distn "Custody") daemon…"
+    note "Install jail $(distn "Custody") daemon…"
     ${SED_BIN} -i '' -e \
         's|return 0|echo Launch Custody daemon|' \
         "/etc/rc.local"
 
-    note "Always start $(distn "Custody") on dedicated system…"
+    note "Launch $(distn "Custody") with system through: $(distn "/etc/rc.local")"
     printf "\n\n%s\n%s\n" \
         "nohup daemon -o /var/log/gvr-custody.log -R1 -P /var/run/custody.pid /usr/bin/custody" \
         "return 0" >> "/etc/rc.local"
@@ -226,7 +226,7 @@ install_jail_custody_watcher () {
 
 
 install_jail_governor () {
-    note "Installing default Jail governor - $(distn "gvr")"
+    note "Install default Jail governor - $(distn "gvr")"
     _timestamp="$(${DATE_BIN} +%s 2>/dev/null)"
     _tmpfile="/tmp/gvr-${_timestamp}.tmpl"
     _destfile="/usr/bin/gvr"
@@ -240,7 +240,7 @@ install_jail_governor () {
 
 
 install_igni_wrapper () {
-    note "Installing default Service igniter - $(distn "igni")"
+    note "Install default Service igniter - $(distn "igni")"
     template \
         src="igniters/igni" \
         dest="/usr/bin/igni" \
