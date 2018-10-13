@@ -145,11 +145,14 @@ setup_dedicated_system_config () {
         src="/etc/sysctl.conf" \
         line="security.mac.portacl.rules=gid:0:tcp:80,gid:0:tcp:443"
 
-    note "Configuring max memory to be used by ARC to $(distn "${default_arc_size_max}") bytes"
+    # wipe out any old arc_min/ arc_max entries from sysctl.conf:
+    ${SED_BIN} -i '' -e \
+        's|^vfs.zfs.arc_min.*$||; s|^vfs.zfs.arc_max.*$||' \
+        "/etc/sysctl.conf"
+    note "Allocate min/max of: $(distn "${default_arc_size_min}")/$(distn "${default_arc_size_max}") bytes for $(distn "ZFS-ARC") read-cache."
     lineinfile \
         src="/etc/sysctl.conf" \
-        line="vfs.zfs.arc_min=${default_arc_size_max}"
-
+        line="vfs.zfs.arc_min=${default_arc_size_min}"
     lineinfile \
         src="/etc/sysctl.conf" \
         line="vfs.zfs.arc_max=${default_arc_size_max}"
