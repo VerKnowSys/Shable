@@ -18,7 +18,7 @@ traverse_custody () {
     done
 }
 
-echo "Entering endless loop"
+echo "Custody enters the endless loop on: $(date +%F-%H%M-%s 2>/dev/null)"
 while true; do
     traverse_custody
     sleep 5
