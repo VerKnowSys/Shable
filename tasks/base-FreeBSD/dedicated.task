@@ -195,10 +195,10 @@ generate_and_fill_pools () {
     #
     note "Generating Pools: $(distn "/Shared/IPs") and $(distn "/Shared/NetIDs")"
     for _pool_idx in $(${SEQ_BIN} 1000 9999 2>/dev/null); do
-        touch "/Shared/NetIDs/${_pool_idx}"
+        ${TOUCH_BIN} "/Shared/NetIDs/id-${_pool_idx}"
     done
     for _pool_idx in $(${SEQ_BIN} 2 254 2>/dev/null); do
-        touch "/Shared/IPs/${default_network}.${_pool_idx}"
+        ${TOUCH_BIN} "/Shared/IPs/ip-${default_network}.${_pool_idx}"
     done
 }
 
