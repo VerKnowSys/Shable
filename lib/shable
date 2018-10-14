@@ -753,3 +753,9 @@ add_ssh_known_host () {
 }
 
 
+#
+# Helper to generate timestamp in seconds since 1970
+#
+timestamp () {
+    ${DATE_BIN} +%s 2>/dev/null
+}
