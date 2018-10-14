@@ -5,40 +5,59 @@
 _branch="${1:-master}"
 
 
-update_shable_core_repo () {
+reset_shable_core_module () {
     if [ -d "${PWD}/Shable" ]; then
-        note "Reset any potential changes in core $(distn "Shable") submodule…"
-        cd Shable >/dev/null
-        git reset --hard --quiet
-        cd ..
+        note "Reset any uncomitted changes in main $(distn "Shable") module…"
 
-        note "Fetch $(distn "Shable") repository…"
-        git submodule update \
-            --jobs 4 \
-            --remote \
-            --quiet \
-            --recursive
+        cd ./Shable >/dev/null && \
+            git reset --hard || return 1
+        cd ..
     fi
+    return 0
+}
+
+
+update_shable_core_repo () {
+    git submodule update \
+        --jobs 4 \
+        --remote \
+        --quiet \
+        --recursive && \
+        eval "$(${GREP_BIN} -F 'SHABLE_VERSION' 'lib/vars' 2>/dev/null | ${SED_BIN} -e 's|SHABLE_VERSION|SHBL_VRSN|' 2>/dev/null)" && \
+        note "Shable was updated to version: $(distn "${SHBL_VRSN}")." && \
+        return 0
+    return 1
 }
 
 
 update_main_repo () {
-    note "Fetch repository: $(distn "${PWD##*/}")…"
     git pull \
         --jobs 4 \
         --quiet \
-        --recurse-submodules
+        --recurse-submodules && \
+        note "Repository: $(distn "${PWD##*/}"), $(distn "HEAD"): $(distn "$(${CAT_BIN} ".git/ORIG_HEAD" 2>/dev/null)")" && \
+        return 0
+    return 1
 }
 
 
 complete_success () {
-    note "Completed successfully!" && \
+    echo
     exit 0
 }
 
 
-update_main_repo && \
+# main function:
+main () {
+    reset_shable_core_module && \
+    update_main_repo && \
     update_shable_core_repo && \
     complete_success
 
-error "$(diste "bin/update") has failed!"
+    # or else - run failure handler that something went wrong:
+    error "$(diste "bin/update") has failed!"
+}
+
+
+# run updater:
+main
