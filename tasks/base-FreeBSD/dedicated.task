@@ -207,7 +207,7 @@ generate_and_fill_pools () {
 
 
 install_jail_custody_watcher () {
-    note "Install jail $(distn "Custody") script."
+    note "Install ($(distn "custody")) script."
     template \
         src="igniters/custody" \
         dest="/usr/bin/custody" \
@@ -238,13 +238,9 @@ install_jail_governor () {
 
 
 install_igni_wrapper () {
-    note "Install default Service igniter: $(distn "igni")"
+    note "Install default Service igniter: ($(distn "igni"))"
     template \
         src="igniters/igni" \
         dest="/usr/bin/igni" \
-        mode="0755" \
-        vpn_network="${vpn_network:-${default_network}}" \
-        default_network_device="${default_network_device}" \
-        default_bridge_device="${default_bridge_device}" \
-        ip="${ip}"
+        mode="0755"
 }
