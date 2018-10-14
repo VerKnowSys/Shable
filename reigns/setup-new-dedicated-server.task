@@ -6,6 +6,15 @@ only_as "root"
 only_for "FreeBSD"
 
 
+# NOTE: FreeBSD sysctl security features built into the system:
+#
+#  - Hide processes running as other users = security.bsd.see_other_uids
+#  - Hide processes running as other groups = security.bsd.see_other_gids
+#  - Disable reading kernel message buffer for unprivileged users = security.bsd.unprivileged_read_msgbuf
+#  - Disable process debugging facilities for unprivileged users = security.bsd.unprivileged_proc_debug
+#  - Randomize the PID of newly created processes = kern.randompid
+#  - Insert stack guard page ahead of the growable segments = security.bsd.stack_guard_page
+
 
 main () {
     validate \
