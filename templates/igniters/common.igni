@@ -43,7 +43,7 @@ start () {
         echo "igni: ${_bundle} already running! Pid: ${_pid}"
         return 0
     else
-        echo "igni: Starting: ${_bundle}"
+        echo "igni: Start: ${_bundle}"
         ${SHELL} -c "eval ${_commands}" && \
             return 0
     fi
@@ -84,7 +84,7 @@ reload () {
     if [ -n "${_pid}" ]; then
         kill -0 "${_pid}" 2>/dev/null
         if [ "0" = "${?}" ]; then
-            echo "igni: Reloading: ${_bundle}"
+            echo "igni: Reload: ${_bundle}"
             kill -HUP "${_pid}" 2>/dev/null
             sleep 2
             if [ -n "${_commands}" ] && [ "''" != "${_commands}" ]; then
@@ -106,7 +106,7 @@ deathnote () {
     expect_bundle "${_bundle}"
     _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
     if [ -n "${_pid}" ]; then
-        echo "igni: Stopping ${_bundle} pid(s): ${_pid}"
+        echo "igni: Stop ${_bundle} pid(s): ${_pid}"
         for _apid in $(to_iter "${_pid}"); do
             {
                 kill -CONT "${_apid}";
