@@ -207,18 +207,16 @@ generate_and_fill_pools () {
 
 
 install_jail_custody_watcher () {
-    note "Install jail $(distn "Custody") daemon…"
+    note "Install jail $(distn "Custody") script."
     template \
         src="igniters/custody" \
         dest="/usr/bin/custody" \
         mode="0755"
 
-    note "Install jail $(distn "Custody") daemon…"
+    note "Patch $(distn "/etc/rc.local") to launch $(distn "Custody") daemon on each system boot."
     ${SED_BIN} -i '' -e \
         's|return 0|echo Launch Custody daemon|' \
         "/etc/rc.local"
-
-    note "Launch $(distn "Custody") with system through: $(distn "/etc/rc.local")"
     printf "\n\n%s\n%s\n" \
         "nohup daemon -o /var/log/gvr-custody.log -R1 -P /var/run/custody.pid /usr/bin/custody" \
         "return 0" >> "/etc/rc.local"
@@ -226,7 +224,7 @@ install_jail_custody_watcher () {
 
 
 install_jail_governor () {
-    note "Install default Jail governor - $(distn "gvr")"
+    note "Install jail GoVeRnor: ($(distn "gvr"))"
     _timestamp="$(${DATE_BIN} +%s 2>/dev/null)"
     _tmpfile="/tmp/gvr-${_timestamp}.tmpl"
     _destfile="/usr/bin/gvr"
@@ -240,7 +238,7 @@ install_jail_governor () {
 
 
 install_igni_wrapper () {
-    note "Install default Service igniter - $(distn "igni")"
+    note "Install default Service igniter: $(distn "igni")"
     template \
         src="igniters/igni" \
         dest="/usr/bin/igni" \
