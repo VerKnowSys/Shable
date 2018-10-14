@@ -193,11 +193,11 @@ setup_dedicated_system_config () {
 
 generate_and_fill_pools () {
     # NOTE:
-    #       /Shared/NetIDs/  ->  1000 … 9999
+    #       /Shared/NetIDs/  ->  1000 … 4000
     #       /Shared/IPs/     ->  ${default_network}.2 … ${default_network}.254
     #
     note "Generate file-pools: $(distn "/Shared/IPs") and $(distn "/Shared/NetIDs")"
-    for _pool_idx in $(${SEQ_BIN} 1000 9999 2>/dev/null); do
+    for _pool_idx in $(${SEQ_BIN} 1000 4000 2>/dev/null); do
         ${TOUCH_BIN} "/Shared/NetIDs/id-${_pool_idx}"
     done
     for _pool_idx in $(${SEQ_BIN} 2 254 2>/dev/null); do
