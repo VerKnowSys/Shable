@@ -52,7 +52,6 @@ main () {
     # Install gvr and igni to /usr/bin:
     install_jail_governor
     install_igni_wrapper
-    install_jail_custody_watcher
 
     # Packet Filter NAT configuration:
     setup_vpn_nat
@@ -67,6 +66,7 @@ main () {
     install_software_base
     install_dedicated_software
     generate_and_fill_pools
+    install_jail_custody_watcher
 
     # Install default software igniters:
     install_common_igniter
