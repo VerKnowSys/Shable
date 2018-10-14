@@ -28,11 +28,15 @@ install_system_image () {
 install_software_base () {
     _software_list="Nginx Rsync Mc Vim Tmux Curl Libressl Atop Zip Nano Syslog-ng Dmidecode Pstree Tig"
 
-    note "Updating software defititions"
+    note "Update software defititions"
     ${default_shell} -c "${sofin_bin} update"
 
-    note "Installing software bundles"
-    ${default_shell} -c "${sofin_bin} install ${_software_list}"
+    _ts_now="$(timestamp)"
+    _bundles_count="$(echo "${_software_list}" | ${TR_BIN} ' ' '\n' 2>/dev/null | ${WC_BIN} -l 2>/dev/null)"
+    ${default_shell} -c "${sofin_bin} i ${_software_list}" && \
+        _ts_after="$(timestamp)" && \
+        _ts_diff="$(( ${_ts_after} - ${_ts_now} ))" && \
+        note "Installed $(distn "${_bundles_count##* }") bundles in: $(distn "${_ts_diff}") seconds."
 
     case "${SYSTEM_NAME}" in
         Linux)
