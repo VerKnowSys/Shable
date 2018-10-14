@@ -35,7 +35,7 @@ update_main_repo () {
         --jobs 4 \
         --quiet \
         --recurse-submodules && \
-        note "Repository: $(distn "${PWD##*/}"), $(distn "HEAD"): $(distn "$(${CAT_BIN} ".git/ORIG_HEAD" 2>/dev/null)")" && \
+        note "Repository: $(distn "${PWD##*/}"), Current HEAD: $(distn "$(${CAT_BIN} ".git/ORIG_HEAD" 2>/dev/null)")" && \
         return 0
     return 1
 }
