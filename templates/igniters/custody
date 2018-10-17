@@ -1,5 +1,6 @@
 #!/bin/sh
 
+SH_BIN="/bin/sh"
 PATH="/bin:/usr/bin:/sbin:/usr/sbin"
 _custody_path="/Shared/Custody"
 
@@ -13,8 +14,8 @@ traverse_custody () {
                 echo; echo "No ssh-key found in contents of file: ${_entry_file}. Jail creation aborted!"
             else
                 echo; echo "New custody subject: ${_name}. SSH-ED25519 pubkey: ${_key}"
-                ${SHELL} -c "gvr create ${_name}" && \
-                    ${SHELL} -c "gvr set ${_name} key='${_key}'" && \
+                ${SH_BIN} -c "gvr create ${_name}" && \
+                    ${SH_BIN} -c "gvr set ${_name} key='${_key}'" && \
                         rm -f "${_entry_file}" \
                         echo "Created instance: ${_name}"
             fi
