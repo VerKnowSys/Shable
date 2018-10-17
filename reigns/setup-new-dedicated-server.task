@@ -58,7 +58,7 @@ main () {
 
     # Setup service cron watches:
     setup_watches
-    install_jail_custody_watcher
+    install_jail_sysapi_and_custody_watcher
 
     # When base system configuration is ready, invoke svdup commit system modifications and install fres stable ServeD image:
     install_system_image
