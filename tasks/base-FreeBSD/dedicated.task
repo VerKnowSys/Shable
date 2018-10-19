@@ -209,7 +209,7 @@ generate_and_fill_pools () {
 }
 
 
-install_jail_sysapi_and_custody_watcher () {
+install_jail_sysapi () {
     #
     # NOTE: sysapi is open source as well: https://github.com/VerKnowSys/sysapi
     #       but here we use prebuilt version to make installation _much_ faster:
@@ -217,12 +217,6 @@ install_jail_sysapi_and_custody_watcher () {
     template \
         src="base-FreeBSD/bin/sysapi" \
         dest="/usr/bin/sysapi" \
-        mode="0755"
-
-    note "Install ($(distn "custody")) script."
-    template \
-        src="igniters/custody" \
-        dest="/usr/bin/custody" \
         mode="0755"
 }
 
