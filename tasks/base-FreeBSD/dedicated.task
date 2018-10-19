@@ -9,6 +9,7 @@ setup_watches () {
         "/etc/cron.d/dns-watch" \
         "/etc/cron.d/vpn-watch" \
         "/etc/cron.d/nginx-watch"
+        # TODO: define watcher for sysapi: "/etc/cron.d/sysapi-watch"
 
     lineinfile \
         src="/etc/cron.d/dns-watch" \
