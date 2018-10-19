@@ -112,6 +112,8 @@ setup_unbound () {
         default_jails_domain="${default_jails_domain}" \
         default_network="${default_network}" \
         default_dns_dir="${shared_dir}/DNS"
+    note "Setting 'unbound' owner for: $(distn "${unbound_servicedir}/service.log")"
+    ${CHOWN_BIN} unbound "${unbound_servicedir}/service.log"
 }
 
 
