@@ -11,6 +11,17 @@ if [ -z "${_reign}" ]; then
 fi
 debug "Reign to be invoked: $(distd "${_reign}")"
 
+if [ "Darwin" = "${SYSTEM_NAME}" ]; then
+    _cmd="sudo -H RUN_AS=root bin/shable inventory setup-macos-limits"
+    _current_openfiles_max="$(launchctl limit maxfiles | ${AWK_BIN} '{print $2;}' 2>/dev/null)"
+    if [ "256" = "${_current_openfiles_max}" ]; then
+        warn "Shable detected system type: $(distw "Darwin") with default limits set."
+        warn "If you experience problems with multiple asynchronous SSH connections at once,"
+        warn "please invoke this on your workstation: $(distw "${_cmd}")."
+        warn "This will persistently increase default system limits."
+    fi
+fi
+
 _hosts=$(inventory_hosts "${DEFAULT_INVENTORY}")
 note "Calling reign: $(distn "${_reign}") on hosts: $(distd "$(echo "${_hosts}" | ${TR_BIN} '\n' ' ' 2>/dev/null)")"
 
