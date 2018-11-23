@@ -1,0 +1,26 @@
+include "base"
+include "test"
+
+only_as "root"
+only_for "Darwin"
+
+
+main () {
+    note "Installing launch service to configure system limits…"
+    template \
+        src="base-Darwin/LaunchDaemons/limit.maxfiles.plist" \
+        dest="/Library/LaunchDaemons/limit.maxfiles.plist" \
+        owner="root"
+
+    template \
+        src="base-Darwin/LaunchDaemons/limit.maxproc.plist" \
+        dest="/Library/LaunchDaemons/limit.maxproc.plist" \
+        owner="root"
+
+    chown root:wheel /Library/LaunchDaemons/limit.maxfiles.plist
+    chown root:wheel /Library/LaunchDaemons/limit.maxproc.plist
+
+    note "Loading LaunchDaemons: $(distn "limit.maxfiles") + $(distn "limit.maxproc")"
+    launchctl load -w /Library/LaunchDaemons/limit.maxfiles.plist
+    launchctl load -w /Library/LaunchDaemons/limit.maxproc.plist
+}
