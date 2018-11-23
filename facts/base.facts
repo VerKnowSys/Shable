@@ -1,6 +1,6 @@
 # core
 connection_timeout=5
-connection_attempts=1
+connection_attempts=5
 
 # base values
 default_inventory_group="default"

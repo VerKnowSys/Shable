@@ -59,9 +59,9 @@ else
             }
 
             sync_with_rsync () {
-                for _attempt in 1 2 3; do
+                for _attempt in 1 2 3 4 5; do
                     ${RSYNC_BIN} \
-                        --timeout=2 \
+                        --timeout=10 \
                         --exclude=".git" \
                         --recursive \
                         --compress \
@@ -80,9 +80,9 @@ else
 
             _remote_system=$(${SSH_BIN} \
                 -o "BatchMode=yes" \
-                -o "ConnectTimeout=3" \
-                -o "ConnectionAttempts=1" \
-                -o "ServerAliveInterval=1" \
+                -o "ConnectTimeout=5" \
+                -o "ConnectionAttempts=5" \
+                -o "ServerAliveInterval=10" \
                 "${_remote_user}@${REMOTE}" \
                 "uname" 2>/dev/null)
 
@@ -121,9 +121,9 @@ else
             debug "Making sure Rsync is available on remote host"
             ${SSH_BIN} \
                 -o "BatchMode=yes" \
-                -o "ConnectTimeout=3" \
-                -o "ConnectionAttempts=1" \
-                -o "ServerAliveInterval=1" \
+                -o "ConnectTimeout=5" \
+                -o "ConnectionAttempts=5" \
+                -o "ServerAliveInterval=10" \
                 "${_remote_user}@${REMOTE}" \
                 "test -x ${RSYNC_BIN}" || install_rsync_on_remote
 
@@ -144,7 +144,7 @@ export REMOTE=${REMOTE} ARGUMENTS=\"${ARGUMENTS}\" DEBUG=${DEBUG} SKIP_ENV_VALID
                         -o "BatchMode=yes" \
                         -o "ConnectTimeout=${connection_timeout}" \
                         -o "ConnectionAttempts=${connection_attempts}" \
-                        -o "ServerAliveInterval=1" \
+                        -o "ServerAliveInterval=15" \
                         "${_remote_user}@${REMOTE}" \
                         "${_job}"
 
