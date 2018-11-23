@@ -133,15 +133,13 @@ pass_cache () {
 await_async () {
     _process_logs="${*}"
     _all="$(echo "${_process_logs}" | ${WC_BIN} -w 2>/dev/null | ${TR_BIN} -d ' ' 2>/dev/null)"
-    debug "Awaiting background processes. Logs: $(distd "${_process_logs}")"
-    _time_elapsed="0"
+    _time_start="$(${DATE_BIN} "+%s" 2>/dev/null)"
 
     note "…"; note; note
     while true; do
         _completed="0"
         _failed="0"
 
-        sleep 1
         for _plog in ${_process_logs}; do
             debug "Checking log: $(distd "${_plog}")"
 
@@ -163,8 +161,9 @@ await_async () {
         if [ "0" != "${_failed}" ]; then
             _fcolour="${ColorRed}"
         fi
+        _time_now="$(${DATE_BIN} "+%s" 2>/dev/null)"
+        _time_elapsed="$(( ${_time_now} - ${_time_start} ))"
         progress_note "Completed: $(distn "${_completed}"). Failed: $(distn "${_failed}" "${_fcolour}"). Total: $(distn "${_all}")  [elapsed: $(distn "${_time_elapsed}")s]"
-        _time_elapsed="$(echo "${_time_elapsed}+1" | ${BC_BIN} 2>/dev/null)"
         _countall="$(echo "${_completed} + ${_failed}" | ${BC_BIN} 2>/dev/null)"
         if [ "${_countall}" = "${_all}" ]; then
             debug "Finished!"
@@ -197,6 +196,8 @@ await_async () {
             break
         fi
 
+        # A Lil pause…
+        sleep 1
     done
 }
 
