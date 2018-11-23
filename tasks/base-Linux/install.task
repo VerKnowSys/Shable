@@ -35,6 +35,82 @@ install_security_limits_configuration () {
 }
 
 
+create_cron_hourly () {
+    template \
+        src="base/cron.d/cron.periodic" \
+        dest="/etc/cron.d/cron_hourly" \
+        mode="640" \
+        period="hourly" \
+            minute="0" \
+            hour="*" \
+            day="*" \
+            month="*" \
+            dayofweek="*"
+    template \
+        src="base/cron.d/script_wrapper" \
+        dest="/usr/local/bin/hourly" \
+        mode="750" \
+        period="hourly"
+}
+
+
+create_cron_daily () {
+    template \
+        src="base/cron.d/cron.periodic" \
+        dest="/etc/cron.d/cron_daily" \
+        mode="640" \
+        period="daily" \
+            minute="0" \
+            hour="1" \
+            day="*" \
+            month="*" \
+            dayofweek="*"
+    template \
+        src="base/cron.d/script_wrapper" \
+        dest="/usr/local/bin/daily" \
+        mode="750" \
+        period="daily"
+}
+
+
+create_cron_weekly () {
+    template \
+        src="base/cron.d/cron.periodic" \
+        dest="/etc/cron.d/cron_weekly" \
+        mode="640" \
+        period="weekly" \
+            minute="0" \
+            hour="0" \
+            day="*" \
+            month="*" \
+            dayofweek="1"
+    template \
+        src="base/cron.d/script_wrapper" \
+        dest="/usr/local/bin/weekly" \
+        mode="750" \
+        period="weekly"
+}
+
+
+create_cron_monthly () {
+    template \
+        src="base/cron.d/cron.periodic" \
+        dest="/etc/cron.d/cron_monthly" \
+        mode="640" \
+        period="monthly" \
+            minute="0" \
+            hour="0" \
+            day="1" \
+            month="*" \
+            dayofweek="*"
+    template \
+        src="base/cron.d/script_wrapper" \
+        dest="/usr/local/bin/monthly" \
+        mode="750" \
+        period="monthly"
+}
+
+
 install_cron_hourly_tasks () {
     note "Install periodic cron hourly tasks"
     for _file in maintain_ooms hourly_tasks; do

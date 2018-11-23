@@ -4,6 +4,10 @@ setup_base_system () {
 
     configure_logrotate
 
+    create_cron_hourly
+    create_cron_daily
+    create_cron_weekly
+    create_cron_monthly
     install_cron_hourly_tasks
     install_cron_daily_tasks
 }
