@@ -92,7 +92,7 @@ install_software () {
 
     note "Remove unwanted software"
     DEBIAN_FRONTEND=noninteractive aptitude remove -y \
-        nginx-core nginx-common php5 php5-cli php5-readline php5-common php5-json php5-mysql php5-curl php5-gd php5-mcrypt php5-memcache php5-memcached php5-xcache php5-sqlite php-gettext phpmyadmin libjs-codemirror libjs-jquery-cookie libjs-jquery-event-drag libjs-jquery-mousewheel libjs-jquery-tablesorter libjs-underscore libjs-jquery-ui dbconfig-common javascript-common libmemcached10 php-sqlite3 apache2 apache2-bin apache2-data dh-php libaprutil1-dbd-sqlite3 libaprutil1-ldap libapache2-mod-php5.6 php-apcu ubuntu-minimal rsyslog ntp libapr1 libaprutil1 liblist-moreutils-perl
+        anacron nginx-core nginx-common php5 php5-cli php5-readline php5-common php5-json php5-mysql php5-curl php5-gd php5-mcrypt php5-memcache php5-memcached php5-xcache php5-sqlite php-gettext phpmyadmin libjs-codemirror libjs-jquery-cookie libjs-jquery-event-drag libjs-jquery-mousewheel libjs-jquery-tablesorter libjs-underscore libjs-jquery-ui dbconfig-common javascript-common libmemcached10 php-sqlite3 apache2 apache2-bin apache2-data dh-php libaprutil1-dbd-sqlite3 libaprutil1-ldap libapache2-mod-php5.6 php-apcu ubuntu-minimal rsyslog ntp libapr1 libaprutil1 liblist-moreutils-perl
 
     note "Install base software"
     DEBIAN_FRONTEND=noninteractive aptitude install -y \
