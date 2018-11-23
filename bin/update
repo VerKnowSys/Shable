@@ -7,55 +7,63 @@ _branch="${1:-master}"
 
 reset_shable_core_module () {
     if [ -d "${PWD}/Shable" ]; then
-        note "Reset any uncomitted changes in main $(distn "Shable") module…"
-
         cd ./Shable >/dev/null && \
-            git reset --hard || return 1
+            git reset --hard >/dev/null \
+                || failure "Couldn't reset submodule state!"
         cd ..
     fi
     return 0
 }
 
 
-update_shable_core_repo () {
-    git submodule update \
-        --jobs 4 \
-        --remote \
-        --quiet \
-        --recursive && \
-        eval "$(${GREP_BIN} -F 'SHABLE_VERSION' 'lib/vars' 2>/dev/null | ${SED_BIN} -e 's|SHABLE_VERSION|SHBL_VRSN|' 2>/dev/null)" && \
-        note "Shable was updated to version: $(distn "${SHBL_VRSN}")." && \
-        return 0
-    return 1
-}
-
-
-update_main_repo () {
+update_shable_repos () {
     git pull \
         --jobs 4 \
         --quiet \
         --recurse-submodules && \
-        note "Repository: $(distn "${PWD##*/}"). Current HEAD: $(distn "$(${CAT_BIN} ".git/ORIG_HEAD" 2>/dev/null)")." && \
-        return 0
-    return 1
+            note "$(distn "${PWD##*/}"): Current HEAD: $(distn "$(${CAT_BIN} ".git/ORIG_HEAD" 2>/dev/null)")" \
+                || failure "Couldn't pull main repository!"
+
+    if [ -f "${PWD}/.gitmodules" ]; then
+        git submodule foreach \
+            git pull \
+                --jobs 4 \
+                --quiet \
+                "origin" "${_branch}" >/dev/null \
+                    || failure "Couldn't pull submodule!"
+
+        git submodule update \
+            --jobs 4 \
+            --remote \
+            --quiet \
+            --recursive && \
+                eval "$(${GREP_BIN} -F 'SHABLE_VERSION' 'lib/vars' 2>/dev/null | ${SED_BIN} -e 's|SHABLE_VERSION|SHBL_VRSN|' 2>/dev/null)" && \
+                note "$(distn "Shable") v$(distn "${SHBL_VRSN}"): Current HEAD: $(distn "$(${CAT_BIN} ".git/modules/Shable/ORIG_HEAD" 2>/dev/null)")" \
+                    || failure "Couldn't update repositories!"
+    fi
 }
 
 
-complete_success () {
+failure () {
     echo
-    exit 0
+    error "FAILURE: ${*}!"
+}
+
+
+success () {
+    echo
+    exit
 }
 
 
 # main function:
 main () {
     reset_shable_core_module && \
-    update_main_repo && \
-    update_shable_core_repo && \
-    complete_success
+    update_shable_repos && \
+        success
 
     # or else - run failure handler that something went wrong:
-    error "$(diste "bin/update") has failed!"
+    failure "$(diste "bin/update") has failed!"
 }
 
 
