@@ -37,7 +37,7 @@ start () {
         echo "Error: No commands (start_cmd) given to ignite()!"
         return 1
     fi
-    _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null | head -n1 2>/dev/null)"
+    _pid="$(head -n1 "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
     kill -0 "${_pid}" 2>/dev/null
     if [ "0" = "${?}" ]; then
         echo "igni: ${_bundle} already running! Pid: ${_pid}"
@@ -58,7 +58,7 @@ stop () {
 status () {
     _bundle="${1}"
     expect_bundle "${_bundle}"
-    _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null | head -n1 2>/dev/null)"
+    _pid="$(head -n1 "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
     if [ -n "${_pid}" ]; then
         kill -0 "${_pid}" 2>/dev/null
         if [ "0" = "${?}" ]; then
@@ -80,7 +80,7 @@ reload () {
     expect_bundle "${_bundle}"
     shift
     _commands="'${@}'"
-    _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null | head -n1 2>/dev/null)"
+    _pid="$(head -n1 "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
     if [ -n "${_pid}" ]; then
         kill -0 "${_pid}" 2>/dev/null
         if [ "0" = "${?}" ]; then
@@ -104,7 +104,7 @@ reload () {
 deathnote () {
     _bundle="${1}"
     expect_bundle "${_bundle}"
-    _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null | head -n1 2>/dev/null)"
+    _pid="$(head -n1 "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
     if [ -n "${_pid}" ]; then
         echo "igni: Stop ${_bundle} pid(s): ${_pid}"
         for _apid in $(to_iter "${_pid}"); do
@@ -173,7 +173,7 @@ ignite () {
         watch)
             _bundle="${name}"
             expect_bundle "${_bundle}"
-            _pid="$(cat "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null | head -n1 2>/dev/null)"
+            _pid="$(head -n1 "${SERVICES_DIR}/${_bundle}/service.pid" 2>/dev/null)"
             if [ -z "${_pid}" ]; then
                 start "${_bundle}" "${start_cmd}"
             else
