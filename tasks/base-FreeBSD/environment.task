@@ -34,6 +34,9 @@ setup_ttys_and_motd () {
 
 
 configure_www_user () {
+    # TODO: figure out what is the source of this thing being auto mounted on "DO-vanilla" systems:
+    umount -f "/var"
+
     note "Configuring user: $(distn "${default_www_user}") under homedir: $(distn "${homedir}")"
     mkdir -p "${homedir}"
     ${CHSH_BIN} -s "${default_shell}" "${default_www_user}" 2>/dev/null
