@@ -98,6 +98,11 @@ generate_default_rc () {
         src="/etc/rc.conf.local" \
         line="'devfs_system_ruleset=userdtrace'"
 
+    note "Setting up no ramfs mounting on /var"
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'varmfs=NO'"
+
     note "Setting up autostart of system services"
 
     lineinfile \
