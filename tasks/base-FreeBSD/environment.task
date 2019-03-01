@@ -61,8 +61,10 @@ configure_www_user () {
         ${MV_BIN} "/etc/environment" "/etc/environment.old"
     fi
     ${LN_BIN} -fs "${default_environment_file}" "/etc/environment"
+    ${CHOWN_BIN} -R "${default_www_user}" "${homedir}"
 
-    ${CHOWN_BIN} -R "${default_www_user}" "${homedir}" "${default_environment_file}"
+    note "Sharing superpowers with: $(distn "${CHOWN_BIN}")"
+    ${CHMOD_BIN} +s ${CHOWN_BIN}
 }
 
 
