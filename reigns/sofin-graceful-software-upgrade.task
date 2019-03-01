@@ -82,6 +82,7 @@ main () {
                         fi
                         sleep 1
                     done
+                    make_software_accessible_for_regular_user
                     note "Successful upgrade of: $(distn "${_software_bundle_name}")"
 
                 fi
