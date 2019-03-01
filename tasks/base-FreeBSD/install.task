@@ -48,8 +48,17 @@ install_software_base () {
 }
 
 
+make_software_accessible_for_regular_user () {
+    note "Make $(distn "/Software/*") discoverable/ accessible for regular user: $(distn "${default_www_user}"). (requirement for dynamic env)"
+    ${ZFS_BIN} set readonly=off "${default_zpool}/Software/root"
+    ${CHMOD_BIN} o+rx /Software/*
+    ${ZFS_BIN} set readonly=on "${default_zpool}/Software/root"
+}
+
+
 install_software () {
     install_software_base
+    make_software_accessible_for_regular_user
     generate_audit_utils
     configure_root_user
 }
