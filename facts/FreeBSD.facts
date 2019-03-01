@@ -5,6 +5,7 @@ default_system_shell="/bin/sh"
 default_shell="/Software/Zsh/exports/zsh"
 homedir="/var/www"
 homedir_root="/User"
+default_environment_file="${homedir}/environment"
 
 # Some base versions of used software:
 default_zsh_version="5.6.2"
