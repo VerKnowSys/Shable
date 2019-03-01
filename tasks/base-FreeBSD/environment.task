@@ -96,18 +96,17 @@ generate_default_environment () {
 generate_default_rc () {
     #
     # NOTE: rc.conf services setup, before invoking svdup:
-    note "Setting up RC"
+    note "Setting up local RC: $(distn "/etc/rc.conf.local")"
     lineinfile \
         src="/etc/rc.conf.local" \
         line="'devfs_system_ruleset=userdtrace'"
 
-    note "Setting up no ramfs mounting on /var"
+    note "Prevent $(distn "varmfs") from being mounted under: $(distn "/var")"
     lineinfile \
         src="/etc/rc.conf.local" \
         line="'varmfs=NO'"
 
-    note "Setting up autostart of system services"
-
+    note "Setting up default system services…"
     lineinfile \
         src="/etc/rc.conf.local" \
         line="'sendmail_enable=NONE'"
