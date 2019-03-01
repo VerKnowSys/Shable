@@ -55,10 +55,10 @@ configure_www_user () {
         src="base-${SYSTEM_NAME}/devfs.rules" \
         dest="/etc/devfs.rules"
 
-    note "Linking $(distn "/etc/environment") to: $(distn "/Services/environment")"
-    ${LN_BIN} -fs "/etc/environment" "/Services/environment"
+    note "Linking $(distn "/etc/environment") to: $(distn "${default_environment_file}")"
+    ${LN_BIN} -fs "/etc/environment" "${default_environment_file}"
 
-    ${CHOWN_BIN} -R "${default_www_user}" "${homedir}" "/Services/environment"
+    ${CHOWN_BIN} -R "${default_www_user}" "${homedir}" "${default_environment_file}"
 }
 
 
