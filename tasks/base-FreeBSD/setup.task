@@ -1,6 +1,8 @@
 setup_base_system () {
     setup_loader_conf
     setup_ttys_and_motd
+    create_homedir_dataset
+    create_www_user_software_dataset
 
     configure_www_user
     install_default_cacert

@@ -34,14 +34,8 @@ setup_ttys_and_motd () {
 
 
 configure_www_user () {
-    # TODO: figure out what is the source of this thing being auto mounted on "DO-vanilla" systems:
-    umount -f "/var"
-
-    note "Configuring user: $(distn "${default_www_user}") under homedir: $(distn "${homedir}")"
-    mkdir -p "${homedir}"
+    note "Configuring user: $(distn "${default_www_user}") under homedir: $(distn "${homedir}") and shared dirs"
     ${CHSH_BIN} -s "${default_shell}" "${default_www_user}" 2>/dev/null
-    create_homedir_dataset
-    create_www_user_software_dataset
 
     note "Setting up groups: $(distn "dtrace"),$(distn "audit") for user: $(distn "${default_www_user}")"
     ${PW_BIN} groupadd dtrace
@@ -61,7 +55,10 @@ configure_www_user () {
         src="base-${SYSTEM_NAME}/devfs.rules" \
         dest="/etc/devfs.rules"
 
-    ${CHOWN_BIN} -R "${default_www_user}" "${homedir}"
+    note "Linking $(distn "/etc/environment") to: $(distn "/Services/environment")"
+    ${LN_BIN} -fs "/etc/environment" "/Services/environment"
+
+    ${CHOWN_BIN} -R "${default_www_user}" "${homedir}" "/Services/environment"
 }
 
 
