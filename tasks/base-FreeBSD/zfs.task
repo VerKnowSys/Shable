@@ -27,7 +27,7 @@ create_homedir_dataset () {
         -o mountpoint="${homedir}" \
         "zroot${homedir}" 2>/dev/null
 
-    ${ZFS_BIN} set dedup="on" "zroot${homedir}"
+    ${ZFS_BIN} set dedup="off" "zroot${homedir}"
     ${ZFS_BIN} set setuid="off" "zroot${homedir}"
     ${ZFS_BIN} set compression="lz4" "zroot${homedir}"
     ${ZFS_BIN} set atime="off" "zroot${homedir}"
@@ -82,7 +82,7 @@ create_var_datasets () {
     ${ZFS_BIN} create -o mountpoint="/var/backups" "zroot/var/backups" 2>/dev/null
     ${ZFS_BIN} set readonly="off" "zroot/var/backups" 2>/dev/null
     ${ZFS_BIN} set readonly="off" "zroot/var/audit" 2>/dev/null
-    ${ZFS_BIN} set dedup="on" "zroot/var/audit" 2>/dev/null
+    ${ZFS_BIN} set dedup="off" "zroot/var/audit" 2>/dev/null
     ${ZFS_BIN} set compression="lz4" "zroot/var/audit" 2>/dev/null
     mkdir -p "/var/db/zfsd/cases" "/var/db/entropy" "/var/cron/tabs" "/var/at/jobs" "/var/at/spool"
 }
