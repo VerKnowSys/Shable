@@ -56,7 +56,11 @@ configure_www_user () {
         dest="/etc/devfs.rules"
 
     note "Linking $(distn "/etc/environment") to: $(distn "${default_environment_file}")"
-    ${LN_BIN} -fs "/etc/environment" "${default_environment_file}"
+    if [ -f "/etc/environment" ]; then
+        note "Moving existing environment file: $(distn "/etc/environment") to: $(distn "/etc/environment.old")"
+        ${MV_BIN} "/etc/environment" "/etc/environment.old"
+    fi
+    ${LN_BIN} -fs "${default_environment_file}" "/etc/environment"
 
     ${CHOWN_BIN} -R "${default_www_user}" "${homedir}" "${default_environment_file}"
 }
