@@ -26,7 +26,7 @@ setup_base_datasets_and_core_software () {
     ${LN_BIN} -fs /usr/bin/lz4 /usr/bin/lz4cat
 
     mkdir -p "${cache_dir}"
-    note "Configuring datasets, installing base software, setting HOME to ${HOME_DIR}, Zsh as default shell"
+    note "Configuring datasets, installing base software, setting HOME: $(distn "${HOME_DIR}") and SHELL: $(distn "Zsh") as default shell"
     for _zfsdataset in User Services Software; do
         ${ZFS_BIN} list "${default_zpool}/${_zfsdataset}" >/dev/null 2>&1
         if [ "${?}" != "0" ]; then

@@ -22,7 +22,7 @@ setup_ttys_and_motd () {
     note "Wiping out motd"
     echo > /etc/motd
 
-    note "Installing default /etc/fstab"
+    note "Installing default: $(distn "/etc/fstab")"
     template \
         src="base-${SYSTEM_NAME}/fstab" \
         dest="/etc/fstab"
@@ -50,7 +50,7 @@ configure_www_user () {
             > "${homedir}/.zshrc"
     fi
 
-    note "Installing default DEVFS rules for DTrace"
+    note "Installing default $(distn "/etc/devfs.rules") for DTrace"
     template \
         src="base-${SYSTEM_NAME}/devfs.rules" \
         dest="/etc/devfs.rules"
@@ -96,7 +96,7 @@ generate_default_environment () {
 generate_default_rc () {
     #
     # NOTE: rc.conf services setup, before invoking svdup:
-    note "Setting up default devfs_system_ruleset"
+    note "Setting up RC"
     lineinfile \
         src="/etc/rc.conf.local" \
         line="'devfs_system_ruleset=userdtrace'"
