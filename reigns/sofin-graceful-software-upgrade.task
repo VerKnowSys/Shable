@@ -32,6 +32,10 @@ main () {
     note "Updating Sofin defintions"
     ${default_shell} -c "${sofin_bin} up"
 
+    if [ -d "${_definitions_dir}" ]; then
+        error "Definitions dir should exist after Sofin definitions update!"
+    fi
+
     for _software_dir in $(${FIND_BIN} "/Software" \
                              -type d \
                              -maxdepth 1 \
