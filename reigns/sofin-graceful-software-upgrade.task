@@ -70,18 +70,21 @@ main () {
 
                     # NOTE: since updater temporarely works as root user it can only invoke service-stop.
                     #       No service-start can be called directly here:
-                    note "Waiting for: $(distn "${_software_bundle_name}") to start itself…"
-                    for i in $(${SEQ_BIN} 1 61); do # NOTE: 60s is max since cron supervisors are invoked each minute
-                        if [ -f "${_service_pid_file}" ]; then
-                            _pid="$(${CAT_BIN} "${_service_pid_file}" 2>/dev/null)"
-                            debug "Service pid: ${_pid}"
-                            if [ -n "${_pid}" ]; then
-                                kill -0 "${_pid}" && \
-                                    break
+                    _service_start="/Services/${_software_bundle_name}/service-start"
+                    if [ -x "${_service_start}" ]; then
+                        note "Waiting for: $(distn "${_software_bundle_name}") to start itself…"
+                        for i in $(${SEQ_BIN} 1 61); do # NOTE: 60s is max since cron supervisors are invoked each minute
+                            if [ -f "${_service_pid_file}" ]; then
+                                _pid="$(${CAT_BIN} "${_service_pid_file}" 2>/dev/null)"
+                                debug "Service pid: ${_pid}"
+                                if [ -n "${_pid}" ]; then
+                                    kill -0 "${_pid}" && \
+                                        break
+                                fi
                             fi
-                        fi
-                        sleep 1
-                    done
+                            sleep 1
+                        done
+                    fi
                     make_software_accessible_for_regular_user
                     note "Successful upgrade of: $(distn "${_software_bundle_name}")"
 
