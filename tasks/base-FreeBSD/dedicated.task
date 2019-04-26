@@ -68,7 +68,7 @@ install_unbound_igniters () {
         mode="755" \
         unbound_softwaredir="${unbound_softwaredir}" \
         unbound_servicedir="${unbound_servicedir}" \
-        default_network="${default_network}"
+        default_network="${vpn_network:-${default_network}}"
 }
 
 
@@ -111,7 +111,7 @@ setup_unbound () {
         default_subnet="${default_subnet}" \
         unbound_servicedir="${unbound_servicedir}" \
         default_jails_domain="${default_jails_domain}" \
-        default_network="${default_network}" \
+        default_network="${vpn_network:-${default_network}}" \
         default_dns_dir="${shared_dir}/DNS"
     note "Setting 'unbound' owner for: $(distn "${unbound_servicedir}/service.log")"
     ${TOUCH_BIN} "${unbound_servicedir}/service.log"
@@ -184,14 +184,14 @@ setup_dedicated_system_config () {
     #     src="/etc/rc.conf.local" \
     #     line="'rtadvd_interfaces=\"${default_network_device}\"'"
 
-    note "Configure router address: $(distn "${default_network}.1") on device: $(distn "${default_bridge_device}")"
+    note "Configure router address: $(distn "${vpn_network:-${default_network}}.1") on device: $(distn "${default_bridge_device}")"
     lineinfile \
         src="/etc/rc.conf.local" \
         line="'cloned_interfaces=\"${default_bridge_device}\"'"
 
     lineinfile \
         src="/etc/rc.conf.local" \
-        line="'ifconfig_bridge0_aliases=\"inet ${default_network}.1/16\"'"
+        line="'ifconfig_bridge0_aliases=\"inet ${vpn_network:-${default_network}}.1/16\"'"
 }
 
 
@@ -205,7 +205,7 @@ generate_and_fill_pools () {
         ${TOUCH_BIN} "/Shared/NetIDs/id-${_pool_idx}"
     done
     for _pool_idx in $(${SEQ_BIN} 2 254 2>/dev/null); do
-        ${TOUCH_BIN} "/Shared/IPs/ip-${default_network}.${_pool_idx}"
+        ${TOUCH_BIN} "/Shared/IPs/ip-${vpn_network:-${default_network}}.${_pool_idx}"
     done
 }
 
@@ -228,7 +228,7 @@ install_jail_governor () {
     _tmpfile="/tmp/gvr-${_timestamp}.tmpl"
     _destfile="/usr/bin/gvr"
     ${FETCH_BIN} --no-verify-peer "${gvr_https_source}" -o "${_tmpfile}"
-    ${SED_BIN} -i '' -e "s|__JAIL_ROUTER_NETWORK|${default_network}|" "${_tmpfile}"
+    ${SED_BIN} -i '' -e "s|__JAIL_ROUTER_NETWORK|${vpn_network:-${default_network}}|" "${_tmpfile}"
     ${SED_BIN} -i '' -e "s|__JAIL_SHARED_DOMAIN|${default_jails_domain}|" "${_tmpfile}"
     ${MV_BIN} "${_tmpfile}" "${_destfile}"
     ${CHMOD_BIN} 750 "${_destfile}"
