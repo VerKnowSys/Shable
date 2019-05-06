@@ -243,3 +243,9 @@ install_igni_wrapper () {
         dest="/usr/bin/igni" \
         mode="0755"
 }
+
+
+write_shared_defaults () {
+    printf "%b\n" "${vpn_network:-${default_network}}" > "${dedicated_network_file}"
+    printf "%b\n" "${default_jails_domain}" > "${dedicated_domain_file}"
+}
