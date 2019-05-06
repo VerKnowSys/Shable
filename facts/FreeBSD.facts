@@ -72,6 +72,10 @@ default_network_device="em0"
 # Bridge that will also act as NAT:
 default_bridge_device="bridge0"
 
+# Dedicated-host specific files:
+dedicated_network_file="/etc/shared.network"
+dedicated_domain_file="/etc/shared.domain"
+
 # Default allowed ZFS-dataset commands:
 default_zpool="zroot"
 default_origin_snapshot="origin"
