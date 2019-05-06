@@ -26,7 +26,8 @@ main () {
         openvpn_servicedir="${openvpn_servicedir}" \
         vpn_network="${vpn_network:-${default_network}}" \
         default_vpn_device="${default_vpn_device}" \
-        default_bridge_device="${default_bridge_device}"
+        default_bridge_device="${default_bridge_device}" \
+        default_jails_domain="${default_jails_domain}"
 
     # Make sure VPN keys are available before we invoke setup process:
     for _vpnfile in crt key; do
@@ -35,7 +36,7 @@ main () {
         fi
     done
 
-    note "Setting up new dedicated system on host: $(distn "${_host}"), External IP: $(distn "${ip}"), remote VPN server: $(distn "${remote_vpn_server}"), default VPN network: $(distn "${default_network}")"
+    note "Setting up new dedicated system on host: $(distn "${_host}"), External IP: $(distn "${ip}"), remote VPN server: $(distn "${remote_vpn_server}"), default VPN network: $(distn "${default_network}"). Default shared domain: $(distn "${default_jails_domain}")"
 
     # Build rc.conf.local from scratch:
     ${RM_BIN} -f "/etc/rc.conf.local"
@@ -73,6 +74,9 @@ main () {
     install_openvpn_igniters
     install_unbound_igniters
     install_nginx_igniters
+
+    # Store network used for cells to: /etc/shared.network, and domain used for cells to: /etc/shared.domain file:
+    write_shared_defaults
 
     # Setup configuration override for installed software:
     setup_openvpn
