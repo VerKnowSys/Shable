@@ -31,6 +31,8 @@ geoipupdate_softwaredir="${software_dir}/Geoipupdate"
 geoipupdate_servicedir="${services_dir}/Geoipupdate"
 syslogng_softwaredir="${software_dir}/Syslog-ng"
 syslogng_servicedir="${services_dir}/Syslog-ng"
+filebeat_softwaredir="${software_dir}/Filebeat"
+filebeat_servicedir="${services_dir}/Filebeat"
 
 # Pid files:
 nginx_pidfile="${services_dir}/Nginx/service.pid"
