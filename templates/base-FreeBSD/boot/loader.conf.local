@@ -84,6 +84,9 @@ cc_htcp_load="YES"
 
 dtrace_load="YES"
 
+# for Openvpn:
+if_tap_load="YES"
+
 vmm_load="NO"
 
 nullfs_load="YES"
