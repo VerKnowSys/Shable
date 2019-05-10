@@ -79,10 +79,15 @@ create_var_datasets () {
     ${ZFS_BIN} set readonly="off" "zroot/var/run" 2>/dev/null
     ${ZFS_BIN} create -o mountpoint="/var/db" "zroot/var/db" 2>/dev/null
     ${ZFS_BIN} set readonly="off" "zroot/var/db" 2>/dev/null
+    ${ZFS_BIN} create -o mountpoint="/var/spool" "zroot/var/spool" 2>/dev/null
+    ${ZFS_BIN} set readonly="off" "zroot/var/spool" 2>/dev/null
     ${ZFS_BIN} create -o mountpoint="/var/backups" "zroot/var/backups" 2>/dev/null
     ${ZFS_BIN} set readonly="off" "zroot/var/backups" 2>/dev/null
     ${ZFS_BIN} set readonly="off" "zroot/var/audit" 2>/dev/null
     ${ZFS_BIN} set dedup="off" "zroot/var/audit" 2>/dev/null
     ${ZFS_BIN} set compression="lz4" "zroot/var/audit" 2>/dev/null
-    mkdir -p "/var/db/zfsd/cases" "/var/db/entropy" "/var/cron/tabs" "/var/at/jobs" "/var/at/spool"
+    mkdir -p \
+        "/var/db/zfsd/cases" "/var/db/entropy" "/var/cron/tabs" "/var/at/jobs" "/var/at/spool" \
+        "/var/spool/clientmqueue/" "/var/spool/dma/" "/var/spool/lock/" "/var/spool/lpd/" \
+        "/var/spool/mqueue/" "/var/spool/opielocks/" "/var/spool/output/"
 }
