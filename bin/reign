@@ -34,21 +34,20 @@ else
                 debug "No inventory values read for empty remote host!"
             fi
 
-            # use default value of remote user:
-            _remote_user="${default_remote_user}"
+            # use default value of remote user from ssh config:
+            _remote_user=""
 
             # default remote user can be overriden with RUN_AS value:
             if [ -z "${RUN_AS}" ]; then
-                debug "Running as default user: $(distd "${_remote_user}")"
+                debug "Running as default user"
             else
                 debug "Running as user: $(distd "${RUN_AS}")"
-                _remote_user="${RUN_AS}"
+                _remote_user="${RUN_AS}@"
             fi
             _base_name="/tmp/shable_current_${_remote_user}"
 
             validate \
                 _inventory="${_inventory}" \
-                _remote_user="${_remote_user}" \
                 default_remote_user="${default_remote_user}" \
                 connection_timeout="${connection_timeout}" \
                 connection_attempts="${connection_attempts}"
@@ -68,7 +67,7 @@ else
                         --archive \
                         --delete \
                         "./" \
-                        "${_remote_user}@${REMOTE}:${_base_name}" 2>/dev/null
+                        "${_remote_user}${REMOTE}:${_base_name}" 2>/dev/null
                     if [ "0" = "$?" ]; then
                         return 0
                     else
@@ -83,7 +82,7 @@ else
                 -o "ConnectTimeout=5" \
                 -o "ConnectionAttempts=5" \
                 -o "ServerAliveInterval=10" \
-                "${_remote_user}@${REMOTE}" \
+                "${_remote_user}${REMOTE}" \
                 "uname" 2>/dev/null)
 
             install_rsync_on_remote () {
@@ -92,11 +91,11 @@ else
                         if [ -f "templates/base-FreeBSD/bin/rsync" ]; then
                             ${SCP_BIN} -P "${_sshd_port}" \
                                 "templates/base-FreeBSD/bin/rsync" \
-                                "${_remote_user}@${REMOTE}:/usr/bin/rsync"
+                                "${_remote_user}${REMOTE}:/usr/bin/rsync"
                         elif [ -f "Shable/templates/base-FreeBSD/bin/rsync" ]; then
                             ${SCP_BIN} -P "${_sshd_port}" \
                                 "Shable/templates/base-FreeBSD/bin/rsync" \
-                                "${_remote_user}@${REMOTE}:/usr/bin/rsync"
+                                "${_remote_user}${REMOTE}:/usr/bin/rsync"
                         fi
                         ;;
 
@@ -124,11 +123,11 @@ else
                 -o "ConnectTimeout=5" \
                 -o "ConnectionAttempts=5" \
                 -o "ServerAliveInterval=10" \
-                "${_remote_user}@${REMOTE}" \
+                "${_remote_user}${REMOTE}" \
                 "test -x ${RSYNC_BIN}" || install_rsync_on_remote
 
-            debug "rSyncing ${SHABLE_NAME} as: $(distd "${_remote_user}") to: $(distd "${_base_name}")"
-            sync_with_rsync || commit_failure "Failed to rsync to: $(distw "${_remote_user}@${REMOTE}:${_base_name}")"
+            debug "rSyncing ${SHABLE_NAME} to: $(distd "${_base_name}")"
+            sync_with_rsync || commit_failure "Failed to rsync to: $(distw "${_remote_user}${REMOTE}:${_base_name}")"
 
             _job="cd ${_base_name}; /bin/sh -c \
 ' \
@@ -145,7 +144,7 @@ export REMOTE=${REMOTE} ARGUMENTS=\"${ARGUMENTS}\" DEBUG=${DEBUG} SKIP_ENV_VALID
                         -o "ConnectTimeout=${connection_timeout}" \
                         -o "ConnectionAttempts=${connection_attempts}" \
                         -o "ServerAliveInterval=15" \
-                        "${_remote_user}@${REMOTE}" \
+                        "${_remote_user}${REMOTE}" \
                         "${_job}"
 
                     if [ "0" = "$?" ]; then
