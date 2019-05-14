@@ -112,7 +112,7 @@ template () {
     validate "${_args}"
 
     if [ -f "${dest}" ]; then
-        _base="$(${BASENAME_BIN} "${dest}" 2>/dev/null)-$(${DATE_BIN} +%F-%s 2>/dev/null)"
+        _base="${dest##*/}-$(${DATE_BIN} +%F-%s 2>/dev/null)"
         debug "Destination file: $(distd "${dest}") already exists, moving old file to: $(distd "/tmp/${_base}")"
         ${MV_BIN} -f "${dest}" "/tmp/${_base}"
     fi
