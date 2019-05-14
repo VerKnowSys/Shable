@@ -4,6 +4,12 @@
 ## Requirements:
 POSIX compliant system with `/bin/sh` at least compatible with BSD-4x version from 1989.
 
+#### Following are required on the target systems
+- `rsync`
+- `bc`
+- `dig`
+
+`SKIP_ENV_VALIDATION=1` can be added when running the task to avoid failures caused by them missing on the target host.
 
 ## Features:
 * Pure Sh implementation using standard base system utils found on any modern POSIX-compliant OS.
