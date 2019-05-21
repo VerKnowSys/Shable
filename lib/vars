@@ -196,3 +196,14 @@ ColorWarning="${ColorYellow}"
 ColorError="${ColorRed}"
 ColorExample="${ColorOrange}"
 ColorFunction="\033[38;5;163m"
+
+# Make visual distinct for debug(), note() and warn() when running superuser tasks:
+case "${USER}" in
+    root)
+        SUPERUSER_MARK="${ColorRed}#${ColorReset}"
+        ;;
+
+    *)
+        SUPERUSER_MARK="${ColorGreen}${NoteChar}${ColorReset}"
+        ;;
+esac
