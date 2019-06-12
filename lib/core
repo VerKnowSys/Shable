@@ -80,7 +80,7 @@ diste () {
 # Make a varname from params
 make_var_name () {
     if [ -n "${*}" ]; then
-        printf "%s\n" "${*}" | ${SED_BIN} 's#[ ;:=%_/.-]#_#g' 2>/dev/null
+        printf "%s\n" "${*}" | ${SED_BIN} 's#[ ();:=%_/.\!\#*@-]#_#g' 2>/dev/null
     fi
 }
 
