@@ -116,7 +116,7 @@ pass_cache () {
 
             echo "${_cache_name}=\$(<<'EOF'" 2>/dev/null > "${_cache_file}"
             ${PASS_BIN} "${_key}" >> "${_cache_file}" 2>/dev/null
-            echo "EOF" 2>/dev/null >> "${_cache_file}"
+            printf "\nEOF\n" 2>/dev/null >> "${_cache_file}"
             echo ")" 2>/dev/null >> "${_cache_file}"
             echo "${_value}"
         fi
