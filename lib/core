@@ -113,12 +113,13 @@ pass_cache () {
         _value="$(${PASS_BIN} "${_key}" 2>/dev/null)"
         if [ -n "${_value}" ]; then
             mkdir -p "${DEFAULT_CACHE_FACTS_DIR}"
-            echo "${_cache_name}=\"${_value}\"" | ${SED_BIN} 's/\n/\\ \n/g' 2>/dev/null > "${_cache_file}"
+            printf "%b='%s'\n" "${_cache_name}" "$(${PASS_BIN} "${_key}" 2>/dev/null)" > "${_cache_file}"
             echo "${_value}"
         fi
     }
 
-    _cached_value="$(${CAT_BIN} "${_cache_file}" 2>/dev/null)"
+    # remove first and 3 last lines of the content:
+    _cached_value="$(${CAT_BIN} "${_cache_file}" 2>/dev/null | ${SED_BIN} "s/'//g" 2>/dev/null)"
     if [ -n "${_cached_value}" ]; then
         echo "${_cached_value#*=}" | ${SED_BIN} 's/^"//g; s/"$//g;' 2>/dev/null
     else
