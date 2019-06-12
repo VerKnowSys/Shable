@@ -374,6 +374,13 @@ test_facts_write () {
     val_expect "b${b0}" "b${b1}"
     val_expect "c${c0}" "c${c1}"
     val_expect "d${d0}" "d${d1}"
+
+    # special cases
+    facts_write bogus="'\$*@b0'"
+
+    . facts/cached/bogus.facts
+
+    val_expect "${bogus}" '$*@b0'
 }
 
 
