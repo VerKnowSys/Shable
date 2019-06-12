@@ -122,7 +122,8 @@ pass_cache () {
         fi
     }
 
-    _cached_value="$(${CAT_BIN} "${_cache_file}" 2>/dev/null)"
+    # remove first and 3 last lines of the content:
+    _cached_value="$(${CAT_BIN} "${_cache_file}" 2>/dev/null | ${AWK_BIN} '{buf[NR-1]=$0;}END{ for ( i=1; i < (NR-3); i++){ print buf[i];} }')"
     if [ -n "${_cached_value}" ]; then
         echo "${_cached_value#*=}" | ${SED_BIN} 's/^"//g; s/"$//g;' 2>/dev/null
     else
