@@ -120,13 +120,19 @@ make_var_test0 () {
 
     val_expect \
         "$(make_var_name "+=o;.:^-.%! ")" \
-        "+_o___^___!_"
+        "+_o___^_____"
 
-    a1_2_3_a_b_c_bb_cc__d="123"
+    dupa_a1_2_3_a_b_c_bb_cc__d="123"
     val_expect \
-        "$(get_var_value "a1.2.3-a-b-c/bb/cc /d")" \
+        "$(get_var_value "dupa@a1.2!3#a*b%c/bb/cc /d")" \
         "123"
-    get_var_value "a1.2.3-a-b-c/bb/cc /d" > "${_tmpfile}"
+
+    abc123__="abc123"
+    val_expect \
+        "$(get_var_value "abc123()")" \
+        "abc123"
+
+    get_var_value "dupa_a1.2.3-a-b-c/bb/cc /d" > "${_tmpfile}"
     sha_expect \
         "${_tmpfile}" \
         "a8fdc205a9f19cc1c7507a60c4f01b13d11d7fd0" # sha1 of "123"
