@@ -113,7 +113,7 @@ pass_cache () {
         _value="$(${PASS_BIN} "${_key}" 2>/dev/null)"
         if [ -n "${_value}" ]; then
             mkdir -p "${DEFAULT_CACHE_FACTS_DIR}"
-            printf "%b='%s'\n" "${_cache_name}" "$(${PASS_BIN} "${_key}")" 2>/dev/null > "${_cache_file}"
+            printf "%b='%s'\n" "${_cache_name}" "$(${PASS_BIN} "${_key}" 2>/dev/null)" > "${_cache_file}"
             echo "${_value}"
         fi
     }
