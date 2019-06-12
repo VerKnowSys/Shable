@@ -113,8 +113,8 @@ pass_cache () {
         _value="$(${PASS_BIN} "${_key}" 2>/dev/null)"
         if [ -n "${_value}" ]; then
             mkdir -p "${DEFAULT_CACHE_FACTS_DIR}"
-            echo "${_cache_name}=\$(cat <<'EOF'" 2>/dev/null > "${_cache_file}"
-            printf '%b\n' "$(${PASS_BIN} "${_key}")" 2>/dev/null >> "${_cache_file}"
+            echo "${_cache_name}=\$(<<'EOF'" 2>/dev/null > "${_cache_file}"
+            ${PASS_BIN} "${_key}" >> "${_cache_file}" 2>/dev/null
             echo "EOF" 2>/dev/null >> "${_cache_file}"
             echo ")" 2>/dev/null >> "${_cache_file}"
             echo "${_value}"
