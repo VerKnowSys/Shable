@@ -18,7 +18,6 @@ reset_shable_core_module () {
 
 update_shable_repos () {
     git pull \
-        --quiet \
         --recurse-submodules && \
             note "$(distn "${PWD##*/}"): Current HEAD: $(distn "$(${CAT_BIN} ".git/ORIG_HEAD" 2>/dev/null)")" \
                 || failure "Couldn't pull main repository!"
@@ -34,7 +33,6 @@ update_shable_repos () {
         git submodule update \
             --jobs 4 \
             --remote \
-            --quiet \
             --recursive && \
                 eval "$(${GREP_BIN} -F 'SHABLE_VERSION' 'lib/vars' 2>/dev/null | ${SED_BIN} -e 's|SHABLE_VERSION|SHBL_VRSN|' 2>/dev/null)" && \
                 note "$(distn "Shable") v$(distn "${SHBL_VRSN}"): Current HEAD: $(distn "$(${CAT_BIN} ".git/modules/Shable/ORIG_HEAD" 2>/dev/null)")" \
