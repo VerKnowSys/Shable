@@ -8,7 +8,7 @@ _branch="${1:-master}"
 reset_shable_core_module () {
     if [ -d "${PWD}/Shable" ]; then
         cd ./Shable >/dev/null && \
-            git reset --hard origin/master >/dev/null \
+            git reset --hard origin/"${_branch}" >/dev/null \
                 || failure "Couldn't reset submodule state!"
         cd ..
     fi
