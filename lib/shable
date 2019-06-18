@@ -620,7 +620,7 @@ facts_write () {
     else
         test -d "facts/cached" || mkdir -p "facts/cached"
         for _fact in ${*}; do
-            _fname="${_fact%=*}.facts"
+            _fname="${_fact%%=*}.facts"
             _fdest="facts/cached/${_fname}"
             echo "${_fact}" > "${_fdest}"
             debug "Stored fact: $(distd "${_fact}") under: $(distd "${_fdest}")"
