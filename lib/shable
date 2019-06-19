@@ -132,8 +132,12 @@ template () {
         "${dest}"
 
     for _arg in ${_args}; do
-        _key="$(echo "${_arg}" | ${SED_BIN} 's/=.*//' 2>/dev/null)"
-        _val="$(echo "${_arg}" | ${SED_BIN} 's/.*=//' 2>/dev/null)"
+        _key="$(echo "${_arg}" | ${SED_BIN} 's/=.*//' 2>/dev/null | ${SED_BIN} -e 's/[]\/$*.^[]/\\&/g' 2>/dev/null)"
+        # escape &\ for sed-replace
+        # and remove quoted (needed due to eval above which breaks if value contains &)
+        _val="$(echo "${_arg}" | ${SED_BIN} -E 's/[^=]+=//' 2>/dev/null | \
+            ${SED_BIN} -e 's/[\/&]/\\&/g' 2>/dev/null | \
+            ${SED_BIN} -e "s/^'\(.*\)'$/\1/" 2>/dev/null)"
         case "${SYSTEM_NAME}" in
             Darwin|FreeBSD)
                 ${SED_BIN} -i '' -e "s#{{ *${_key} *}}#${_val}#g;" "${dest}"
@@ -620,7 +624,7 @@ facts_write () {
     else
         test -d "facts/cached" || mkdir -p "facts/cached"
         for _fact in ${*}; do
-            _fname="${_fact%=*}.facts"
+            _fname="${_fact%%=*}.facts"
             _fdest="facts/cached/${_fname}"
             echo "${_fact}" > "${_fdest}"
             debug "Stored fact: $(distd "${_fact}") under: $(distd "${_fdest}")"
