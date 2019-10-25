@@ -776,3 +776,61 @@ timestamp () {
 to_iter () {
     printf "%s\n" "${@}" | ${TR_BIN} ' ' '\n' 2>/dev/null
 }
+
+
+#
+# Service management utility
+#   Will await for certain conditions specified as arguments.
+#
+# Args:
+#   process="name" - will wait until given process name appears in process list
+#   socket="/path/file.sock"  - will wait until given socket file appears in specified directory
+#
+# Example:
+#   await_startup process="mysqld" socket="/tmp/mysql.sock"
+#
+await_startup () {
+    _awaited_arguments=${*}
+    note "Awaiting startup of: $(distn "${_awaited_arguments}")"
+    while true; do
+        unset _process_alive _socket_exists
+
+        for _awaited_start_of in $(to_iter "${_awaited_arguments}"); do
+            _kind="$(echo "${_awaited_start_of}" | ${SED_BIN} 's/=.*//' 2>/dev/null)"
+            _kind_value="$(echo "${_awaited_start_of}" | ${SED_BIN} 's/.*=//' 2>/dev/null)"
+            debug "await_startup.kind: $(distd "${_kind}")"
+            debug "await_startup.value: $(distd "${_kind_value}")"
+            case "${_kind}" in
+                process)
+                    ${PS_BIN} axv | ${GREP_BIN} -v grep | ${GREP_BIN} -F "${_kind_value} " >/dev/null 2>&1
+                    if [ "${?}" = "0" ]; then
+                        debug "Process exists: $(distd "${_kind_value}")"
+                        _process_alive="YES"
+                    fi
+                    ;;
+
+                socket)
+                    if [ -S "${_kind_value}" ]; then
+                        debug "Socket exists: $(distd "${_kind_value}")"
+                        _socket_exists="YES"
+                    fi
+                    ;;
+
+                *)
+                    error "Unknown kind of await: $(diste "${_kind}")"
+                    ;;
+
+            esac
+        done
+
+        if [ "YES" = "${_process_alive}" ] \
+        && [ "YES" = "${_socket_exists}" ]; then
+            note "Start confirmed for: $(distn "${_awaited_arguments}")"
+            break
+        fi
+
+         sleep 1
+    done
+
+    unset _awaited_arguments _awaited_start_of _kind _kind_value _process_alive _socket_exists
+}
