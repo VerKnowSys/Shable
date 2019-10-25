@@ -763,3 +763,16 @@ add_ssh_known_host () {
 timestamp () {
     ${DATE_BIN} +%s 2>/dev/null
 }
+
+
+
+#
+# Utility function
+#   Turns space separated arguments into newline arguments (used as for-loop helper for silly shells)
+#
+# Args:
+#   Any Space Separated Text
+#
+to_iter () {
+    printf "%s\n" "${@}" | ${TR_BIN} ' ' '\n' 2>/dev/null
+}
