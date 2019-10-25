@@ -834,3 +834,62 @@ await_startup () {
 
     unset _awaited_arguments _awaited_start_of _kind _kind_value _process_alive _socket_exists
 }
+
+
+#
+# Service management utility
+#   Will await for certain conditions specified as arguments.
+#
+# Args:
+#   process="name" - will wait until given process name disappears from process list
+#   socket="/path/file.sock"  - will wait until given socket file disappears from specified directory
+#
+# Example:
+#   await_shutdown process="mysqld" socket="/tmp/mysql.sock"
+#
+await_shutdown () {
+    _awaited_arguments="${*}"
+    note "Awaiting shutdown of: $(distn "${_awaited_arguments}")"
+    while true; do
+        unset _process_alive _socket_exists
+
+        for _awaited_shutdown_of in $(to_iter "${_awaited_arguments}"); do
+            _kind="$(echo "${_awaited_shutdown_of}" | ${SED_BIN} 's/=.*//' 2>/dev/null)"
+            _kind_value="$(echo "${_awaited_shutdown_of}" | ${SED_BIN} 's/.*=//' 2>/dev/null)"
+            debug "await_shutdown.kind: $(distd "${_kind}")"
+            debug "await_shutdown.value: $(distd "${_kind_value}")"
+            case "${_kind}" in
+                process)
+                    ${PS_BIN} axv | ${GREP_BIN} -v grep | ${GREP_BIN} -F "${_kind_value} " >/dev/null 2>&1
+                    if [ "${?}" = "0" ]; then
+                        debug "Process still exists: $(distd "${_kind_value}")"
+                        _process_alive="YES"
+                    fi
+                    ;;
+
+                socket)
+                    if [ -S "${_kind_value}" ]; then
+                        debug "Socket still exists: $(distd "${_kind_value}")"
+                        _socket_exists="YES"
+                    fi
+                    ;;
+
+                *)
+                    error "Unknown kind of await: $(diste "${_kind}")"
+                    ;;
+
+            esac
+        done
+
+        if [ -z "${_process_alive}" ] \
+        && [ -z "${_socket_exists}" ]; then
+            note "Shutdown confirmed for: $(distn "${_awaited_arguments}")"
+            break
+        fi
+
+        sleep 1
+    done
+
+    unset _awaited_arguments _awaited_shutdown_of _kind _kind_value _process_alive _socket_exists
+}
+
