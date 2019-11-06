@@ -802,7 +802,7 @@ await_startup () {
             debug "await_startup.value: $(distd "${_kind_value}")"
             case "${_kind}" in
                 process)
-                    ${PS_BIN} axv | ${GREP_BIN} -v grep | ${GREP_BIN} -F "${_kind_value} " >/dev/null 2>&1
+                    ${PS_BIN} axv | ${GREP_BIN} -v grep | ${GREP_BIN} -F "${_kind_value}" >/dev/null 2>&1
                     if [ "${?}" = "0" ]; then
                         debug "Process exists: $(distd "${_kind_value}")"
                         _process_alive="YES"
@@ -860,7 +860,7 @@ await_shutdown () {
             debug "await_shutdown.value: $(distd "${_kind_value}")"
             case "${_kind}" in
                 process)
-                    ${PS_BIN} axv | ${GREP_BIN} -v grep | ${GREP_BIN} -F "${_kind_value} " >/dev/null 2>&1
+                    ${PS_BIN} axv | ${GREP_BIN} -v grep | ${GREP_BIN} -F "${_kind_value}" >/dev/null 2>&1
                     if [ "${?}" = "0" ]; then
                         debug "Process still exists: $(distd "${_kind_value}")"
                         _process_alive="YES"
