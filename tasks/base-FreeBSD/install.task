@@ -31,12 +31,16 @@ install_software_base () {
     note "Update software defititions"
     ${default_shell} -c "${sofin_bin} update"
 
-    _ts_now="$(timestamp)"
     _bundles_count="$(echo "${_software_list}" | ${TR_BIN} ' ' '\n' 2>/dev/null | ${WC_BIN} -l 2>/dev/null)"
-    ${default_shell} -c "${sofin_bin} i ${_software_list}" && \
-        _ts_after="$(timestamp)" && \
-        _ts_diff="$(( ${_ts_after} - ${_ts_now} ))" && \
-        note "Installed $(distn "${_bundles_count##* }") bundles in: $(distn "${_ts_diff}") seconds."
+
+    _ts_now="$(timestamp)"
+    for _soft in $(to_iter "${_software_list}"); do
+        ${default_shell} -c "${sofin_bin} i ${_soft}"
+    done
+    _ts_after="$(timestamp)"
+    _ts_diff="$(( ${_ts_after} - ${_ts_now} ))"
+
+    note "Installed $(distn "${_bundles_count##* }") bundles in: $(distn "${_ts_diff}") seconds."
 
     case "${SYSTEM_NAME}" in
         Linux)
