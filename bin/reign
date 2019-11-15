@@ -149,7 +149,6 @@ export REMOTE=${REMOTE} ARGUMENTS=\"${ARGUMENTS}\" DEBUG=${DEBUG} SKIP_ENV_VALID
                     debug "Job successful"
                     return 0
                 else
-                    error "Job failed!"
                     return 1
                 fi
             }
