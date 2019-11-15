@@ -137,25 +137,21 @@ export REMOTE=${REMOTE} ARGUMENTS=\"${ARGUMENTS}\" DEBUG=${DEBUG} SKIP_ENV_VALID
 
             invoke_ssh () {
                 debug "Invoking remote job: $(distd "invoke_ssh('${_job}')")"
-                for _attempt in 1 2 3; do
-                    debug "Job attempt: $(distd "${_attempt}")"
-                    ${SSH_BIN} -tt \
-                        -o "BatchMode=yes" \
-                        -o "ConnectTimeout=${connection_timeout}" \
-                        -o "ConnectionAttempts=${connection_attempts}" \
-                        -o "ServerAliveInterval=15" \
-                        "${_remote_user}${REMOTE}" \
-                        "${_job}"
+                ${SSH_BIN} -tt \
+                    -o "BatchMode=yes" \
+                    -o "ConnectTimeout=${connection_timeout}" \
+                    -o "ConnectionAttempts=${connection_attempts}" \
+                    -o "ServerAliveInterval=15" \
+                    "${_remote_user}${REMOTE}" \
+                    "${_job}"
 
-                    if [ "0" = "$?" ]; then
-                        debug "Job successful"
-                        return 0
-                    else
-                        debug "Job unsuccessful, attempt: $(distd "${_attempt}")"
-                        sleep "${DEFAULT_TIMEOUT_S}"
-                    fi
-                done
-                return 1
+                if [ "0" = "$?" ]; then
+                    debug "Job successful"
+                    return 0
+                else
+                    error "Job failed!"
+                    return 1
+                fi
             }
 
             debug "Invoking ${SHABLE_NAME} on remote: $(distd "${REMOTE}")"
