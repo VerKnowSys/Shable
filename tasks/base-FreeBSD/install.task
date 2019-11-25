@@ -63,6 +63,6 @@ make_software_accessible_for_regular_user () {
 install_software () {
     install_software_base
     make_software_accessible_for_regular_user
-    generate_audit_utils
+    # generate_audit_utils
     configure_root_user
 }
