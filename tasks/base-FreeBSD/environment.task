@@ -12,7 +12,7 @@ configure_root_user () {
     if [ ! -f "${homedir_root}/.zshrc" ]; then
         printf "%s\n%s\n" \
             "test -f ${homedir_root}/.profile || ${sofin_bin} reload" \
-            "alias htop='top -a -o res -s 1 -t -CP'" \
+            "alias htop='top -a -t -o res -s 1 -HIPS'" \
             > "${homedir_root}/.zshrc"
     fi
 }
