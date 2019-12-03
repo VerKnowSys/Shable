@@ -12,7 +12,7 @@ inventory_read "${DEFAULT_INVENTORY}" "${_host}"
 
 not_empty "${_host}" "Specify $(diste "host") to invoke $(diste "base-system-setup") on"
 not_empty "${ip}" "Expected defined value of $(diste "ip") in inventory: $(diste "${DEFAULT_INVENTORY}")"
-not_empty "${ip_internal}" "Expected defined value of $(diste "ip_internal") in inventory: $(diste "${DEFAULT_INVENTORY}")"
+# not_empty "${ip_internal}" "Expected defined value of $(diste "ip_internal") in inventory: $(diste "${DEFAULT_INVENTORY}")"
 
 
 add_ssh_conf_entry "${_host}" "${ip}"
@@ -21,7 +21,7 @@ add_ssh_known_host "${ip}"
 # handle interrupts - to avoid mess under ~/.ssh/config
 trap "remove_last_ssh_conf_entry" INT TERM
 
-note "Setting up new base system on host: $(distn "${_host}"), ip: $(distn "${ip}"), internal ip: $(distn "${ip_internal}")"
+note "Setting up new base system on host: $(distn "${_host}"), ip: $(distn "${ip}")" #, internal ip: $(distn "${ip_internal}")"
 
 # call setup-new-server reign, run as superuser, skip validation of unavailable binaries in pre-base-system:
 RUN_AS=root \
