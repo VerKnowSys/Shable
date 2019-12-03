@@ -32,6 +32,18 @@ SKIP_ENV_VALIDATION=YES \
     "${_host}" \
     "${_ssh_port}"
 
+note "Waiting for remote host to reboot"
+sleep 45
+
+printf "port ${DEFAULT_SSH_PORT}" >> "${HOME}/.ssh/config"
+
+RUN_AS=root \
+SKIP_ENV_VALIDATION=YES \
+    bin/reign \
+    "${DEFAULT_INVENTORY}" \
+    setup-new-server-install-base-software \
+    "${_host}"
+
 # after setup, generate new host config
 remove_last_ssh_conf_entry
 add_ssh_conf_entry "${_host}" "${ip}" "${DEFAULT_SSH_PORT}"

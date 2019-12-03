@@ -11,10 +11,6 @@ main () {
         _remote="${REMOTE}" \
         default_www_user="${default_www_user}"
 
-    # base tasks:
-    setup_base_system
-    install_system_image
-
-    gracefully_quit_and_reboot 3
+    install_software
 }
 
