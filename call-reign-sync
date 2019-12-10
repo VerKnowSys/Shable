@@ -9,12 +9,13 @@ _reign="${1}"
 if [ -z "${_reign}" ]; then
     error "No arguments given, with reign names to invoke!"
 fi
+_inv="${2:-${DEFAULT_INVENTORY}}"
 debug "Reign to be invoked: $(distd "${_reign}")"
 
-_hosts=$(inventory_hosts "${DEFAULT_INVENTORY}")
+_hosts=$(inventory_hosts "${_inv}")
 note "Calling reign: $(distn "${_reign}") on hosts: $(distd "$(echo "${_hosts}" | ${TR_BIN} '\n' ' ' 2>/dev/null)")"
 
 for _host in ${_hosts}; do
     progress_note "Invoking reign: $(distn "${_reign}") for host: $(distn "${_host}")"
-    bin/reign "${DEFAULT_INVENTORY}" "${_reign}" "${_host}"
+    bin/reign "${_inv}" "${_reign}" "${_host}"
 done
