@@ -24,9 +24,22 @@ inherit () {
 }
 
 
+upgrade_sofin () {
+    local _cwd="$(pwd)"
+    if [ -d /Projects/sofin ]; then
+        note "Upgrading Sofin…"
+        cd /Projects/sofin
+        ${default_shell} -c "bin/upgrade"
+        cd "${_cwd}"
+    fi
+}
+
+
 main () {
     validate \
         _remote="${REMOTE}"
+
+    upgrade_sofin
 
     # update Sofin defintions
     note "Updating Sofin defintions"
@@ -89,7 +102,6 @@ main () {
                             sleep 1
                         done
                     fi
-                    make_software_accessible_for_regular_user
                     note "Successful upgrade of: $(distn "${_software_bundle_name}")"
 
                 fi
