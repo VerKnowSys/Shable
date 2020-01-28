@@ -1,5 +1,5 @@
 # Default "Linux" => Ubuntu/Debian
-release="trusty"
+release="bionic"
 
 default_shell="/bin/bash"
 homedir="/var/www"
