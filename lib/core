@@ -206,8 +206,8 @@ await_async () {
 throttle () {
     _batch=${1:-20}
 
-    while [ $(ps aux | ${GREP_BIN} "bin/reign" | ${GREP_BIN} -vc "grep") -ge ${_batch} ]; do
-        debug "Over ${_batch} SSH processes are already running, throttling..."
+    while [ $(${PS_BIN} aux | ${GREP_BIN} "bin/reign" | ${GREP_BIN} -vc "grep") -ge ${_batch} ]; do
+        debug "Over ${_batch} reign tasks are already running, throttling..."
         sleep 5
     done
 }
