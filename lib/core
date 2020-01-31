@@ -202,6 +202,16 @@ await_async () {
     done
 }
 
+# Helper function to limit the number of simultaneously executed async tasks
+throttle () {
+    _batch=${1:-20}
+
+    while [ $(ps aux | ${GREP_BIN} "bin/reign" | ${GREP_BIN} -vc "grep") -ge ${_batch} ]; do
+        debug "Over ${_batch} SSH processes are already running, throttling..."
+        sleep 5
+    done
+}
+
 
 # validate environment availability or crash
 validate_env () {
