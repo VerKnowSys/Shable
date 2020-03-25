@@ -1,5 +1,18 @@
 gracefully_quit_and_reboot () {
-    warn "Your machine will reboot now, to load new kernel…"
-    nohup reboot &
+    _reboot_delay="${1}"
+    if [ -z "${_reboot_delay}" ]; then
+        _reboot_delay="3"
+    fi
+
+    warn "Your machine will reboot now, to load new kernel and base system…"
+    mkdir -p /usr/local/bin
+    _reboot_delayed_script="/usr/local/bin/reboot_delayed"
+    printf "%s\n%s\n%s\n" \
+        '#!/bin/sh' \
+        "sleep ${_reboot_delay:-5}" \
+        'reboot' > "${_reboot_delayed_script}"
+    ${CHMOD_BIN} 755 "${_reboot_delayed_script}"
+    ${DAEMON_BIN} "${_reboot_delayed_script}"
+    unset _reboot_delay _reboot_delayed_script
     exit
 }
