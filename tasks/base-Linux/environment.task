@@ -35,13 +35,8 @@ configure_system () {
         dest="/etc/ssh/sshd_config" \
         sshd_port="${DEFAULT_SSH_PORT}"
 
-    note "Install /etc/timezone"
-    template \
-        src="base-${SYSTEM_NAME}/timezone" \
-        dest="/etc/timezone"
-
-    note "Apply timezone change"
-    dpkg-reconfigure -f noninteractive tzdata
+    note "Change timezone to Europe/Stockholm"
+    timedatectl set-timezone Europe/Stockholm
 
     note "Allowing login as ${default_www_user}"
     ${SED_BIN} -i 's|/var/www:/usr/sbin/nologin|/var/www:/bin/bash|' /etc/passwd
