@@ -12,4 +12,5 @@ setup_base_system () {
     # install_cron_daily_tasks
 
     switch_sshd_port
+    setup_root_ssh_key
 }

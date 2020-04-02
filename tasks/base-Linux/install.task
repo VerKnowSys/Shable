@@ -191,3 +191,7 @@ install_software () {
         -o Dpkg::Options::="--force-confold" \
         upgrade
 }
+
+setup_root_ssh_key () {
+    ssh-keygen -b 4096 -t ed25519 -N "" -f ~/.ssh/id_ed25519 
+}
