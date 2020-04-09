@@ -135,40 +135,45 @@ Execute reign task on local system.
 
 `bin/shable inventory-test test-reign`
 
-
+---
 
 Execute tasks defined under "reigns/test-reign.task" on host "kenny" for "default" inventory group:
 > Host params are loaded from Ansible-compliant "inventory" file.
 
 `bin/reign inventory-test test-reign kenny`
 
-
+---
 
 Execute synchronous (one by one), for each remote defined in inventory file.
 > Shable helper script is called here. Consider such script a "helper".
 
 `./call-reign-sync test-reign`
 
-
+---
 
 Execute asynchronously (all at once), for each remote defined in inventory file.
 > Asynchronous helper is bit more complicated. It spawns everything and watches log file for each process result. If process fails it will attempts to retry multiple times or return an error(s) in report. In some cases this script will never finish and have to be interrupted.
 
 `./call-reign-async test-reign`
 
+---
 
 Calling Reigns and inventory groups:
 > Shable is using Ansible inventory format, groups are no different. The only difference is with group calling. Shable is using unix-like notation, for example: `inventory:group`
 
+---
+
 Invoke Shable reign locally: "test-reign" on local host:
 `bin/shable inventory-test test-reign`
+
+---
 
 Invoke reign: "test-reign" on host: "myhost" of group: "mygroup" from inventory file: "inventory", with DEBUG details:
 
 `DEBUG=1 bin/reign inventory:mygroup test-reign myhost`
 
 
-Debugging:
+### Debugging:
 > Shable is using ANSI coloring for output by default. If you don't like it, try disabling TTY feature of your terminal.
 
 `DEBUG=1 bin/reign …`
