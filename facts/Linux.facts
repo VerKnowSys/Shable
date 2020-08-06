@@ -41,7 +41,7 @@ mariadb_logdir="${log_dir}/mysql"
 nginx_logdir="${log_dir}/nginx"
 
 # Default FPM sockets:
-php72_socket="/var/run/php/php7.2-fpm.sock"
-php71_socket="/var/run/php/php7.1-fpm.sock"
-php70_socket="/var/run/php/php7.0-fpm.sock"
-php56_socket="/var/run/php/php5.6-fpm.sock"
+php72_socket="/var/run/php7.2-fpm.sock"
+php71_socket="/var/run/php7.1-fpm.sock"
+php70_socket="/var/run/php7.0-fpm.sock"
+php56_socket="/var/run/php5.6-fpm.sock"
