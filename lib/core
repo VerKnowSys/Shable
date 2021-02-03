@@ -140,6 +140,7 @@ await_async () {
     while true; do
         _completed="0"
         _failed="0"
+        _failedlogs=""
 
         for _plog in ${_process_logs}; do
             debug "Checking log: $(distd "${_plog}")"
@@ -154,6 +155,8 @@ await_async () {
             ${GREP_BIN} -E 'Reign FAILED:' "${_plog}" >/dev/null 2>&1
             if [ "0" = "${?}" ]; then
                 _failed="$(echo "${_failed}+1" | ${BC_BIN} 2>/dev/null)"
+                _failedlogs="${_failedlogs}
+                ${_plog}"
             fi
         done
 
@@ -194,6 +197,11 @@ await_async () {
                 fi
             done
 
+            if [ -n "${_failedlogs}" ]; then
+                note "Failed logs: $(distn "${_failedlogs}")"
+            else
+                note "Failed logs: $(distn "none")"
+            fi
             break
         fi
 
