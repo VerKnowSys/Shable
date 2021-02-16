@@ -60,6 +60,7 @@ else
             sync_with_rsync () {
                 for _attempt in 1 2 3 4 5; do
                     ${RSYNC_BIN} \
+                        -L \
                         --timeout=10 \
                         --exclude=".git" \
                         --recursive \
