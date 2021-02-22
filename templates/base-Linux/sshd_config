@@ -5,11 +5,11 @@ Protocol 2
 # HostKeys for protocol version 2
 HostKey /etc/ssh/ssh_host_rsa_key
 HostKey /etc/ssh/ssh_host_ecdsa_key
-UsePrivilegeSeparation yes
+#UsePrivilegeSeparation yes
 
 # Lifetime and size of ephemeral version 1 server key
-KeyRegenerationInterval 3600
-ServerKeyBits 768
+#KeyRegenerationInterval 3600
+#ServerKeyBits 768
 
 # Logging
 SyslogFacility AUTH
@@ -22,14 +22,14 @@ PermitRootLogin yes
 PermitEmptyPasswords no
 StrictModes yes
 #AllowGroups root
-RSAAuthentication yes
+#RSAAuthentication yes
 PubkeyAuthentication yes
 PasswordAuthentication no
 ChallengeResponseAuthentication no
 
 # Don't read the user's ~/.rhosts and ~/.shosts files
 IgnoreRhosts yes
-RhostsRSAAuthentication no
+#RhostsRSAAuthentication no
 HostbasedAuthentication no
 
 X11Forwarding yes
