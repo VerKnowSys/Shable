@@ -31,7 +31,6 @@ setup_vpn_nat () {
         src="firewall/pf.conf" \
         dest="/etc/pf.conf" \
         mode="0644" \
-        internal_network="${internal_network:-${default_network}}" \
         default_network_device="${default_network_device}" \
         default_bridge_device="${default_bridge_device}" \
         ip="${ip}"
@@ -145,14 +144,14 @@ setup_dedicated_system_config () {
     #     src="/etc/rc.conf.local" \
     #     line="'rtadvd_interfaces=\"${default_network_device}\"'"
 
-    # note "Configure router address: $(distn "${internal_network:-${default_network}}.1") on device: $(distn "${default_bridge_device}")"
-    # lineinfile \
-    #     src="/etc/rc.conf.local" \
-    #     line="'cloned_interfaces=\"${default_bridge_device}\"'"
+    note "Configure router address: $(distn "${internal_network:-${default_network}}.1") on device: $(distn "${default_bridge_device}")"
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'cloned_interfaces=\"${default_bridge_device}\"'"
 
-    # lineinfile \
-    #     src="/etc/rc.conf.local" \
-    #     line="'ifconfig_bridge0_aliases=\"inet ${internal_network:-${default_network}}.1/16\"'"
+    lineinfile \
+        src="/etc/rc.conf.local" \
+        line="'ifconfig_bridge0_aliases=\"inet ${internal_network:-${default_network}}.1/16\"'"
 }
 
 

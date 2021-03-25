@@ -61,9 +61,6 @@ default_subnet="172.16"
 # Default subnet for local jails: 172.16.3.2-254
 default_network="172.16.3"
 
-# Default tap device used by OpenVPN:
-default_vpn_device="wg0"
-
 # Default network device name (one with routable external IP):
 default_network_device="em0"
 

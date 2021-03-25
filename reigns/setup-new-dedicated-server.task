@@ -47,10 +47,10 @@ main () {
 
     # Install gvr and igni to /usr/bin:
     install_jail_governor
-    # install_igni_wrapper
+    install_igni_wrapper
 
     # Packet Filter NAT configuration:
-    # setup_vpn_nat
+    setup_vpn_nat
 
     # Setup service cron watches:
     setup_watches
@@ -65,7 +65,7 @@ main () {
     generate_and_fill_pools
 
     # Install default software igniters:
-    # install_common_igniter
+    install_common_igniter
     # install_openvpn_igniters
     # install_unbound_igniters
     # install_nginx_igniters
