@@ -67,7 +67,7 @@ main () {
     # Install default software igniters:
     install_common_igniter
     # install_openvpn_igniters
-    # install_unbound_igniters
+    install_unbound_igniters
     # install_nginx_igniters
 
     # Store network used for cells to: /etc/shared.network, and domain used for cells to: /etc/shared.domain file:
@@ -75,7 +75,7 @@ main () {
 
     # Setup configuration override for installed software:
     # setup_openvpn
-    # setup_unbound
+    setup_unbound
     # setup_nginx_proxy
 
     # Automatically reboot host system after installation:
