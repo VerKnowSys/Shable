@@ -151,7 +151,7 @@ setup_dedicated_system_config () {
 
     lineinfile \
         src="/etc/rc.conf.local" \
-        line="'ifconfig_bridge0_aliases=\"inet ${internal_network:-${default_network}}.1/16\"'"
+        line="'ifconfig_bridge0=\"inet ${internal_network:-${default_network}}.1/16\"'"
 }
 
 
