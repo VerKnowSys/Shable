@@ -1,37 +1,37 @@
 install_dedicated_software () {
-    ${default_shell} -c "${sofin_bin} i Openvpn Unbound Rust Mosh Jq"
+    ${default_shell} -c "${sofin_bin} i Unbound Wireguard-tools Rust Mosh Jq"
 }
 
 
 setup_watches () {
     note "Configure crontab for basic service supervision…"
-    touch \
-        "/etc/cron.d/dns-watch" \
-        "/etc/cron.d/vpn-watch" \
-        "/etc/cron.d/nginx-watch"
+    # touch \
+    #     "/etc/cron.d/dns-watch" \
+    #     "/etc/cron.d/nginx-watch"
+        # "/etc/cron.d/vpn-watch" \
         # TODO: define watcher for sysapi: "/etc/cron.d/sysapi-watch"
 
     lineinfile \
         src="/etc/cron.d/dns-watch" \
         line="'* * * * * root igni dns watch'"
 
-    lineinfile \
-        src="/etc/cron.d/vpn-watch" \
-        line="'* * * * * root igni vpn watch'"
+    # lineinfile \
+    #     src="/etc/cron.d/vpn-watch" \
+    #     line="'* * * * * root igni vpn watch'"
 
-    lineinfile \
-        src="/etc/cron.d/proxy-watch" \
-        line="'* * * * * root igni proxy watch'"
+    # lineinfile \
+    #     src="/etc/cron.d/proxy-watch" \
+    #     line="'* * * * * root igni proxy watch'"
 }
 
 
 setup_vpn_nat () {
-    note "Install PF-NAT for network: $(distn "${vpn_network:-${default_network}}")"
+    note "Install PF-NAT for network: $(distn "${internal_network:-${default_network}}")"
     template \
         src="firewall/pf.conf" \
         dest="/etc/pf.conf" \
         mode="0644" \
-        vpn_network="${vpn_network:-${default_network}}" \
+        internal_network="${internal_network:-${default_network}}" \
         default_network_device="${default_network_device}" \
         default_bridge_device="${default_bridge_device}" \
         ip="${ip}"
@@ -48,19 +48,6 @@ install_common_igniter () {
 }
 
 
-install_openvpn_igniters () {
-    template \
-        src="igniters/openvpn.igni" \
-        dest="${igniters_dir}/vpn.igni" \
-        mode="755" \
-        openvpn_softwaredir="${openvpn_softwaredir}" \
-        openvpn_servicedir="${openvpn_servicedir}" \
-        default_vpn_device="${default_vpn_device}" \
-        default_bridge_device="${default_bridge_device}" \
-        default_vpn_router="${default_vpn_router}"
-}
-
-
 install_unbound_igniters () {
     template \
         src="igniters/unbound.igni" \
@@ -68,7 +55,7 @@ install_unbound_igniters () {
         mode="755" \
         unbound_softwaredir="${unbound_softwaredir}" \
         unbound_servicedir="${unbound_servicedir}" \
-        default_network="${vpn_network:-${default_network}}"
+        default_network="${internal_network:-${default_network}}"
 }
 
 
@@ -82,26 +69,6 @@ install_nginx_igniters () {
 }
 
 
-setup_openvpn () {
-    note "Install OpenVPN configuration"
-    template \
-        src="vpn/openvpn.conf" \
-        dest="${openvpn_servicedir}/service.conf" \
-        mode="0644" \
-        client="${REMOTE}" \
-        remote_vpn_server="${remote_vpn_server}" \
-        openvpn_servicedir="${openvpn_servicedir}"
-
-    note "Install OpenVPN server side certificates for client: ${REMOTE}"
-    for _file in "ca.crt" "${REMOTE}.key" "${REMOTE}.crt"; do
-        template \
-            src="vpn/${_file}" \
-            dest="${openvpn_servicedir}/${_file}" \
-            mode="600"
-    done
-}
-
-
 setup_unbound () {
     note "Configure Unbound"
     template \
@@ -111,7 +78,7 @@ setup_unbound () {
         default_subnet="${default_subnet}" \
         unbound_servicedir="${unbound_servicedir}" \
         default_jails_domain="${default_jails_domain}" \
-        default_network="${vpn_network:-${default_network}}" \
+        default_network="${internal_network:-${default_network}}" \
         default_dns_dir="${shared_dir}/DNS"
     note "Setting 'unbound' owner for: $(distn "${unbound_servicedir}/service.log")"
     ${TOUCH_BIN} "${unbound_servicedir}/service.log"
@@ -132,14 +99,8 @@ setup_nginx_proxy () {
 
 # NOTE: function unused for now:
 launch_core_services () {
-    note "Start OpenVPN server"
-    igni "vpn" restart
-
     note "Start DNS server"
     igni "dns" restart
-
-    note "Start Web proxy server: Nginx"
-    igni "proxy" restart
 }
 
 
@@ -184,14 +145,14 @@ setup_dedicated_system_config () {
     #     src="/etc/rc.conf.local" \
     #     line="'rtadvd_interfaces=\"${default_network_device}\"'"
 
-    note "Configure router address: $(distn "${vpn_network:-${default_network}}.1") on device: $(distn "${default_bridge_device}")"
-    lineinfile \
-        src="/etc/rc.conf.local" \
-        line="'cloned_interfaces=\"${default_bridge_device}\"'"
+    # note "Configure router address: $(distn "${internal_network:-${default_network}}.1") on device: $(distn "${default_bridge_device}")"
+    # lineinfile \
+    #     src="/etc/rc.conf.local" \
+    #     line="'cloned_interfaces=\"${default_bridge_device}\"'"
 
-    lineinfile \
-        src="/etc/rc.conf.local" \
-        line="'ifconfig_bridge0_aliases=\"inet ${vpn_network:-${default_network}}.1/16\"'"
+    # lineinfile \
+    #     src="/etc/rc.conf.local" \
+    #     line="'ifconfig_bridge0_aliases=\"inet ${internal_network:-${default_network}}.1/16\"'"
 }
 
 
@@ -205,7 +166,7 @@ generate_and_fill_pools () {
         ${TOUCH_BIN} "/Shared/NetIDs/id-${_pool_idx}"
     done
     for _pool_idx in $(${SEQ_BIN} 2 254 2>/dev/null); do
-        ${TOUCH_BIN} "/Shared/IPs/ip-${vpn_network:-${default_network}}.${_pool_idx}"
+        ${TOUCH_BIN} "/Shared/IPs/ip-${internal_network:-${default_network}}.${_pool_idx}"
     done
 }
 
@@ -244,6 +205,6 @@ install_igni_wrapper () {
 
 
 write_shared_defaults () {
-    printf "%b\n" "${vpn_network:-${default_network}}" > "${dedicated_network_file}"
+    printf "%b\n" "${internal_network:-${default_network}}" > "${dedicated_network_file}"
     printf "%b\n" "${default_jails_domain}" > "${dedicated_domain_file}"
 }

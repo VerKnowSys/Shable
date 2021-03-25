@@ -12,7 +12,6 @@ inventory_read "${DEFAULT_INVENTORY}" "${_host}"
 
 not_empty "${_host}" "Specify $(diste "host") to invoke $(diste "base-system-setup") on"
 not_empty "${ip}" "Expected defined value of $(diste "ip") in inventory: $(diste "${DEFAULT_INVENTORY}")"
-not_empty "${remote_vpn_server}" "Expected defined value of $(diste "remote_vpn_server") in inventory: $(diste "${DEFAULT_INVENTORY}")"
 not_empty "${default_jails_domain}" "Expected defined value of $(diste "default_jails_domain") in inventory: $(diste "${DEFAULT_INVENTORY}")"
 
 

@@ -21,22 +21,17 @@ main () {
         _remote="${REMOTE}" \
         default_network_device="${default_network_device}" \
         default_www_user="${default_www_user}" \
-        remote_vpn_server="${remote_vpn_server}" \
         remote_ip="${ip}" \
-        openvpn_servicedir="${openvpn_servicedir}" \
-        vpn_network="${vpn_network:-${default_network}}" \
-        default_vpn_device="${default_vpn_device}" \
-        default_bridge_device="${default_bridge_device}" \
         default_jails_domain="${default_jails_domain}"
 
     # Make sure VPN keys are available before we invoke setup process:
-    for _vpnfile in crt key; do
-        if [ ! -f "templates/vpn/${REMOTE}.${_vpnfile}" ]; then
-            error "Missing VPN file: $(diste "templates/vpn/${REMOTE}.${_vpnfile}") - it's required to set up VPN client correctly! Please read $(distd "docs/generate-vpn-key.md")"
-        fi
-    done
+    # for _vpnfile in crt key; do
+    #     if [ ! -f "templates/vpn/${REMOTE}.${_vpnfile}" ]; then
+    #         error "Missing VPN file: $(diste "templates/vpn/${REMOTE}.${_vpnfile}") - it's required to set up VPN client correctly! Please read $(distd "docs/generate-vpn-key.md")"
+    #     fi
+    # done
 
-    note "Setting up new dedicated system on host: $(distn "${_host}"), External IP: $(distn "${ip}"), remote VPN server: $(distn "${remote_vpn_server}"), default VPN network: $(distn "${default_network}"). Default shared domain: $(distn "${default_jails_domain}")"
+    note "Setting up new dedicated system on host: $(distn "${_host}"), External IP: $(distn "${ip}"). Default shared domain: $(distn "${default_jails_domain}")"
 
     # Build rc.conf.local from scratch:
     ${RM_BIN} -f "/etc/rc.conf.local"
@@ -52,14 +47,14 @@ main () {
 
     # Install gvr and igni to /usr/bin:
     install_jail_governor
-    install_igni_wrapper
+    # install_igni_wrapper
 
     # Packet Filter NAT configuration:
-    setup_vpn_nat
+    # setup_vpn_nat
 
     # Setup service cron watches:
     setup_watches
-    install_jail_sysapi
+    # install_jail_sysapi
 
     # When base system configuration is ready, invoke svdup commit system modifications and install fres stable ServeD image:
     install_system_image
@@ -70,18 +65,18 @@ main () {
     generate_and_fill_pools
 
     # Install default software igniters:
-    install_common_igniter
-    install_openvpn_igniters
-    install_unbound_igniters
-    install_nginx_igniters
+    # install_common_igniter
+    # install_openvpn_igniters
+    # install_unbound_igniters
+    # install_nginx_igniters
 
     # Store network used for cells to: /etc/shared.network, and domain used for cells to: /etc/shared.domain file:
     write_shared_defaults
 
     # Setup configuration override for installed software:
-    setup_openvpn
-    setup_unbound
-    setup_nginx_proxy
+    # setup_openvpn
+    # setup_unbound
+    # setup_nginx_proxy
 
     # Automatically reboot host system after installation:
     gracefully_quit_and_reboot 3

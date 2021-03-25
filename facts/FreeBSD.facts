@@ -55,18 +55,14 @@ php71_socket="${services_dir}/Php71/service.sock"
 php70_socket="${services_dir}/Php70/service.sock"
 php56_socket="${services_dir}/Php56/service.sock"
 
-
 # Default local 172.16.0.0/16 network (accessible via OpenVPN):
 default_subnet="172.16"
 
 # Default subnet for local jails: 172.16.3.2-254
 default_network="172.16.3"
 
-# Local address of OpenVPN server (used by "watchvpn" cron task to check network availability):
-default_vpn_router="172.16.1.1"
-
 # Default tap device used by OpenVPN:
-default_vpn_device="tap0"
+default_vpn_device="wg0"
 
 # Default network device name (one with routable external IP):
 default_network_device="em0"
