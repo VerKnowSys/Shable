@@ -56,6 +56,20 @@ main () {
     setup_watches
     # install_jail_sysapi
 
+    note "Updating /etc/devfs.rules to allow tunnels in cells"
+    cat >> /etc/devfs.rules <<EOF
+
+[devfsrules_jail=4]
+add include \$devfsrules_hide_all
+add include \$devfsrules_unhide_basic
+add include \$devfsrules_unhide_login
+add path zfs unhide
+add path 'tun*' unhide
+add include \$devfsrules_jail
+add path 'bpf*' unhide
+
+EOF
+
     # When base system configuration is ready, invoke svdup commit system modifications and install fres stable ServeD image:
     install_system_image
 
@@ -77,25 +91,6 @@ main () {
     # setup_openvpn
     setup_unbound
     # setup_nginx_proxy
-
-    note "Updating /etc/devfs.rules to allow tunnels in cells"
-    cat >> /etc/devfs.rules <<EOF
-
-[devfsrules_jail=4]
-add include \$devfsrules_hide_all
-add include \$devfsrules_unhide_basic
-add include \$devfsrules_unhide_login
-add path zfs unhide
-add path 'tun*' unhide
-add include \$devfsrules_jail
-add path 'bpf*' unhide
-
-EOF
-    service devfs restart
-    service devd restart
-
-    note "Prefetching current base system for gvr…"
-    /usr/bin/gvr list
 
     # Automatically reboot host system after installation:
     gracefully_quit_and_reboot 3
