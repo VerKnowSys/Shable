@@ -1,4 +1,4 @@
-prod_os_version="12.1"
+prod_os_version="13.0"
 prod_os_arch="amd64"
 default_os_tripple="${SYSTEM_NAME}-${prod_os_version}-${prod_os_arch}"
 default_system_shell="/bin/sh"
@@ -8,7 +8,7 @@ homedir_root="/User"
 default_environment_file="${homedir}/environment"
 
 # Some base versions of used software:
-default_zsh_version="5.6.2"
+default_zsh_version="5.8"
 default_git_version="2.26.2"
 
 # Default Software(+ro) and Services(+rw) datasets:
