@@ -56,6 +56,9 @@ main () {
     setup_watches
     # install_jail_sysapi
 
+    # Store network used for cells to: /etc/shared.network, and domain used for cells to: /etc/shared.domain file:
+    write_shared_defaults
+
     note "Updating /etc/devfs.rules to allow tunnels in cells"
     cat >> /etc/devfs.rules <<EOF
 
@@ -83,9 +86,6 @@ EOF
     # install_openvpn_igniters
     install_unbound_igniters
     # install_nginx_igniters
-
-    # Store network used for cells to: /etc/shared.network, and domain used for cells to: /etc/shared.domain file:
-    write_shared_defaults
 
     # Setup configuration override for installed software:
     # setup_openvpn
