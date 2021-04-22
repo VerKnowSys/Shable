@@ -87,3 +87,7 @@ dtrace_load="YES"
 vmm_load="NO"
 
 nullfs_load="YES"
+
+ossl_load="YES"
+
+cpufreq_load="YES"
