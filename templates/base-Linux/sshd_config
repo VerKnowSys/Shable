@@ -2,9 +2,10 @@
 
 Port {{ sshd_port }}
 Protocol 2
+
 # HostKeys for protocol version 2
-HostKey /etc/ssh/ssh_host_rsa_key
-HostKey /etc/ssh/ssh_host_ecdsa_key
+#HostKey /etc/ssh/ssh_host_rsa_key
+#HostKey /etc/ssh/ssh_host_ecdsa_key
 #UsePrivilegeSeparation yes
 
 # Lifetime and size of ephemeral version 1 server key
