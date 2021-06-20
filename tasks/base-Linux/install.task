@@ -177,7 +177,6 @@ install_software () {
         mc \
         openntpd \
         openssl \
-        openvpn \
         zip \
         nginx \
         libnginx-mod-http-geoip2 \
@@ -193,5 +192,10 @@ install_software () {
 }
 
 setup_root_ssh_key () {
-    ssh-keygen -b 4096 -t ed25519 -N "" -f ~/.ssh/id_ed25519 
+    if [ ! -f "${HOME}/.ssh/id_ed25519" ]; then
+        note "Creating new SSH-ed25519 pubkey for: $(distn "${USER}")"
+        ssh-keygen -b 4096 -t ed25519 -N "" -f "${HOME}/.ssh/id_ed25519"
+    else
+        note "SSH ed25519 pubkey already exists for: $(distn "${USER}")"
+    fi
 }
