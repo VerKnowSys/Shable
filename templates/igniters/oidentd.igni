@@ -1,0 +1,12 @@
+#!/bin/sh
+
+
+# Load common.igni with common tasks:
+. /Shared/Igniters/common.igni
+
+
+# Initialize service:
+ignite \
+    name="Oidentd" \
+    action="${1:-status}" \
+    start_cmd="'daemon -p {{ oidentd_servicedir }}/service.pid -P {{ oidentd_servicedir }}/service-supervisor.pid {{ oidentd_softwaredir }}/exports/oidentd --foreground'"
