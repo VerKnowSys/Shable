@@ -1,0 +1,12 @@
+#!/bin/sh
+
+
+# Load common.igni with common tasks:
+. /Shared/Igniters/common.igni
+
+
+# Initialize service:
+ignite \
+    name="Krecik" \
+    action="${1:-status}" \
+    start_cmd="'daemon -p {{ krecik_servicedir }}/service.pid -P {{ krecik_servicedir }}/service-supervisor.pid {{ krecik_softwaredir }}/exports/krecik-server >/dev/null 2>>{{ krecik_servicedir }}/log/krecik.error.log'"
