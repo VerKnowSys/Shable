@@ -161,7 +161,7 @@ install_software () {
     apt update
 
     note "Install base software"
-    DEBIAN_FRONTEND=noninteractive aptitude install -y --without-recommends \
+    DEBIAN_FRONTEND=noninteractive apt install -y \
         -o Dpkg::Options::="--force-confdef" \
         -o Dpkg::Options::="--force-confold" \
         uuid-runtime \
@@ -185,7 +185,7 @@ install_software () {
         dnsutils
 
     note "Upgrading what's left to be upgraded on host"
-    DEBIAN_FRONTEND=noninteractive aptitude --without-recommends -y \
+    DEBIAN_FRONTEND=noninteractive apt -y \
         -o Dpkg::Options::="--force-confdef" \
         -o Dpkg::Options::="--force-confold" \
         upgrade
