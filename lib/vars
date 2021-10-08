@@ -89,8 +89,11 @@ case "${SYSTEM_NAME}" in
         SYSCTL_BIN="/usr/sbin/sysctl"
         CHOWN_BIN="/usr/sbin/chown"
         if [ -x "/usr/local/bin/mysql" ]; then
-            # brew, Darwin:
+            # brew, Darwin x86_64:
             MYSQL_BIN="/usr/local/bin/mysql"
+        elif [ -x "/opt/homebrew/bin/mysql" ]; then
+            # brew, Darwin arm64:
+            MYSQL_BIN="/opt/homebrew/bin/mysql"
         elif [ -x "/Software/Mariadb/exports/mysql" ]; then
             # sofin, FreeBSD|Darwin:
             MYSQL_BIN="/Software/Mariadb/exports/mysql"
@@ -104,6 +107,9 @@ case "${SYSTEM_NAME}" in
         elif [ -x "/usr/local/bin/pass" ]; then
             # brew, Darwin:
             PASS_BIN="/usr/local/bin/pass"
+        elif [ -x "/opt/homebrew/bin/pass" ]; then
+            # brew, Darwin arm64:
+            PASS_BIN="/opt/homebrew/bin/pass"
         elif [ -x "/Software/Pass/exports/pass" ]; then
             # sofin, FreeBSD|Darwin:
             PASS_BIN="/Software/Pass/exports/pass"
@@ -114,6 +120,9 @@ case "${SYSTEM_NAME}" in
 
         if [ -x "/usr/bin/curl" ]; then
             CURL_BIN="/usr/bin/curl"
+        elif [ -x "/opt/homebrew/opt/curl/bin/curl" ]; then
+            # brew, Darwin arm64:
+            CURL_BIN="/opt/homebrew/opt/curl/bin/curl"
         elif [ -x "/Software/Curl/exports/curl" ]; then
             CURL_BIN="/Software/Curl/exports/curl"
         else
