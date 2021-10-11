@@ -1,7 +1,6 @@
 default_shell="/Software/Zsh/exports/zsh"
 homedir="${HOME}"
 homedir_root="/var/root"
-openvpn_servicedir="/Services/Openvpn"
 
 default_network="100.64.1"
 default_network_device="en0"

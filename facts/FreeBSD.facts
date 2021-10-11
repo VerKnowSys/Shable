@@ -17,8 +17,6 @@ cache_dir="${shared_dir}/Cache"
 igniters_dir="${shared_dir}/Igniters"
 services_dir="/Services"
 software_dir="/Software"
-openvpn_servicedir="${services_dir}/Openvpn"
-openvpn_softwaredir="${software_dir}/Openvpn"
 unbound_servicedir="${services_dir}/Unbound"
 unbound_softwaredir="${software_dir}/Unbound"
 nginx_servicedir="${services_dir}/Nginx"
@@ -36,7 +34,6 @@ filebeat_servicedir="${services_dir}/Filebeat"
 
 # Pid files:
 nginx_pidfile="${services_dir}/Nginx/service.pid"
-openvpn_pidfile="${services_dir}/Openvpn/service.pid"
 zabbix_pidfile="${services_dir}/Zabbix/service.pid"
 unbound_pidfile="${services_dir}/Unbound/service.pid"
 mariadb_pidfile="${services_dir}/Mariadb/service.pid"
@@ -55,7 +52,7 @@ php71_socket="${services_dir}/Php71/service.sock"
 php70_socket="${services_dir}/Php70/service.sock"
 php56_socket="${services_dir}/Php56/service.sock"
 
-# Default local 172.16.0.0/16 network (accessible via OpenVPN):
+# Default local 172.16.0.0/16 network
 default_subnet="172.16"
 
 # Default subnet for local jails: 172.16.3.2-254
