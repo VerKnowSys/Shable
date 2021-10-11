@@ -711,14 +711,17 @@ not_empty () {
 #   'ip'
 #   'port' - optional port argument
 #
-# Example:
-#   add_ssh_conf_entry "myhost" "192.168.1.1"
+# Examples:
+#   add_ssh_conf_entry "myhost1" "192.168.1.10"
+#   add_ssh_conf_entry "myhost2" "192.168.1.11" 5522
 #
 add_ssh_conf_entry () {
     if [ -n "${3}" ]; then
-        printf "\nhost ${1}\nuser root\nhostname ${2}\nport ${3}\n" >> "${HOME}/.ssh/config"
+        printf "\nhost %b\nuser root\nhostname %b\nport %b\n" "${1}" "${2}" "${3}" >> "${HOME}/.ssh/config"
+    elif [ -n "${2}" ]; then
+        printf "\nhost %b\nuser root\nhostname %b\n" "${1}" "${2}" >> "${HOME}/.ssh/config"
     else
-        printf "\nhost ${1}\nuser root\nhostname ${2}\n" >> "${HOME}/.ssh/config"
+        error "add_ssh_conf_entry(): Wrong number of arguments"
     fi
 }
 
