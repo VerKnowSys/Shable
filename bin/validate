@@ -1,0 +1,60 @@
+#!/bin/sh
+
+. lib/shable
+
+
+export PASSWORD_STORE_DIR="${1:-${PASSWORD_STORE_DIR:-"~/.password-store"}}"
+note "Pass store dir: $(distn "${PASSWORD_STORE_DIR}")"
+
+
+bin_utils_availability () {
+    note "Validating utilities availability"
+    command -v "gpg" || failure "Required utility unavailable: gpg"
+    command -v "pass" || failure "Required utility unavailable: pass"
+    command -v "hcloud" || failure "Required utility unavailable: hcloud"
+}
+
+
+gpg_secret_key_availability () {
+    note "Validating GPG secret key availability"
+    _found_match=0
+    _gpg_local_secret_keys="$(gpg -K)"
+    while read -r _user; do
+        echo "${_gpg_local_secret_keys}" | ${GREP_BIN} -F "${_user}" >/dev/null 2>&1
+        if [ "0" = "${?}" ]; then
+            _found_match=1
+            note "Found match for: $(distn "${_user}")"
+        fi
+    done < "${PASSWORD_STORE_DIR}/.gpg-id"
+
+    if [ "1" != "${_found_match}" ]; then
+        failure "Couldn't find GPG private-key matching any .gpg-id entries of the vault: ${PASSWORD_STORE_DIR}"
+    fi
+}
+
+
+failure () {
+    echo
+    error "FAILURE: ${*}!"
+}
+
+
+success () {
+    echo
+    exit
+}
+
+
+# main function:
+main () {
+    bin_utils_availability && \
+    gpg_secret_key_availability && \
+        success
+
+    # or else - run failure handler that something went wrong:
+    failure "$(diste "bin/validate") has failed!"
+}
+
+
+# run validation:
+main
