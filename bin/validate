@@ -3,7 +3,7 @@
 . lib/shable
 
 
-export PASSWORD_STORE_DIR="${1:-${PASSWORD_STORE_DIR:-"~/.password-store"}}"
+export PASSWORD_STORE_DIR="${1:-${PASSWORD_STORE_DIR:-"${HOME}/.password-store"}}"
 note "Pass store dir: $(distn "${PASSWORD_STORE_DIR}")"
 
 
