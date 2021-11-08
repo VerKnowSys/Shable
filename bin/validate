@@ -6,12 +6,16 @@
 export PASSWORD_STORE_DIR="${1:-${PASSWORD_STORE_DIR:-"${HOME}/.password-store"}}"
 note "Pass store dir: $(distn "${PASSWORD_STORE_DIR}")"
 
+shift
+export REQUIRED_BINS="gpg pass ${*}"
+note "Required bins: $(distn "${REQUIRED_BINS:-"gpg pass"}")"
+
 
 bin_utils_availability () {
     note "Validating utilities availability"
-    command -v "gpg" || failure "Required utility unavailable: gpg"
-    command -v "pass" || failure "Required utility unavailable: pass"
-    command -v "hcloud" || failure "Required utility unavailable: hcloud"
+    for _cmd in $(to_iter "${REQUIRED_BINS}"); do
+        command -v "${_cmd}" || failure "Required utility unavailable: ${_cmd}"
+    done
 }
 
 
