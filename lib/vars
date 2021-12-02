@@ -1,7 +1,8 @@
 #!/bin/sh
 
 SHABLE_NAME="Shable"
-SHABLE_VERSION="0.16.8"
+SHABLE_VERSION="0.16.9"
+
 
 # definitions
 DEFAULT_TIMEOUT_S="5" # interval between each failed reign to retry in seconds
