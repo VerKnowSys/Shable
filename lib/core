@@ -88,9 +88,8 @@ make_var_name () {
 # Make a varname from param and return held value
 get_var_value () {
     if [ -n "${1}" ]; then
-        # since sh is unable to eval values with "=" in name, we have to do a workaround here
-        # by replacing every occurence of "λ" back to "="
-        eval "printf '%s\n' \"\$$(make_var_name "${1}")\"" | ${SED_BIN} "s/λ/=/g"
+        _value="$(eval echo "\$$(make_var_name "${1}")")"
+        printf "%s\n" "${_value}"
     fi
 }
 
@@ -116,11 +115,7 @@ pass_cache () {
         if [ -n "${_value}" ]; then
             mkdir -p "${DEFAULT_CACHE_FACTS_DIR}"
 
-            # since sh is unable to eval values with "=" in name, we have to do a workaround here
-            # by replacing every occurence of "=" with some unique special character. Here we use 'λ'
-            _value_to_store="$(echo "${_value}" | ${SED_BIN} 's/=/λ/g')"
-
-            printf "%b='%s'\n" "${_cache_name}" "${_value_to_store}" > "${_cache_file}"
+            printf "%b='%s'\n" "${_cache_name}" "${_value}" > "${_cache_file}"
             echo "${_value}"
         fi
     }

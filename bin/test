@@ -391,10 +391,14 @@ test_facts_write () {
 
 
 test_equals_in_value () {
-    dupa_a1_2_3_a_b_c_bb_cc__d="123λλ"
+    dupa_a1_2_3_a_b_c_bb_cc__d="somevalue="
     val_expect \
         "$(get_var_value "dupa@a1.2!3#a*b%c/bb/cc /d")" \
-        "123=="
+        "somevalue="
+
+    validate some_var="abc=SOME"
+    validate some_var2="abc=some=thing="
+    validate some_var2="abc====some=other====thing="
 }
 
 

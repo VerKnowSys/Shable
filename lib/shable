@@ -162,6 +162,12 @@ validate () {
         _val_key="$(echo "${_val_arg}" | ${SED_BIN} 's/=.*//' 2>/dev/null)"
         _val_value="$(echo "${_val_arg}" | ${SED_BIN} 's/.*=//' 2>/dev/null)"
         if [ -z "${_val_value}" ]; then
+            # for multiple instances of the "=" in value, let's just leave the first one and drop all others:
+            _val_value="$(echo "${_val_arg}" | ${AWK_BIN} 'BEGIN { FS="=" } { if (NF > 1) {print $2 $3 $4 $5 $6 $7 $8 $9} }' 2>/dev/null)"
+        fi
+
+        debug "_val_arg: $(distd "${_val_arg}"), _val_key: $(distd "${_val_key}"), _val_value: $(distd "${_val_value}")"
+        if [ -z "${_val_value}" ]; then
             error "validate($(diste "Fail" "${ColorRed}")): Expected $(diste "${_val_key}") to be defined! Task aborted!"
         else
             debug "validate($(distd "Ok" "${ColorGreen}")): $(distd "${_val_key}")=$(distd "${_val_value}")"
