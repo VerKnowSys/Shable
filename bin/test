@@ -390,6 +390,13 @@ test_facts_write () {
 }
 
 
+test_equals_in_value () {
+    dupa_a1_2_3_a_b_c_bb_cc__d="123λλ"
+    val_expect \
+        "$(get_var_value "dupa@a1.2!3#a*b%c/bb/cc /d")" \
+        "123=="
+}
+
 
 # Invoke tests:
 bin/shable inventory-test test-reign && \
@@ -398,6 +405,7 @@ self_test && \
 system_specific_test && \
 test_inventory_reader && \
 test_facts_write && \
+test_equals_in_value && \
 note "Everything as expected!"
 
 if [ -d "templates/test" ]; then
