@@ -357,9 +357,9 @@ only_as () {
 #
 inventory_read () {
     _inv_internal="${1}"
+    _inv_grp="+" # all groups by default
 
     # support for specifying group like on unixes, by username:groupname as inventory
-    _inv_grp="${default_inventory_group}"
     echo "${_inv_internal}" | ${GREP_BIN} -F ":" >/dev/null 2>&1
     if [ "0" = "${?}" ]; then
         _inv_grp="$(echo "${_inv_internal}" | ${CUT_BIN} -d':' -f2 2>/dev/null)"
@@ -388,12 +388,15 @@ inventory_read () {
 
     # read groups
     __gcount=0
-    for _dynval in $(${GREP_BIN} -nE "\[.*\]" "${_inv_internal}" 2>/dev/null | ${SED_BIN} "s/^/__ln=/; s#:\[#;__grp=#; s#]##" 2>/dev/null); do # read groups
-        eval "${_dynval}"
-        __gcount=$(( ${__gcount} + 1 ))
-        debug "inventory grp: $(distd "${__grp}"), start line: $(distd "${__ln}")"
-        eval "__grp${__gcount}=${__grp}; __ln${__gcount}=${__ln}" # store values in dynamic variables
-    done
+    # if group is not a wildcard (+), skip processing groups:
+    if [ "+" != "${_inv_grp}" ]; then
+        for _dynval in $(${GREP_BIN} -nE "\[.*\]" "${_inv_internal}" 2>/dev/null | ${SED_BIN} "s/^/__ln=/; s#:\[#;__grp=#; s#]##" 2>/dev/null); do # read groups
+            eval "${_dynval}"
+            __gcount=$(( ${__gcount} + 1 ))
+            debug "inventory grp: $(distd "${__grp}"), start line: $(distd "${__ln}")"
+            eval "__grp${__gcount}=${__grp}; __ln${__gcount}=${__ln}" # store values in dynamic variables
+        done
+    fi
 
     process_inventory_values () {
         # when running with inventory groups,  invoke loading inventory header file first, before loading first group:
