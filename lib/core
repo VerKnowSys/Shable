@@ -245,10 +245,13 @@ validate_env () {
 
 # Cleanup of cached facts routine:
 cleanup_fragile_facts () {
+    _files_to_remove=""
     for _fact_file in facts/cached/*.facts; do
         if [ "${DEFAULT_CACHE_FILE_LOCAL}" != "${_fact_file}" ]; then
-            ${RM_BIN} -f "${_fact_file}"
+            _files_to_remove="${_fact_file} ${_files_to_remove}"
         fi
     done
+    ${RM_BIN} -f "${_files_to_remove}"
+    ${RM_BIN} -f "inventory*"
     debug "Cache facts were wiped out"
 }
