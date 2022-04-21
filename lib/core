@@ -250,6 +250,6 @@ cleanup_fragile_facts () {
             ${RM_BIN} -f "${_fact_file}"
         fi
     done
-    ${RM_BIN} -f "inventory*"
+    ${RM_BIN} -f inventory*
     debug "Cache facts were wiped out"
 }
