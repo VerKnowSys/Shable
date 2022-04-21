@@ -63,6 +63,7 @@ else
                         -L \
                         --timeout=10 \
                         --exclude=".git" \
+                        --exclude="old-inventories" \
                         --recursive \
                         --compress \
                         --archive \
