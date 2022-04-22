@@ -250,6 +250,11 @@ cleanup_fragile_facts () {
             ${RM_BIN} -f "${_fact_file}"
         fi
     done
-    ${RM_BIN} -f inventory*
+    case "${SYSTEM_NAME}" in
+        Linux|FreeBSD)
+            debug "Wiping out inventory* entries"
+            ${RM_BIN} -f inventory*
+            ;;
+    esac
     debug "Cache facts were wiped out"
 }
