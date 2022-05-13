@@ -9,4 +9,4 @@
 ignite \
     name="Krecik" \
     action="${1:-status}" \
-    start_cmd="'daemon -p {{ krecik_servicedir }}/service.pid -P {{ krecik_servicedir }}/service-supervisor.pid {{ krecik_softwaredir }}/exports/krecik-server >/dev/null 2>>{{ krecik_servicedir }}/log/krecik.error.log'"
+    start_cmd="'daemon -p {{ krecik_servicedir }}/service.pid -P {{ krecik_servicedir }}/service-supervisor.pid -o {{ krecik_servicedir }}/service.log {{ krecik_softwaredir }}/exports/krecikd'"
