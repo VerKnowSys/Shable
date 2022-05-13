@@ -10,11 +10,11 @@ watch () {
     zone_resolve_test () {
         drill "google.com" \
               "@{{ default_network }}.1" >/dev/null \
-        || igni dns restart
+        || igni unbound restart
     }
 
     # test config, check local DNS:
-    igni dns test && \
+    igni unbound test && \
         zone_resolve_test
 }
 
