@@ -1,4 +1,4 @@
-prod_os_version="13.0"
+prod_os_version="13.1"
 prod_os_arch="amd64"
 default_os_tripple="${SYSTEM_NAME}-${prod_os_version}-${prod_os_arch}"
 default_system_shell="/bin/sh"
