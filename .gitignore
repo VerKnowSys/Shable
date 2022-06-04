@@ -1,3 +1,4 @@
 /facts/cached
 /templates/vpn/*.key
 /templates/vpn/*.crt
+*.sublime-workspace
