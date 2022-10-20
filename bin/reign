@@ -69,7 +69,7 @@ else
                         --archive \
                         --delete \
                         "./" \
-                        "${_remote_user}${REMOTE}:${_base_name}" 2>/dev/null
+                        "${_remote_user}${REMOTE}:${_base_name}"
                     if [ "0" = "$?" ]; then
                         return 0
                     else
