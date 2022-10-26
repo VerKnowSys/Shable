@@ -17,7 +17,7 @@ debug () {
 
 warn () {
     if [ -n "${*}" ]; then
-        printf "\n%b%b%s%b\n\n" "${SUPERUSER_MARK}" "${ColorYellow}" "${@}" "${ColorReset}" >&2
+        printf "%b%b%s%b\n\n" "${SUPERUSER_MARK}" "${ColorYellow}" "${@}" "${ColorReset}" >&2
     else
         printf "\n"
     fi
@@ -27,7 +27,7 @@ warn () {
 
 note () {
     if [ -n "${*}" ]; then
-        printf "\n%b%b%s%b\n" "${SUPERUSER_MARK}" "${ColorGreen}" "${@}" "${ColorReset}" >&2
+        printf "%b%b%s%b\n" "${SUPERUSER_MARK}" "${ColorGreen}" "${@}" "${ColorReset}" >&2
     else
         printf "\n"
     fi
