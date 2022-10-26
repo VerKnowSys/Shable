@@ -686,7 +686,7 @@ only_bits () {
 #   'Some message' - error message if variable is defined
 #
 # Example:
-#   $ empty "${_password}" "$(diste "_password") has to be empty!"
+#   $ is_empty "${_password}" "$(diste "_password") has to be empty!"
 #
 is_empty () {
     if [ -n "${1}" ]; then
