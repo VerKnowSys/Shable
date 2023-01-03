@@ -214,11 +214,11 @@ await_async () {
 
 # Helper function to limit the number of simultaneously executed async tasks
 throttle () {
-    _batch=${1:-20}
+    _batch=${1:-50}
 
     while [ $(${PS_BIN} aux | ${GREP_BIN} "bin/reign" | ${GREP_BIN} -vc "grep") -ge ${_batch} ]; do
         debug "Over ${_batch} reign tasks are already running, throttling..."
-        sleep 5
+        sleep 3
     done
 }
 
