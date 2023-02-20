@@ -40,11 +40,12 @@ else
             # default remote user can be overriden with RUN_AS value:
             if [ -z "${RUN_AS}" ]; then
                 debug "Running as default user"
+                _base_name="/tmp/shable_current"
             else
                 debug "Running as user: $(distd "${RUN_AS}")"
                 _remote_user="${RUN_AS}@"
+                _base_name="/tmp/shable_current_${_remote_user%@}"
             fi
-            _base_name="/tmp/shable_current_${_remote_user}"
 
             validate \
                 _inventory="${_inventory}" \
