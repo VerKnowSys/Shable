@@ -138,7 +138,11 @@ case "${SYSTEM_NAME}" in
         ;;
 
     Linux)
-        TAR_BIN="/bin/tar"
+        if [ -x "/usr/bin/tar" ]; then
+            TAR_BIN="/usr/bin/tar"
+        elif [ -x "/bin/tar" ]; then
+            TAR_BIN="/bin/tar"
+        fi
         if [ -x "/usr/bin/pass" ]; then
             # apt, Linux:
             PASS_BIN="/usr/bin/pass"
