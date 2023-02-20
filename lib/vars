@@ -46,7 +46,6 @@ SED_BIN="/bin/sed"
 OD_BIN="/usr/bin/od"
 GREP_BIN="/bin/grep"
 TR_BIN="/usr/bin/tr"
-TAR_BIN="/usr/bin/tar"
 CAT_BIN="/bin/cat"
 AWK_BIN="/usr/bin/awk"
 HOST_BIN="/usr/bin/host"
@@ -86,6 +85,7 @@ PS_BIN="/bin/ps"
 # system specific paths
 case "${SYSTEM_NAME}" in
     Darwin|FreeBSD)
+        TAR_BIN="/usr/bin/tar"
         GREP_BIN="/usr/bin/grep"
         SED_BIN="/usr/bin/sed"
         SYSCTL_BIN="/usr/sbin/sysctl"
@@ -138,6 +138,7 @@ case "${SYSTEM_NAME}" in
         ;;
 
     Linux)
+        TAR_BIN="/bin/tar"
         if [ -x "/usr/bin/pass" ]; then
             # apt, Linux:
             PASS_BIN="/usr/bin/pass"
