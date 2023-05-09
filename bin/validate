@@ -7,7 +7,7 @@ export PASSWORD_STORE_DIR="${1:-${PASSWORD_STORE_DIR:-"${HOME}/.password-store"}
 note "Pass store dir: $(distn "${PASSWORD_STORE_DIR}")"
 
 shift
-export REQUIRED_BINS="gpg pass curl jq dig"
+export REQUIRED_BINS="curl jq dig"
 if [ -f ".requirements" ]; then
     while read -r _req; do
         REQUIRED_BINS="${REQUIRED_BINS} ${_req}"

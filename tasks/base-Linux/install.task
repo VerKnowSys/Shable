@@ -180,6 +180,7 @@ install_software () {
         zip \
         nginx \
         libnginx-mod-http-geoip2 \
+        libnginx-mod-http-headers-more-filter \
         geoipupdate \
         bind9-host \
         dnsutils
