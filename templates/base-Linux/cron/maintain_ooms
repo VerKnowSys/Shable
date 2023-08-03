@@ -65,3 +65,11 @@ for _pid in $(pidof nginx 2>/dev/null); do
         logger "Set oom_score_adj: ${_oom_value} for pid: ${_pid} (nginx)"
     fi
 done
+
+for _pid in $(pidof wg-crypt-wg0 2>/dev/null); do
+    _oom_score_file="/proc/${_pid}/oom_score_adj"
+    if [ -f "${_oom_score_file}" ]; then
+        echo "${_oom_value}" > "${_oom_score_file}"
+        logger "Set oom_score_adj: ${_oom_value} for pid: ${_pid} (wg0)"
+    fi
+done
