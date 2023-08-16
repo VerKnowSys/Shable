@@ -65,6 +65,7 @@ else
                         --timeout=0 \
                         --exclude=".git" \
                         --exclude="old-inventories" \
+                        --exclude="*.sublime-workspace" \
                         --recursive \
                         --compress \
                         --archive \
