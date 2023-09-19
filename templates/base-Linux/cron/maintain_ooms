@@ -2,74 +2,22 @@
 
 _oom_value="-1000"
 
-for _pid in $(pidof cron 2>/dev/null); do
-    _oom_score_file="/proc/${_pid}/oom_score_adj"
-    if [ -f "${_oom_score_file}" ]; then
-        echo "${_oom_value}" > "${_oom_score_file}"
-        logger "Set oom_score_adj: ${_oom_value} for pid: ${_pid} (cron)"
-    fi
-done
-
-for _pid in $(pidof redis-server 2>/dev/null); do
-    _oom_score_file="/proc/${_pid}/oom_score_adj"
-    if [ -f "${_oom_score_file}" ]; then
-        echo "${_oom_value}" > "${_oom_score_file}"
-        logger "Set oom_score_adj: ${_oom_value} for pid: ${_pid} (redis-server)"
-    fi
-done
-
-for _pid in $(pidof mysqld 2>/dev/null); do
-    _oom_score_file="/proc/${_pid}/oom_score_adj"
-    if [ -f "${_oom_score_file}" ]; then
-        echo "${_oom_value}" > "${_oom_score_file}"
-        logger "Set oom_score_adj: ${_oom_value} for pid: ${_pid} (mysqld)"
-    fi
-done
-
-for _pid in $(pidof sshd 2>/dev/null); do
-    _oom_score_file="/proc/${_pid}/oom_score_adj"
-    if [ -f "${_oom_score_file}" ]; then
-        echo "${_oom_value}" > "${_oom_score_file}"
-        logger "Set oom_score_adj: ${_oom_value} for pid: ${_pid} (sshd)"
-    fi
-done
-
-for _pid in $(pidof ntpd 2>/dev/null); do
-    _oom_score_file="/proc/${_pid}/oom_score_adj"
-    if [ -f "${_oom_score_file}" ]; then
-        echo "${_oom_value}" > "${_oom_score_file}"
-        logger "Set oom_score_adj: ${_oom_value} for pid: ${_pid} (ntpd)"
-    fi
-done
-
-for _pid in $(pidof syslog-ng 2>/dev/null); do
-    _oom_score_file="/proc/${_pid}/oom_score_adj"
-    if [ -f "${_oom_score_file}" ]; then
-        echo "${_oom_value}" > "${_oom_score_file}"
-        logger "Set oom_score_adj: ${_oom_value} for pid: ${_pid} (syslog-ng)"
-    fi
-done
-
-for _pid in $(pidof filebeat 2>/dev/null); do
-    _oom_score_file="/proc/${_pid}/oom_score_adj"
-    if [ -f "${_oom_score_file}" ]; then
-        echo "${_oom_value}" > "${_oom_score_file}"
-        logger "Set oom_score_adj: ${_oom_value} for pid: ${_pid} (filebeat)"
-    fi
-done
-
-for _pid in $(pidof nginx 2>/dev/null); do
-    _oom_score_file="/proc/${_pid}/oom_score_adj"
-    if [ -f "${_oom_score_file}" ]; then
-        echo "${_oom_value}" > "${_oom_score_file}"
-        logger "Set oom_score_adj: ${_oom_value} for pid: ${_pid} (nginx)"
-    fi
-done
-
-for _pid in $(pidof wg-crypt-wg0 2>/dev/null); do
-    _oom_score_file="/proc/${_pid}/oom_score_adj"
-    if [ -f "${_oom_score_file}" ]; then
-        echo "${_oom_value}" > "${_oom_score_file}"
-        logger "Set oom_score_adj: ${_oom_value} for pid: ${_pid} (wg0)"
-    fi
+for _proc_name in \
+    ntpd \
+    sshd \
+    cron \
+    redis-server \
+    mysqld \
+    nginx \
+    wg-crypt-wg0 \
+    filebeat \
+    telegraf \
+; do
+    for _pid in $(pidof "${_proc_name}" 2>/dev/null); do
+        _oom_score_file="/proc/${_pid}/oom_score_adj"
+        if [ -f "${_oom_score_file}" ]; then
+            echo "${_oom_value}" > "${_oom_score_file}"
+            logger "Set oom_score_adj: ${_oom_value} for pid: ${_pid} (${_proc_name})"
+        fi
+    done
 done
