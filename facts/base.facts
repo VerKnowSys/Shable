@@ -14,5 +14,5 @@ svdup_https_source="https://raw.githubusercontent.com/VerKnowSys/svdOS/master/sv
 gvr_https_source="https://raw.githubusercontent.com/VerKnowSys/svdOS/master/gvr"
 
 # External resources:
-default_binary_resource="http://software.verknowsys.com/binary"
+default_binary_resource="https://software.verknowsys.com/binary"
 acme_remote_http_source="https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py"
