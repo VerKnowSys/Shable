@@ -44,8 +44,8 @@ start () {
         return 0
     else
         echo "igni: Start: ${_bundle}"
-        ${SHELL} -c "eval ${_commands}" && \
-            return 0
+        ${SHELL} -c "eval ${_commands}" >/dev/null 2>/dev/null </dev/null &
+        return 0
     fi
 }
 
