@@ -4,10 +4,9 @@
 # Load common.igni with common tasks:
 . /Shared/Igniters/common.igni
 
-
 # Initialize service:
 ignite \
     name="Postgresql13" \
     action="${1:-status}" \
-    start_cmd="'pg_ctl -D /Services/Postgresql13/data -l /Services/Postgresql13/service.log start'" \
+    start_cmd="'/Software/Postgresql13/bin/postgres -D /Services/Postgresql13/data >> /Services/Postgresql13/service.log 2>> /Services/Postgresql13/service.log &'" \
     stop_cmd="'pg_ctl -D /Services/Postgresql13/data -l /Services/Postgresql13/service.log stop'"
